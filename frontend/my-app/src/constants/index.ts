@@ -23,3 +23,5 @@ export const REPORT_STATUSES = [
 
 export const MAX_PHOTOS_PER_REPORT = 3;
 export const MIN_PHOTOS_PER_REPORT = 1;
+
+export const DEFAULT_MAP_ZOOM = 13;
