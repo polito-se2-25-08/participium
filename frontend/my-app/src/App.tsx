@@ -1,14 +1,6 @@
-import { useState } from 'react'
-import './App.css'
-import { MapWindow } from './Components/mapWindow';
+import "./App.css";
+import { MapWindow } from "./Components/MapWindow";
 
-function App() {
-
-  return (
-    <>
-       <MapWindow />
-    </>
-  )
+export default function App() {
+	return <MapWindow />;
 }
-
-export default App
