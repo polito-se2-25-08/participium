@@ -54,8 +54,13 @@ function AddressDisplay({ lat, lng }: { lat: number; lng: number }) {
 //Given an address returns the coordinates
 const fetchCoordinates = async (address: string) => {
     try {
+      // Append ", Torino, Italy" if not already present to restrict search to Turin
+      const searchQuery = address.toLowerCase().includes('torino') || address.toLowerCase().includes('turin')
+        ? address
+        : `${address}, Torino, Italy`;
+      
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1`
       );
       const data = await response.json();
       if (data && data.length > 0) {

@@ -5,6 +5,13 @@
   height: 100vh;
 }
 
+.appContainer {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+}
+
 .leaflet-container {
   height: 100vh;
   width: 100%;

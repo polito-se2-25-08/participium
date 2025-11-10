@@ -4,9 +4,14 @@ import { MapWindow } from './Components/mapWindow';
 
 function App() {
 
+
+  //The h1 should be replaced with a proper header component later
   return (
     <>
-       <MapWindow />
+      <h1>Participium Map</h1>
+      <div className="appContainer">
+        <MapWindow />
+      </div>
     </>
   )
 }
