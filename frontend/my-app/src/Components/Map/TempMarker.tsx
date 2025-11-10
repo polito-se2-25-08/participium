@@ -2,17 +2,17 @@ import { useState } from "react";
 import type { MarkerI } from "../../interface/Marker";
 import { Marker, Popup, useMapEvents } from "react-leaflet";
 import { fetchAddressByCoordinates } from "../../action/MapAction";
+import type { LeafletMouseEvent } from "leaflet";
 
 export default function TempMarker() {
 	const [tempMarker, setTempMarker] = useState<MarkerI | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useMapEvents({
 		click(e) {
 			const { lat, lng } = e.latlng;
 
 			(async () => {
-				const address = await fetchAddressByCoordinates(lat, lng);
-
 				const newMarker: MarkerI = {
 					title: "New Marker",
 					timestamp: new Date().toISOString(),
@@ -21,7 +21,7 @@ export default function TempMarker() {
 					userId: "user123",
 					status: "Pending approval",
 					position: [lat, lng],
-					adress: address,
+					adress: "",
 				};
 
 				setTempMarker(newMarker);
@@ -29,9 +29,25 @@ export default function TempMarker() {
 		},
 	});
 
+	const getAddress = async (e: LeafletMouseEvent) => {
+		setIsLoading(true);
+		const { lat, lng } = e.latlng;
+		const address = await fetchAddressByCoordinates(lat, lng);
+
+		setTempMarker((prev) => (prev ? { ...prev, adress: address } : prev));
+		setIsLoading(false);
+	};
+
 	return tempMarker === null ? null : (
-		<Marker position={tempMarker.position}>
-			<Popup>{tempMarker.adress}</Popup>
+		<Marker
+			eventHandlers={{
+				click: (e) => {
+					getAddress(e);
+				},
+			}}
+			position={tempMarker.position}
+		>
+			<Popup>{isLoading ? "Loading..." : tempMarker.adress}</Popup>
 		</Marker>
 	);
 }
