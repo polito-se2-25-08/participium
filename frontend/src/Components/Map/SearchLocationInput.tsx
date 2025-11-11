@@ -2,10 +2,16 @@ import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import { fetchCoordinates } from "../../action/MapAction";
 import L from "leaflet";
+import type { MarkerI } from "../../interface/Marker";
 
 const ZOOM = import.meta.env.VITE_MAP_ZOOM;
 
-export default function SearchLocationInput() {
+interface SearchLocationInputProps {
+	setMarker: React.Dispatch<React.SetStateAction<MarkerI | null>>;
+}
+export default function SearchLocationInput({
+	setMarker,
+}: SearchLocationInputProps) {
 	const map = useMap();
 	const formRef = useRef<HTMLFormElement>(null);
 
@@ -23,6 +29,18 @@ export default function SearchLocationInput() {
 			const coords = await fetchCoordinates(address);
 			if (coords) {
 				map.setView(coords, ZOOM);
+				const newMarker: MarkerI = {
+					title: "New Marker",
+					timestamp: new Date().toISOString(),
+					anonymity: true,
+					category: "Category A",
+					userId: "user123",
+					status: "Pending approval",
+					position: coords,
+					adress: "",
+				};
+
+				setMarker(newMarker);
 			}
 		}
 	};
