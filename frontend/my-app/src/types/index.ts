@@ -25,13 +25,13 @@ export type ReportStatus =
   | 'resolved';
 
 export interface User {
-  id: string;
+  id: number;
   username: string;
   email: string;
   name: string;
   surname: string;
   profile_picture?: string;
-  //telegramUsername?: string;
+  //telegram_username?: string;
   email_notifications: boolean;
   role: UserRole;
 }
@@ -42,18 +42,33 @@ export interface Location {
 }
 
 export interface Report {
-  id: string;
+  id: number;
   title: string;
   description: string;
   category: ReportCategory;
   location: Location;
-  photos: string[]; // base 64 codes to photos (min 1, max 3)
+  photos: Report_Photo[];
   anonymous: boolean;
-  user_id: string;
-  user_name?: string; // Maybe can be deleted later
+  user_id: number;
   status: ReportStatus;
   createdAt: Date;
   updatedAt: Date;
-  rejectionReason?: string;
+  rejection?: Rejection_Report;
   assignedOffice?: string;
+}
+
+export interface Category {
+  id: number;
+  category: ReportCategory;
+}
+
+export interface Report_Photo {
+  id: number;
+  report_photo: string;
+  report_id: number;
+}
+
+export interface Rejection_Report {
+  id: number;
+  motivation: string;
 }
