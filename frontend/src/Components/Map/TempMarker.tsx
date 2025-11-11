@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { MarkerI } from "../../interface/Marker";
-import { Marker, Popup, useMapEvents } from "react-leaflet";
+import { Marker, Popup } from "react-leaflet";
 import { fetchAddressByCoordinates } from "../../action/MapAction";
 import type { LeafletMouseEvent } from "leaflet";
 
