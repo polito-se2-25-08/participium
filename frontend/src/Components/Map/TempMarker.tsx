@@ -10,6 +10,10 @@ export default function TempMarker() {
 
 	useMapEvents({
 		click(e) {
+			if (tempMarker) {
+				setTempMarker(null);
+				return;
+			}
 			const { lat, lng } = e.latlng;
 
 			(async () => {

@@ -1,5 +1,4 @@
 import { MapContainer, TileLayer } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 import SearchLocationInput from "./Map/SearchLocationInput";
 import TempMarker from "./Map/TempMarker";
 
