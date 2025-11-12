@@ -2,6 +2,7 @@ import express from "express";
 import userRoutes from "./routes/v1/userRoutes";
 import {errorHandler} from "./middleware/errorHandler";
 import dotenv from "dotenv";
+import adminRoutes from "./routes/v1/adminRoutes";
 
 
 
@@ -30,6 +31,9 @@ app.get("/health", (req, res) => {
 
 // Mount API routes
 app.use("/api/users", userRoutes);
+
+// Mount admin routes
+app.use("/api/admin", adminRoutes);
 
 // Global error handler (MUST be last)
 app.use(errorHandler);
