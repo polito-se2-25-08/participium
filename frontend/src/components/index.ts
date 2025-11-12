@@ -1,5 +1,5 @@
 // Component exports for easier imports
-export { default as MapView } from './MapView';
+export { MapWindow } from './mapWindow';
 export { default as ReportList } from './ReportList';
 export { default as ReportForm } from './ReportForm';
 export { default as Statistics } from './Statistics';

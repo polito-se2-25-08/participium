@@ -86,8 +86,10 @@
 }
 
 .form-group input[type="text"]:read-only {
-  background-color: #f5ebe0;
+  background-color: #f5f5f5;
   cursor: not-allowed;
+  color: #5d6d7e;
+  border-color: #e0e0e0;
 }
 
 .form-group textarea {

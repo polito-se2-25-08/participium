@@ -2,7 +2,26 @@ import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import type { ReportCategory, Location } from '../types';
 import { REPORT_CATEGORIES, MAX_PHOTOS_PER_REPORT, MIN_PHOTOS_PER_REPORT } from '../constants';
+import ReportMapView from './ReportMapView';
 import './ReportForm.css';
+
+// Turin boundary coordinates (approximate metropolitan area)
+const TURIN_BOUNDS = {
+  north: 45.2,
+  south: 44.9,
+  east: 7.9,
+  west: 7.4,
+};
+
+// Helper function to check if coordinates are within Turin bounds
+const isWithinTurinBounds = (lat: number, lng: number): boolean => {
+  return (
+    lat >= TURIN_BOUNDS.south &&
+    lat <= TURIN_BOUNDS.north &&
+    lng >= TURIN_BOUNDS.west &&
+    lng <= TURIN_BOUNDS.east
+  );
+};
 
 interface ReportFormData {
   title: string;
@@ -70,6 +89,27 @@ const ReportForm = () => {
     }));
   };
 
+  const handleLocationSelect = (location: Location, address: string) => {
+    // Validate that the location is within Turin bounds
+    if (!isWithinTurinBounds(location.latitude, location.longitude)) {
+      setErrors(prev => ({ 
+        ...prev, 
+        address: 'The selected location is outside Turin. Please select a location within Turin city limits.' 
+      }));
+      return;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      location,
+      address,
+    }));
+    // Clear address error when valid location is selected
+    if (errors.address) {
+      setErrors(prev => ({ ...prev, address: '' }));
+    }
+  };
+
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
@@ -104,7 +144,7 @@ const ReportForm = () => {
     
     if (validateForm()) {
       console.log('Form submitted:', formData);
-      // TODO: Submitting the API
+      // TODO: Submitting to backend side
       alert('Report submitted successfully!');
     }
   };
@@ -125,18 +165,18 @@ const ReportForm = () => {
               id="address"
               name="address"
               value={formData.address}
-              onChange={handleInputChange}
-              placeholder="Enter address or select from map below"
+              readOnly
+              placeholder="Click on the map below to select a location"
               className={errors.address ? 'error' : ''}
             />
             {errors.address && <span className="error-message">{errors.address}</span>}
-            <p className="field-hint">You can type the address or click on the map to select a location</p>
+            <p className="field-hint">Click on the map to select a location and auto-fill the address</p>
           </div>
 
-          <div className="map-placeholder">
-            <p>🗺️ Map Component - Click to select location</p>
-            {/* TODO: Integrate MapView component here */}
-          </div>
+          <ReportMapView 
+            onLocationSelect={handleLocationSelect}
+            height="350px"
+          />
         </section>
 
         <section className="form-section">
