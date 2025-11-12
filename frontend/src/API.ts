@@ -44,10 +44,9 @@ export async function setupUser(setupUser: setupUserI): Promise<string>
 
 	if (response.ok) {
 		const result = await response.json();
-		console.log("User setup successful: ", result.data.password);
 		return result.data.password;
 	} else {
-		console.log(response.json());
+		console.log(await response.json());
 		throw new Error("Server is not reachable");
 	}
 }

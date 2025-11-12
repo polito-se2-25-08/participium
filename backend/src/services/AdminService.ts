@@ -59,7 +59,8 @@ export const adminService = {
             //const createdUser = await userRepository.createUser(newUser);
             
             //give the password to the frontend so that the admin can receive the credentials
-            newUser.password = password;
+            //createdUser.password = password;
+            newUser.password = password; // Temporarily store plain password to return it
 
             return newUser;
     }

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { setupUserI } from "../interface/setupUser";
 import { setupUser } from "../API";
+import "../App.css";
 
 export function AccountSetupPage(){
     const [formData, setFormData] = useState<setupUserI>({
@@ -25,7 +26,6 @@ export function AccountSetupPage(){
         e.preventDefault();
         try {
             const password = await setupUser(formData);
-            console.log("Password: ", password);
             setPassword(password);
         } catch (error) {
             console.error("Error setting up user:", error);
@@ -33,77 +33,78 @@ export function AccountSetupPage(){
     };
 
     return (
-        <div>
-            <h1>Account Setup</h1>
-            <form onSubmit={handleSubmit}>
-            <div>
-                <label>
-                Name:
-                <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                />
-                </label>
+        <div className="home-page">
+            <div className="header">
+                <h1>Account Setup</h1>
+                <p>Create a new internal user account</p>
             </div>
-            <div>
-                <label>
-                Surname:
-                <input
-                    type="text"
-                    name="surname"
-                    value={formData.surname}
-                    onChange={handleChange}
-                    required
-                />
-                </label>
+            <div className="main-content">
+                <div className="setup-form-section">
+                    <form onSubmit={handleSubmit} className="setup-form">
+                        <div className="form-group">
+                            <label>Name:</label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Surname:</label>
+                            <input
+                                type="text"
+                                name="surname"
+                                value={formData.surname}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Username:</label>
+                            <input
+                                type="text"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Role:</label>
+                            <input
+                                type="text"
+                                name="role"
+                                value={formData.role}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Email:</label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={formData.email || ""}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <button type="submit" className="submit-btn">Create Account</button>
+                    </form>
+                    
+                    {password && (
+                        <div className="password-display">
+                            <h2>Generated Password</h2>
+                            <div className="password-box">
+                                <code>{password}</code>
+                            </div>
+                            <p className="password-note">Please save this password securely. It will not be shown again.</p>
+                        </div>
+                    )}
+                </div>
             </div>
-            <div>
-                <label>
-                Username:
-                <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                />
-                </label>
-            </div>
-            <div>
-                <label>
-                Role:
-                <input
-                    type="text"
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    required
-                />
-                </label>
-            </div>
-            <div>
-                <label>
-                Email:
-                <input
-                    type="email"
-                    name="email"
-                    value={formData.email || ""}
-                    onChange={handleChange}
-                    required
-                />
-                </label>
-            </div>
-            <button type="submit">Create Account</button>
-            </form>
-            {password && (
-            <div>
-                <h2>Generated Password</h2>
-                <p><span>{password}</span></p>
-            </div>
-            )}
         </div>
     );
 };
