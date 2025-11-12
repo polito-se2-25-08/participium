@@ -1,9 +1,14 @@
 import { Router } from "express";
-import { getAllReports } from "../../controllers/OfficerController";
+import {
+  getAllReports,
+  getReportById,
+  updateReportStatus,
+} from "../../controllers/OfficerController";
 
 const router = Router();
 
 router.get("/v1/reports", getAllReports);
-router.patch("/v1/status");
+router.get("/v1/report/:id", getReportById);
+router.patch("/v1/status:id", updateReportStatus);
 
 export default router;
