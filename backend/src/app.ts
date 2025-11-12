@@ -3,11 +3,12 @@ import express from "express";
 import officerRoutes from "./routes/v1/officer";
 import userRoutes from "./routes/v1/user";
 import {errorHandler} from "./middleware/errorHandler";
-
+import cors from "cors";
 const app = express();
 const host = "localhost";
 const port = 3000;
 
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 
 
