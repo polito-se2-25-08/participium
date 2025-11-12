@@ -56,12 +56,11 @@ export const adminService = {
                   profile_picture: null,
                   email_notification: false,
                 };
-            //const createdUser = await userRepository.createUser(newUser);
+            const createdUser = await userRepository.createUser(newUser);
             
             //give the password to the frontend so that the admin can receive the credentials
-            //createdUser.password = password;
-            newUser.password = password; // Temporarily store plain password to return it
+            createdUser.password = password;
 
-            return newUser;
+            return createdUser;
     }
 }

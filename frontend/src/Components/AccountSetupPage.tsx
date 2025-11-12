@@ -14,7 +14,7 @@ export function AccountSetupPage(){
 
     const [password, setPassword] = useState<string | null>(null);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
@@ -73,13 +73,17 @@ export function AccountSetupPage(){
                         </div>
                         <div className="form-group">
                             <label>Role:</label>
-                            <input
-                                type="text"
+                            <select
                                 name="role"
                                 value={formData.role}
                                 onChange={handleChange}
-                                required
-                            />
+                                required>
+                                <option value="">Select a role...</option>
+                                <option value="ADMIN">Admin</option>
+                                <option value="OFFICER">Officer</option>
+                                <option value="TECHNICIAN">Technician</option>
+                                <option value="CITIZEN">Citizen</option>
+                            </select>
                         </div>
                         <div className="form-group">
                             <label>Email:</label>
