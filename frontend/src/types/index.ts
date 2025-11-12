@@ -32,7 +32,7 @@ export interface User {
   surname: string;
   profile_picture?: string;
   //telegram_username?: string;
-  email_notifications: boolean;
+  email_notification: boolean;
   role: UserRole;
 }
 
