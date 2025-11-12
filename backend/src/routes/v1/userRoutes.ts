@@ -1,4 +1,5 @@
-import express from "express";
+
+/*import express from "express";
 import { registerUser, loginUser, getAllUsers  } from "../../controllers/userController";
 import { protect } from "../../middleware/authMiddleware";
 import {validate} from "../../middleware/validateMiddleware"
@@ -16,3 +17,4 @@ router.get("/profile", protect, (req, res) => {
 });
 
 export default router;
+*/

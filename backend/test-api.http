@@ -46,7 +46,7 @@ Content-Type: application/json
 ###
 
 ### ✅ Login User (Success)
-POST http://localhost:3000/api/users/login HTTP/1.1
+POST http://localhost:3000/api/v1/login HTTP/1.1
 Content-Type: application/json
 
 {
@@ -57,7 +57,7 @@ Content-Type: application/json
 ###
 
 ### ❌ Login User (Wrong Password)
-POST http://localhost:3000/api/users/login HTTP/1.1
+POST http://localhost:3000/api/v1/login HTTP/1.1
 Content-Type: application/json
 
 {
@@ -86,7 +86,7 @@ Content-Type: application/json
 ###
 
 ###  Get All Users (Missing Token)
-GET http://localhost:3000/api/users HTTP/1.1
+GET http://localhost:3000/api/v1/users HTTP/1.1
 
 ###
 
