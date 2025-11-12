@@ -1,11 +1,10 @@
-import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import SearchLocationInput from "./Map/SearchLocationInput";
 import TempMarker from "./Map/TempMarker";
-
-import "leaflet/dist/leaflet.css";
 import type { MarkerI } from "../interface/Marker";
 import { useState } from "react";
 import MapClickHandler from "./Map/MapClickHandler";
+import "leaflet/dist/leaflet.css";
 
 const ZOOM = Number(import.meta.env.VITE_MAP_ZOOM)
 	? Number(import.meta.env.VITE_MAP_ZOOM)

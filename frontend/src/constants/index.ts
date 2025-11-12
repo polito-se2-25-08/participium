@@ -1,0 +1,27 @@
+// Constants for the application
+
+export const REPORT_CATEGORIES = [
+  { value: 'water_supply', label: 'Water Supply - Drinking Water' },
+  { value: 'architectural_barriers', label: 'Architectural Barriers' },
+  { value: 'sewer_system', label: 'Sewer System' },
+  { value: 'public_lighting', label: 'Public Lighting' },
+  { value: 'waste', label: 'Waste' },
+  { value: 'road_signs_traffic_lights', label: 'Road Signs and Traffic Lights' },
+  { value: 'roads_urban_furnishings', label: 'Roads and Urban Furnishings' },
+  { value: 'public_green_areas_playgrounds', label: 'Public Green Areas and Playgrounds' },
+  { value: 'other', label: 'Other' },
+] as const;
+
+export const REPORT_STATUSES = [
+  { value: 'pending_approval', label: 'Pending Approval' },
+  { value: 'assigned', label: 'Assigned' },
+  { value: 'in_progress', label: 'In Progress' },
+  { value: 'suspended', label: 'Suspended' },
+  { value: 'rejected', label: 'Rejected' },
+  { value: 'resolved', label: 'Resolved' },
+] as const;
+
+export const MAX_PHOTOS_PER_REPORT = 3;
+export const MIN_PHOTOS_PER_REPORT = 1;
+
+export const DEFAULT_MAP_ZOOM = 13;
