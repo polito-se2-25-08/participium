@@ -1,16 +1,16 @@
-import express from 'express';
-const app = express();
+import "dotenv/config";
+import express from "express";
+import officerRoutes from "./routes/v1/officer";
 
-const host = 'localhost';
+const app = express();
+const host = "localhost";
 const port = 3000;
 
-app.get('/health', (req, res) => {
-  res.send('OK');
-});
+app.get("/health", (req, res) => res.send("OK"));
+app.use("/api", officerRoutes);
 
 app.listen(port, () => {
-  return console.log(`Express is listening at http://${host}:${port}`);
+	console.log(`Express is listening at http://${host}:${port}`);
 });
-
 
 export default app;
