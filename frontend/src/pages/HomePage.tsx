@@ -1,4 +1,4 @@
-import MapView from '../components/MapView.tsx';
+import { MapWindow } from '../components/mapWindow';
 import './HomePage.css';
 
 const HomePage = () => {
@@ -11,7 +11,7 @@ const HomePage = () => {
       
       <main className="main-content">
         <section className="map-section">
-          <MapView />
+          <MapWindow />
         </section>
       </main>
     </div>
