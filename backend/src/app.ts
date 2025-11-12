@@ -1,18 +1,31 @@
-import express from 'express';
-const app = express();
+import express from "express";
+import userRoutes from "./routes/v1/userRoutes";
+import {errorHandler} from "./middleware/errorHandler";
+import dotenv from "dotenv";
 
-const host = 'localhost';
+
+const app = express();
+dotenv.config();
+
+const host = "localhost";
 const port = 3000;
 
-app.get('/health', (req, res) => {
-  res.send('OK');
+app.use(express.json());
+
+// Health check
+app.get("/health", (req, res) => {
+  res.send("OK");
 });
 
-app.use("/api", )
+// Mount API routes
+app.use("/api/users", userRoutes);
 
+// Global error handler (MUST be last)
+app.use(errorHandler);
+
+//  Start server
 app.listen(port, () => {
-  return console.log(`Express is listening at http://${host}:${port}`);
+  console.log(`Express is listening at http://${host}:${port}`);
 });
-
 
 export default app;

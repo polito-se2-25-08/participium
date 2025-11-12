@@ -1,0 +1,97 @@
+# ============================================
+# USER ROUTES - TEST REQUESTS
+# ============================================
+
+### ✅ Register User (Success)
+POST http://localhost:3000/api/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "Alice@example.com",
+  "username": "Alice",
+  "password": "Secret123!",
+  "name": "Alice",
+  "surname": "Doe"
+}
+
+###
+
+### ❌ Register User (Missing Field)
+# Missing 'surname'
+POST http://localhost:3000/api/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "jane@example.com",
+  "username": "jane123",
+  "password": "Secret123!",
+  "name": "Jane"
+}
+
+###
+
+### ❌ Register User (Weak Password)
+# Should fail due to missing number/special char
+POST http://localhost:3000/api/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "weak@example.com",
+  "username": "weakuser",
+  "password": "password",
+  "name": "Weak",
+  "surname": "User"
+}
+
+###
+
+### ✅ Login User (Success)
+POST http://localhost:3000/api/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "Alice",
+  "password": "Secret123!"
+}
+
+###
+
+### ❌ Login User (Wrong Password)
+POST http://localhost:3000/api/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "johnny",
+  "password": "WrongPass!"
+}
+
+###
+
+### ❌ Login User (Nonexistent Username)
+POST http://localhost:3000/api/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "idontexist",
+  "password": "Secret123!"
+}
+
+###
+
+### ✅ Get All Users (Admin Protected)
+# Replace {{token}} with a valid admin JWT
+#GET http://localhost:3000/api/admin/users HTTP/1.1
+#Authorization: Bearer {{token}}
+
+###
+
+###  Get All Users (Missing Token)
+GET http://localhost:3000/api/users HTTP/1.1
+
+###
+
+### ❌ Get All Users (Invalid Token)
+GET http://localhost:3000/api/admin/users HTTP/1.1
+Authorization: Bearer invalid_token_here
+
+###
