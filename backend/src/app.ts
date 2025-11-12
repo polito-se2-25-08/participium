@@ -1,18 +1,12 @@
-import express from 'express';
-import cors from 'cors';
-import { errorHandler } from './middleware/errorHandler';
+import express from "express";
+import userRoutes from "./routes/v1/userRoutes";
+import {errorHandler} from "./middleware/errorHandler";
+import dotenv from "dotenv";
+
+
 
 const app = express();
-
-const host = 'localhost';
-const port = 3000;
-
-//////////
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+dotenv.config();
 // DEBUG: Log everything about the request
 app.use((req, res, next) => {
 	console.log("=== INCOMING REQUEST ===");
@@ -24,18 +18,25 @@ app.use((req, res, next) => {
 	console.log("========================");
 	next();
 }); /////////////////
+const host = "localhost";
+const port = 3000;
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+app.use(express.json());
+
+// Health check
+app.get("/health", (req, res) => {
+  res.send("OK");
 });
 
-//app.post('/')
+// Mount API routes
+app.use("/api/users", userRoutes);
 
-app.listen(port, () => {
-  return console.log(`Express is listening at http://${host}:${port}`);
-});
-
-// Error handling (must be last)
+// Global error handler (MUST be last)
 app.use(errorHandler);
+
+//  Start server
+app.listen(port, () => {
+  console.log(`Express is listening at http://${host}:${port}`);
+});
 
 export default app;
