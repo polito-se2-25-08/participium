@@ -8,6 +8,6 @@ const SUPABASE_URL: string = process.env.SUPABASE_URL;
 const SUPABASE_KEY: string = process.env.SUPABASE_KEY;
 
 export const supabase: SupabaseClient = createClient<Database>(
-	SUPABASE_URL,
-	SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );

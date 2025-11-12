@@ -2,7 +2,26 @@ import { Report } from "../models/Report";
 import { supabase } from "../utils/Supabase";
 
 export const getAllReports = async (): Promise<Report[]> => {
-	const { data, error } = await supabase.from("report").select("*");
-	if (error) throw error;
-	return data;
+  const { data, error } = await supabase.from("Report").select("*");
+  if (error) throw error;
+  return data;
+};
+
+export const getReportById = async (id: number): Promise<Report> => {
+  const { data, error } = await supabase
+    .from("Report")
+    .select("*")
+    .eq("id", id);
+  if (error) throw error;
+  return data[0];
+};
+
+export const updateReportStatus = async (id: number, status: string) => {
+  const { data, error } = await supabase
+    .from("Report")
+    .update({ status })
+    .eq("id", id);
+  if (error) throw error;
+  if (!data) return null;
+  return data[0];
 };
