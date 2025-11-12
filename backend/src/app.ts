@@ -10,7 +10,7 @@ app.get("/health", (req, res) => res.send("OK"));
 app.use("/api", officerRoutes);
 
 app.listen(port, () => {
-  console.log(`Express is listening at http://${host}:${port}`);
+	console.log(`Express is listening at http://${host}:${port}`);
 });
 
 export default app;
