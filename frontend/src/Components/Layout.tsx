@@ -57,6 +57,12 @@ export function Layout({ children }: LayoutProps) {
 					>
 						Report
 					</Link>
+					<Link
+						to="/dashboard"
+						style={{ color: "white", textDecoration: "none" }}
+					>
+						Dashboard
+					</Link>
 				</nav>
 			</header>
 

@@ -37,7 +37,19 @@
   padding: 2rem 1.5rem;
 }
 
-.map-section,
+.map-section {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 0;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0e8dc;
+  overflow: hidden;
+  height: 600px;
+  width: 100%;
+  position: relative;
+}
+
 .reports-section,
 .statistics-section {
   background-color: #ffffff;
