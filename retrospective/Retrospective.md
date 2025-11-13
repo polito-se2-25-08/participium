@@ -1,4 +1,4 @@
-TEMPLATE FOR RETROSPECTIVE (Team ##)
+TEMPLATE FOR RETROSPECTIVE (Team 08)
 =====================================
 
 The retrospective should include _at least_ the following
@@ -45,26 +45,26 @@ sections:
 
 - Hours per task average, standard deviation (estimate and actual)
 
-|            | Mean | StDev |
-|------------|------|-------|
-| Estimation |      |       | 
-| Actual     |      |       |
+|            | Mean  | StDev |
+|------------|-------|-------|
+| Estimation | 4.17h | 8.17h |
+| Actual     | 1.82h | 3.34h |
 
 - Total estimation error ratio: sum of total hours spent / sum of total hours effort - 1
 
-    $$\frac{\sum_i spent_{task_i}}{\sum_i estimation_{task_i}} - 1$$
+    $$\frac{\sum_i spent_{task_i}}{\sum_i estimation_{task_i}} - 1$$ = -0.5686
     
 - Absolute relative task estimation error: sum( abs( spent-task-i / estimation-task-i - 1))/n
 
-    $$\frac{1}{n}\sum_i^n \left| \frac{spent_{task_i}}{estimation_task_i}-1 \right| $$
+    $$\frac{1}{n}\sum_i^n \left| \frac{spent_{task_i}}{estimation_task_i}-1 \right| $$ = 0.5126
   
 ## QUALITY MEASURES 
 
 - Unit Testing:
-  - Total hours estimated
-  - Total hours spent
-  - Nr of automated unit test cases 
-  - Coverage
+  - Total hours estimated = 11h
+  - Total hours spent = 1h10m
+  - Nr of automated unit test cases = 24
+  - Coverage = 15%
 - E2E testing:
   - Total hours estimated
   - Total hours spent
@@ -78,17 +78,24 @@ sections:
 ## ASSESSMENT
 
 - What did go wrong in the sprint?
+  - We failed to complete story number 3 even if it we completed 4 and 5. We have had some misalignments on the code so the UI was not totally coherent.  We also weren't able to focus much on testing. These problems were caused by the fact that we wanted to complete several stories and also that some of them had some dependencies.
 
 - What caused your errors in estimation (if any)?
+  - The amount of work required for the setup and for coordination.
 
 - What lessons did you learn (both positive and negative) in this sprint?
+  - We can put our focus on less stories if needed, and try to have a stricter collaboration.
 
 - Which improvement goals set in the previous retrospective were you able to achieve? 
-  
+  - We defined a productive working strategy, and divided the task basing on team members knowledge gap.
+
 - Which ones you were not able to achieve? Why?
+  - Comunication was not totally perfect. Could be because the team is still at one of the first sprints so it has improvement margin.
 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
 
   > Propose one or two
+  - Team coordination is the number 1 priority, and second one is focusing on quality.
 
 - One thing you are proud of as a Team!!
+  - We got compliments from stakeholders for the quality of our work.
