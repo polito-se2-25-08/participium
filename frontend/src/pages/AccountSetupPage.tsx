@@ -34,10 +34,6 @@ export function AccountSetupPage(){
 
     return (
         <div className="home-page">
-            <div className="header">
-                <h1>Account Setup</h1>
-                <p>Create a new internal user account</p>
-            </div>
             <div className="main-content">
                 <div className="setup-form-section">
                     <form onSubmit={handleSubmit} className="setup-form">
@@ -88,7 +84,7 @@ export function AccountSetupPage(){
                             <input
                                 type="email"
                                 name="email"
-                                value={formData.email || ""}
+                                value={formData.email}
                                 onChange={handleChange}
                                 required
                             />
