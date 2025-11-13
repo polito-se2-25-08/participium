@@ -6,6 +6,6 @@ import { setupUser } from "../../controllers/adminController";
 const router = express.Router();
 
 //need to add control if account is admin
-router.post("/register", validate(setupSchema), setupUser);
+router.post("/v1/admin/register", validate(setupSchema), setupUser);
 
 export default router;

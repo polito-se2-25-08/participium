@@ -15,7 +15,7 @@ export async function CheckServer() {
 
 export async function setupUser(setupUser: setupUserI): Promise<string>
 {
-	const response = await fetch(URI + "/api/admin/register", {
+	const response = await fetch(URI + "/api/v1/admin/register", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
