@@ -34,6 +34,19 @@
   transition: background-color 0.25s ease;
 }
 
+.setup-button {
+  margin-top: 1.5em;
+  display: block;
+  width: 100%;
+  padding: 0.7em 1.2em;
+  background: rgb(66, 235, 0);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
 .logout-button:hover {
   background: #900;
 }

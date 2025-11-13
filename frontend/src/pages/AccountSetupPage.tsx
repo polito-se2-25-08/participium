@@ -79,10 +79,8 @@ export function AccountSetupPage(){
                                 onChange={handleChange}
                                 required>
                                 <option value="">Select a role...</option>
-                                <option value="ADMIN">Admin</option>
                                 <option value="OFFICER">Officer</option>
                                 <option value="TECHNICIAN">Technician</option>
-                                <option value="CITIZEN">Citizen</option>
                             </select>
                         </div>
                         <div className="form-group">
