@@ -17,6 +17,14 @@ export const registerSchema = z.object({
 	surname: z.string().min(1, "Surname is required"),
 });
 
+export const setupSchema = z.object({
+  email: z.string().email(),
+  username: z.string().min(4, "Username must be at least 4 characters"),
+  role: z.string().min(1, "Role is required"),
+  name: z.string().min(1, "Name is required"),
+  surname: z.string().min(1, "Surname is required"),
+});
+
 export const loginSchema = z.object({
 	username: z.string().min(3, "Username is required"),
 	password: z.string().min(1, "Password is required"),
