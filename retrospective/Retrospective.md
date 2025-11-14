@@ -29,7 +29,7 @@ sections:
 
 | Story                                                          | # Tasks | Points | Hours est. | Hours actual |
 |----------------------------------------------------------------|---------|--------|------------|--------------|
-| _Uncategorized_                                                | 9       | 0      | 1w3d5h30m  | 4d5h         |
+| _Uncategorized_                                                | 9       | 0      |   1w5h30m  | 4d5h         |
 | Register A New Citizen                                         | 6       | 3      | 8h         | 8h20m        |
 | Admin setting up users                                         | 5       | 3      | 7h         | 4h           |
 | Admin assign roles                                             | 6       | 2      | 6h30m      | 0            |
@@ -44,19 +44,21 @@ sections:
 > story `Uncategorized` is for technical tasks, leave out story points (not applicable in this case)
 
 - Hours per task average, standard deviation (estimate and actual)
+## Hours per task (average & standard deviation)
 
-|            | Mean  | StDev |
-|------------|-------|-------|
-| Estimation | 4.17h | 8.17h |
-| Actual     | 1.82h | 3.34h |
+|            | Mean | StDev|
+|------------|----------------|----------------|
+| **Estimation** | 3.28h | 6.00h |
+| **Actual**     | 1.82h | 3.54h |
 
 - Total estimation error ratio: sum of total hours spent / sum of total hours effort - 1
 
-    $$\frac{\sum_i spent_{task_i}}{\sum_i estimation_{task_i}} - 1$$ = -0.5686
+    $$\frac{\sum_i spent_{task_i}}{\sum_i estimation_{task_i}} - 1$$ = -0.43384 
     
 - Absolute relative task estimation error: sum( abs( spent-task-i / estimation-task-i - 1))/n
 
-    $$\frac{1}{n}\sum_i^n \left| \frac{spent_{task_i}}{estimation_task_i}-1 \right| $$ = 0.5126
+    $$\frac{1}{n}\sum_i^n \left| \frac{spent_{task_i}}{estimation_task_i}-1 \right| $$ = 0.49359
+
   
 ## QUALITY MEASURES 
 
