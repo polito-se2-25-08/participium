@@ -66,12 +66,12 @@ sections:
   - Nr of automated unit test cases = 24
   - Coverage = 15%
 - E2E testing:
-  - Total hours estimated
-  - Total hours spent
-  - Nr of test cases
+  - Total hours estimated = 11h
+  - Total hours spent = 1h10m
+  - Nr of test cases = 11
 - Code review 
-  - Total hours estimated 
-  - Total hours spent
+  - Total hours estimated = 0h
+  - Total hours spent = 4h
   
 
 
