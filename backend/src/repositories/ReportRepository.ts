@@ -1,8 +1,23 @@
 import { Report } from "../models/Report";
 import { supabase } from "../utils/Supabase";
 
+export const createReport = async (reportData: Partial<Report>): Promise<Report> => {
+  const { data, error } = await supabase
+    .from("Report")
+    .insert([reportData])
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return data;
+};
+
 export const getAllReports = async (): Promise<Report[]> => {
-  const { data, error } = await supabase.from("Report").select("*");
+  const { data, error } = await supabase
+    .from("Report")
+    .select("*")
+    .order("timestamp", { ascending: false });
+  
   if (error) throw error;
   return data;
 };
