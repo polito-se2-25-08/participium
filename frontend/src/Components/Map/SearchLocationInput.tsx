@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import { fetchCoordinates } from "../../action/MapAction";
 import L from "leaflet";
-import type { MarkerI } from "../../interface/Marker";
+import type { MarkerI } from "../../interfaces/components/Marker";
 
 const ZOOM = import.meta.env.VITE_MAP_ZOOM;
 

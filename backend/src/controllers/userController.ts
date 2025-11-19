@@ -13,7 +13,7 @@ export const registerUser = catchAsync(async (req: Request, res: Response) => {
 	});
 
 	res.status(201).json({
-		status: "success",
+		success: true,
 		data: {
 			id: user.id,
 			email: user.email,
@@ -27,13 +27,17 @@ export const loginUser = catchAsync(async (req: Request, res: Response) => {
 	const { user, token } = await userService.loginUser(username, password);
 
 	res.status(200).json({
-		status: "success",
-		token,
+		success: true,
 		data: {
-			id: user.id,
-			email: user.email,
-			username: user.username,
-			role: user.role,
+			user: {
+				id: user.id,
+				name: user.name,
+				surname: user.surname,
+				email: user.email,
+				username: user.username,
+				role: user.role,
+			},
+			token: token,
 		},
 	});
 });
@@ -42,7 +46,7 @@ export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 	const users = await userService.getAllUsers();
 
 	res.status(200).json({
-		status: "success",
+		success: true,
 		results: users.length,
 		data: users,
 	});

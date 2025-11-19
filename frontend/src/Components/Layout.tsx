@@ -1,82 +1,15 @@
-import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Header from "./header/Header";
+import ContentContainer from "./containers/ContentContainer";
 
-interface LayoutProps {
-	children: ReactNode;
-}
-
-export function Layout({ children }: LayoutProps) {
+export function Layout() {
 	return (
-		<div
-			style={{
-				fontFamily: "sans-serif",
-				display: "flex",
-				flexDirection: "column",
-				minHeight: "100vh",
-			}}
-		>
-			<header
-				style={{
-					background: "#222",
-					color: "white",
-					padding: "1em",
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "center",
-				}}
-			>
-				<h2>Participium</h2>
-				<nav style={{ display: "flex", gap: "1em" }}>
-					<Link
-						to="/"
-						style={{ color: "white", textDecoration: "none" }}
-					>
-						Home
-					</Link>
-					<Link
-						to="/login"
-						style={{ color: "white", textDecoration: "none" }}
-					>
-						Login
-					</Link>
-					<Link
-						to="/register"
-						style={{ color: "white", textDecoration: "none" }}
-					>
-						Register
-					</Link>
-					<Link
-						to="/profile"
-						style={{ color: "white", textDecoration: "none" }}
-					>
-						Profile
-					</Link>
-					<Link
-						to="/report"
-						style={{ color: "white", textDecoration: "none" }}
-					>
-						Report
-					</Link>
-					<Link
-						to="/dashboard"
-						style={{ color: "white", textDecoration: "none" }}
-					>
-						Dashboard
-					</Link>
-				</nav>
-			</header>
-
-			<main
-				style={{
-					flex: 1,
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "flex-start", // Changed from "center" to "flex-start"
-					backgroundColor: "#f7f9fb",
-					padding: "2em",
-				}}
-			>
-				{children}
+		<div className="flex flex-col min-h-screen">
+			<Header />
+			<main className="flex flex-col flex-1">
+				<ContentContainer>
+					<Outlet />
+				</ContentContainer>
 			</main>
 		</div>
 	);
