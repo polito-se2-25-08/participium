@@ -10,6 +10,7 @@ interface inputProps {
 	pending?: boolean;
 	disabled?: boolean;
 	value?: string;
+	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 export default function Input({
 	placeholder,
@@ -22,7 +23,7 @@ export default function Input({
 	showError = false,
 	pending = false,
 	disabled = false,
-	value = "",
+	value,
 }: inputProps) {
 	return (
 		<div className={`${pending && "opacity-50 "}`}>
@@ -41,7 +42,7 @@ export default function Input({
 				name={name}
 				autoComplete="off"
 				disabled={pending || disabled}
-				value={value}
+				{...(value !== undefined ? { value } : {})}
 			/>
 
 			{showError && (
