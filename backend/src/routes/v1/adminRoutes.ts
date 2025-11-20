@@ -1,11 +1,26 @@
 import express from "express";
-import {validate} from "../../middleware/validateMiddleware"
-import {setupSchema} from "../../validators/userValidators"
+import { validate } from "../../middleware/validateMiddleware";
+import { setupSchema, assignRoleSchema } from "../../validators/userValidators";
 import { setupUser } from "../../controllers/adminController";
+import { getAllUsers, getUserById, assignRole } from "../../controllers/userController";
+import { protect, restrictTo } from "../../middleware/authMiddleware";
 
 const router = express.Router();
 
-//need to add control if account is admin
+// All routes require authentication and ADMIN role
+router.use(protect);
+router.use(restrictTo("ADMIN"));
+
+// User creation by admin (existing functionality)
 router.post("/v1/admin/register", validate(setupSchema), setupUser);
+
+// List all users with their roles
+router.get("/v1/admin/users", getAllUsers);
+
+// Get a single user by ID
+router.get("/v1/admin/users/:id", getUserById);
+
+// Assign or update a user's role
+router.put("/v1/admin/users/:id/role", validate(assignRoleSchema), assignRole);
 
 export default router;

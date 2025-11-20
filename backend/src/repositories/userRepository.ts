@@ -1,5 +1,6 @@
 import { supabase } from "../utils/Supabase";
 import type { Tables, TablesInsert } from "../utils/DatabaseSchema";
+import type { DbRole } from "../utils/roleMapper";
 
 type UserRow = Tables<"User">;
 
@@ -14,6 +15,17 @@ export const userRepository = {
 			.maybeSingle();
 
 		console.log({ data, error });
+
+		if (error) throw error;
+		return data;
+	},
+
+	async findById(userId: number): Promise<UserRow | null> {
+		const { data, error } = await supabase
+			.from("User")
+			.select("*")
+			.eq("id", userId)
+			.maybeSingle();
 
 		if (error) throw error;
 		return data;
@@ -35,5 +47,17 @@ export const userRepository = {
 		console.log(data);
 		if (error) throw error;
 		return data!;
+	},
+
+	async updateUserRole(userId: number, role: DbRole): Promise<UserRow> {
+		const { data, error } = await supabase
+			.from("User")
+			.update({ role })
+			.eq("id", userId)
+			.select()
+			.single();
+
+		if (error) throw error;
+		return data;
 	},
 };

@@ -3,6 +3,7 @@ import { userRepository } from "../repositories/userRepository";
 import AppError from "../utils/AppError";
 import { TablesInsert } from "../utils/DatabaseSchema";
 import { signToken } from "../utils/jwt";
+import { normalizeRole, type DbRole } from "../utils/roleMapper";
 
 export const userService = {
   async registerUser(data: {
@@ -49,7 +50,36 @@ export const userService = {
   },
 
   async getAllUsers() {
-  return await userRepository.getAllUsers();
-}
+    return await userRepository.getAllUsers();
+  },
 
+  async getUserById(userId: number) {
+    const user = await userRepository.findById(userId);
+    if (!user) throw new AppError("User not found", 404);
+    return user;
+  },
+
+  /**
+   * Assigns or updates a user's role
+   * @param userId - ID of the user to update
+   * @param roleInput - Role value (CITIZEN, ADMIN, OFFICER, TECHNICIAN)
+   */
+  async updateUserRole(userId: number, roleInput: string) {
+    const user = await userRepository.findById(userId);
+    if (!user) throw new AppError("User not found", 404);
+
+    // Normalize and validate the role
+    let dbRole: DbRole;
+    try {
+      dbRole = normalizeRole(roleInput);
+    } catch (error) {
+      throw new AppError(
+        `Invalid role: ${roleInput}. Valid roles are: CITIZEN, ADMIN, OFFICER, TECHNICIAN`,
+        400
+      );
+    }
+
+    const updatedUser = await userRepository.updateUserRole(userId, dbRole);
+    return updatedUser;
+  },
 };

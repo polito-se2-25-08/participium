@@ -1,0 +1,34 @@
+### Authentication API Testing
+### Testing user registration, login, and JWT token retrieval
+
+# Variables
+@baseUrl = http://localhost:3000/api
+@username = roles_test_user
+@password = TestPass123!
+@email = roles_test_user@studenti.polito.it
+
+###############################################
+# 1. Register a New User (Citizen as default)
+###############################################
+POST {{baseUrl}}/v1/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "username": "{{username}}",
+  "password": "{{password}}",
+  "name": "Test",
+  "surname": "User"
+}
+
+###############################################
+# 2. Login and Get JWT Token
+###############################################
+# @name login
+POST {{baseUrl}}/v1/login
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}

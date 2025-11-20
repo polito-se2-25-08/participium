@@ -1,0 +1,63 @@
+### Role Assignment API Testing
+### All endpoints require ADMIN authentication
+### ADMIN role is manually put for now in the database for testing purposes
+
+# Variables
+@baseUrl = http://localhost:3000/api
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzY2MDU0NiwiZXhwIjoxNzYzNjY0MTQ2fQ.XAYdy4bFKsz65FUpUd8CTYHV1U_YGvy9Tn7qtxyTT0M
+
+###############################################
+# 1. List All Users (with their roles)
+###############################################
+GET {{baseUrl}}/v1/admin/users
+Authorization: Bearer {{adminToken}}
+
+###############################################
+# 2. Get a Single User by ID
+###############################################
+GET {{baseUrl}}/v1/admin/users/1
+Authorization: Bearer {{adminToken}}
+
+###############################################
+# 3. Assign Role - OFFICER
+###############################################
+PUT {{baseUrl}}/v1/admin/users/3/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "role": "OFFICER"
+}
+
+###############################################
+# 4. Assign Role - TECHNICIAN
+###############################################
+PUT {{baseUrl}}/v1/admin/users/4/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "role": "TECHNICIAN"
+}
+
+###############################################
+# 5. Assign Role - CITIZEN (default role)
+###############################################
+PUT {{baseUrl}}/v1/admin/users/5/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "role": "CITIZEN"
+}
+
+###############################################
+# 6. Error Case - Invalid Role
+###############################################
+PUT {{baseUrl}}/v1/admin/users/1/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "role": "INVALID_ROLE"
+}

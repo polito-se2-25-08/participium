@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidRole } from "../utils/roleMapper";
 
 export const registerSchema = z.object({
 	email: z.string().email(),
@@ -28,4 +29,14 @@ export const setupSchema = z.object({
 export const loginSchema = z.object({
 	username: z.string().min(3, "Username is required"),
 	password: z.string().min(1, "Password is required"),
+});
+
+// Schema for assigning/updating a user's role
+export const assignRoleSchema = z.object({
+  role: z
+    .string()
+    .min(1, "Role is required")
+    .refine(isValidRole, {
+      message: "Invalid role. Must be one of: CITIZEN, ADMIN, OFFICER, TECHNICIAN",
+    }),
 });
