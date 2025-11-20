@@ -103,7 +103,7 @@ export function RegisterPage() {
         Hi! Welcome to Participium! We hope you will have a good time here.
         Please fill out the form below to register.
       </p>
-      <Form gap={4} onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit}>
         <TextInput
           placeholder="Place your username here..."
           hasLabel
