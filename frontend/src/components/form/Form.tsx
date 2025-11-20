@@ -26,7 +26,7 @@ export default function Form({
   marginTop = "",
   marginLeft = "",
   marginRight = "",
-  width = "w-full"
+  width = "w-full",
 }: FormProps) {
   const classes = [
     "flex flex-col",
@@ -37,9 +37,9 @@ export default function Form({
     marginTop,
     marginLeft,
     marginRight,
-    width
+    width,
   ]
-    .filter(Boolean) // rimuove stringhe vuote
+    .filter(Boolean)
     .join(" ");
 
   return (
