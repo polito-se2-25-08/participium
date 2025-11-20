@@ -1,4 +1,4 @@
-import type { setupUserI } from "../interface/setupUser";
+import type { setupUserI } from "../interfaces/components/setupUser";
 
 const URI = import.meta.env.VITE_API_URL;
 
@@ -13,8 +13,7 @@ export async function CheckServer() {
 	}
 }
 
-export async function setupUser(setupUser: setupUserI): Promise<string>
-{
+export async function setupUser(setupUser: setupUserI): Promise<string> {
 	const response = await fetch(URI + "/api/v1/admin/register", {
 		method: "POST",
 		headers: {
