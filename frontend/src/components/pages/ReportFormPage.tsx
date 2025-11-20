@@ -1,4 +1,11 @@
-import { useState, type FormEvent } from "react";
+import {
+  startTransition,
+  use,
+  useActionState,
+  useEffect,
+  useState,
+  type FormEvent,
+} from "react";
 
 import Form from "../form/Form";
 import PageTitle from "../titles/PageTitle";
@@ -10,11 +17,93 @@ import ReportCardContainer from "../containers/ReportCardContainer";
 import Select from "../selects/Select";
 import TextArea from "../textarea/TextArea";
 import PrimaryButton from "../buttons/variants/primary/PrimaryButton";
+import {
+  MAX_PHOTOS_PER_REPORT,
+  MIN_PHOTOS_PER_REPORT,
+  REPORT_CATEGORIES,
+} from "../../constants";
+import { submitReport } from "../../action/reportAction";
 
 export default function ReportFormPage() {
   const [selectedAdress, setSelectedAddress] = useState<string>("");
+
+  const [addressError, setAddressError] = useState<boolean>(false);
+  const [categoryError, setCategoryError] = useState<boolean>(false);
+  const [titleError, setTitleError] = useState<boolean>(false);
+  const [descriptionError, setDescriptionError] = useState<boolean>(false);
+  const [photoError, setPhotoError] = useState<boolean>(false);
+  const [photos, setPhotos] = useState<File[]>([]);
+
+  const [state, formAction, isPending] = useActionState(submitReport, null);
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const categoryValue = formData.get("category")?.toString() ?? "";
+    const titleValue = formData.get("title")?.toString() ?? "";
+    const descriptionValue = formData.get("description")?.toString() ?? "";
+
+    const addressHasError = selectedAdress === "";
+    const categoryHasError = categoryValue === "";
+    const titleHasError = titleValue === "";
+    const descriptionHasError = descriptionValue === "";
+
+    if (
+      photos.length < MIN_PHOTOS_PER_REPORT ||
+      photos.length > MAX_PHOTOS_PER_REPORT
+    ) {
+      setPhotoError(true);
+    }
+
+    setAddressError(addressHasError);
+    setCategoryError(categoryHasError);
+    setTitleError(titleHasError);
+    setDescriptionError(descriptionHasError);
+
+    if (
+      addressHasError ||
+      categoryHasError ||
+      titleHasError ||
+      descriptionHasError ||
+      photoError
+    )
+      return;
+
+    photos.forEach((file,) => {
+      formData.append("photos", file);
+    });
+
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setAddressError(false);
+      setCategoryError(false);
+      setDescriptionError(false);
+      setTitleError(false);
+      setPhotoError(false);
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [addressError, categoryError, descriptionError, titleError]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+
+    const newFiles = Array.from(e.target.files);
+
+    const combinedFiles = [...photos, ...newFiles];
+
+    if (combinedFiles.length > MAX_PHOTOS_PER_REPORT) {
+      return;
+    }
+
+    setPhotos(combinedFiles);
   };
 
   return (
@@ -33,8 +122,9 @@ export default function ReportFormPage() {
             label="Address"
             placeholder="Click the map below to select a location..."
             disabled
-            value={selectedAdress}
             required
+            value={selectedAdress}
+            showError={addressError}
           />
 
           <p className="opacity-50">
@@ -54,18 +144,6 @@ export default function ReportFormPage() {
             Please provide all relevant information about the issue
           </p>
 
-          <Select
-            id="category"
-            name="category"
-            value={"0"}
-            className=""
-            onChange={() => {}}
-            hasLabel
-            label="Category"
-            placeholder="Select a category"
-            required
-          />
-
           <Input
             name="title"
             type="text"
@@ -73,97 +151,70 @@ export default function ReportFormPage() {
             hasLabel
             label="Title"
             placeholder="Enter a title"
-            value={""}
             required
+            showError={titleError}
+          />
+
+          <Select
+            id="category"
+            name="category"
+            className=""
+            hasLabel
+            label="Category"
+            placeholder="Select a category"
+            required
+            options={REPORT_CATEGORIES}
+            showError={categoryError}
           />
 
           <TextArea
-            value={""}
-            onChange={() => {}}
+            id="description"
+            name="description"
             hasLabel
             label="Description"
             placeholder="Provide a detailed description of the issue (max 2000 characters)"
             required
+            showError={descriptionError}
           />
         </ReportCardContainer>
 
-        {/*
-				<section className="form-section">
-					<h3>Photos</h3>
-					<p className="field-hint">
-						Upload at least {MIN_PHOTOS_PER_REPORT} photo, maximum{" "}
-						{MAX_PHOTOS_PER_REPORT} photos
-					</p>
+        <ReportCardContainer>
+          <SubTitle>Photos</SubTitle>
+          <p className="opacity-50">
+            Upload at least {MIN_PHOTOS_PER_REPORT} photo, maximum{" "}
+            {MAX_PHOTOS_PER_REPORT} photos
+          </p>
 
-					<div className="photo-upload-area">
-						<input
-							type="file"
-							id="photo-upload"
-							accept="image/*"
-							multiple
-							onChange={handlePhotoUpload}
-							style={{ display: "none" }}
-						/>
-						<label htmlFor="photo-upload" className="upload-button">
-							Add Photos
-						</label>
-						{errors.photos && (
-							<span className="error-message">
-								{errors.photos}
-							</span>
-						)}
-					</div>
+          <Input
+            name="report_photos"
+            type="file"
+            id="photo-upload"
+            accept="image/*"
+            multiple
+            hasLabel
+            label="Photos"
+            placeholder="Upload photos"
+            required
+            showError={photoError}
+            onChange={handleFileChange}
+          />
 
-					{formData.photos.length > 0 ? (
-						<div className="photo-preview-grid">
-							{formData.photos.map((file, index) => (
-								<div key={index} className="photo-preview">
-									<img
-										src={URL.createObjectURL(file)}
-										alt={`Preview ${index + 1}`}
-									/>
-									<button
-										type="button"
-										className="remove-photo"
-										onClick={() => removePhoto(index)}
-									>
-										✕
-									</button>
-								</div>
-							))}
-						</div>
-					) : (
-						<div className="no-photos">
-							<p>No photos added yet</p>
-						</div>
-					)}
-				</section>
+          {photos.length > 0 ? (
+            <div className="flex gap-2">
+              {photos.map((photo, index) => (
+                <img
+                  key={photo.name}
+                  src={URL.createObjectURL(photo)}
+                  alt={photo.name}
+                  className="w-32 h-32 object-cover"
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="opacity-50">No photos uploaded yet</p>
+          )}
+        </ReportCardContainer>
 
-				<section className="form-section">
-					<h3>Privacy Options</h3>
-
-					<div className="checkbox-group">
-						<label className="checkbox-label">
-							<input
-								type="checkbox"
-								checked={formData.anonymous}
-								onChange={handleCheckboxChange}
-							/>
-							<span>Submit this report anonymously</span>
-						</label>
-						<p className="field-hint">
-							If checked, your name will not be visible in the
-							public report list
-						</p>
-					</div>
-				</section>
-
-				<div className="form-actions">
-					<button type="submit" className="submit-button">
-						Submit Report
-					</button>
-				</div>
-				*/}
         <PrimaryButton type="submit">Submit Report</PrimaryButton>
       </Form>
     </div>

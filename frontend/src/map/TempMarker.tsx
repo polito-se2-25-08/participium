@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { MarkerI } from "../interfaces/components/Marker";
 import { Marker, Popup } from "react-leaflet";
-import { fetchAddressByCoordinates } from "../action/MapAction";
 import type { LeafletMouseEvent } from "leaflet";
+import { fetchAddressByCoordinates } from "../action/MapAction";
 
 interface TempMarkerProps {
   tempMarker: MarkerI | null;
@@ -21,7 +21,6 @@ export default function TempMarker({
 
     setTempMarker((prev) => (prev ? { ...prev, adress: address } : prev));
     setIsLoading(false);
-    console.log(address);
   };
 
   return tempMarker === null ? null : (
