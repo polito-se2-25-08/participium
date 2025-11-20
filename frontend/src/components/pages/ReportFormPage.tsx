@@ -5,7 +5,7 @@ import PageTitle from "../titles/PageTitle";
 import SubTitle from "../titles/SubTitle";
 import Input from "../input/Input";
 
-import { MapWindow } from "../tempMap/MapWindow";
+import { MapWindow } from "../../map/MapWindow";
 import ReportCardContainer from "../containers/ReportCardContainer";
 import Select from "../selects/Select";
 import TextArea from "../textarea/TextArea";

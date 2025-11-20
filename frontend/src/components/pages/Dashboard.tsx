@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import PageTitle from "../titles/PageTitle";
 import PrimaryButton from "../buttons/variants/primary/PrimaryButton";
-import { MapWindow } from "../tempMap/MapWindow";
+import { MapWindow } from "../../map/MapWindow";
 
 export default function Dashboard() {
   const navigate = useNavigate();

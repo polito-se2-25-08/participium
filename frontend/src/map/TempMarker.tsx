@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { MarkerI } from "../../interfaces/components/Marker";
+import type { MarkerI } from "../interfaces/components/Marker";
 import { Marker, Popup } from "react-leaflet";
-import { fetchAddressByCoordinates } from "../../action/MapAction";
+import { fetchAddressByCoordinates } from "../action/MapAction";
 import type { LeafletMouseEvent } from "leaflet";
 
 interface TempMarkerProps {
