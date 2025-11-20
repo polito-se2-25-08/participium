@@ -1,7 +1,7 @@
 import type { RegisterResponse } from "../interfaces/dto/register/RegisterResponse";
 import type { ApiResponse } from "../interfaces/dto/Response";
 
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 export const registerAction = async (
 	_: unknown,
@@ -14,7 +14,7 @@ export const registerAction = async (
 	const email = formData.get("email") as string;
 
 	try {
-		const res = await fetch(`${API_ENDPOINT}/register`, {
+		const res = await fetch(`${API_ENDPOINT}/v1/register`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({

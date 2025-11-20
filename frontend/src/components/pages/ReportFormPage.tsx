@@ -1,11 +1,11 @@
 import {
   startTransition,
-  use,
   useActionState,
   useEffect,
   useState,
   type FormEvent,
 } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Form from "../form/Form";
 import PageTitle from "../titles/PageTitle";
@@ -28,6 +28,7 @@ import CheckInput from "../input/variants/CheckInput";
 import FileInput from "../input/variants/FileInput";
 
 export default function ReportFormPage() {
+  const navigate = useNavigate();
   const [selectedAdress, setSelectedAddress] = useState<string>("");
   const [location, setLocation] = useState<[number, number] | null>(null);
 
@@ -94,12 +95,22 @@ export default function ReportFormPage() {
     if (state === null) {
       return;
     }
+    
     if (state.success) {
+      alert("Report submitted successfully!");
       setSelectedAddress("");
       setLocation(null);
       setPhotos([]);
+      // Redirect to dashboard after successful submission
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
+    } else {
+      // Show error message if submission failed
+      const errorMessage = (state.data as any)?.message || "Failed to submit report. Please try again.";
+      alert(`Error: ${errorMessage}`);
     }
-  }, [state]);
+  }, [state, navigate]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {

@@ -27,12 +27,12 @@ app.use("/api", adminRoutes);
 app.use("/api", reportRoutes);
 app.use("/api/categories", categoryRoutes);
 
+// Global error handler (MUST be last middleware)
+app.use(errorHandler);
+
 // Start server
 app.listen(port, () => {
 	console.log(`Express is listening at http://${host}:${port}`);
 });
-
-// Global error handler (MUST be last)
-app.use(errorHandler);
 
 export default app;

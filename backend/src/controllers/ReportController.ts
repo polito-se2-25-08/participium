@@ -8,32 +8,20 @@ export const createReport = async (req: Request, res: Response) => {
   try {
     const reportData: CreateReportDTO = req.body;
     
-    // Validate required fields
-    if (!reportData.title || !reportData.description || !reportData.category || 
-        !reportData.latitude || !reportData.longitude || !reportData.address) {
-      const response: ApiResponse<string> = {
-        status: false,
-        data: "Missing required fields"
-      };
-      return res.status(400).json(response);
-    }
-
     // Convert category name to ID
     const category_id = getCategoryId(reportData.category);
     
-    // The protect middleware attaches decoded JWT payload to req.user
+    // Extract user_id from JWT (protect middleware ensures this exists)
     const authenticatedUser = (req as any).user;
-    const user_id = authenticatedUser?.id || reportData.user_id;
+    const user_id = authenticatedUser?.id;
     
-    console.log("Creating report with data:", {
-      title: reportData.title,
-      description: reportData.description,
-      category_id,
-      latitude: reportData.latitude.toString(),
-      longitude: reportData.longitude.toString(),
-      anonymous: reportData.anonymous,
-      user_id,
-    });
+    if (!user_id) {
+      const response: ApiResponse<string> = {
+        status: false,
+        data: "Authentication required"
+      };
+      return res.status(401).json(response);
+    }
 
     const report = await ReportService.createReport({
       title: reportData.title,

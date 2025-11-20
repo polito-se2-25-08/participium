@@ -1,11 +1,7 @@
 import type { Report } from '../types';
+import type { ApiResponse } from '../interfaces/dto/Response';
 
 const API_BASE = 'http://localhost:3000/api';
-
-export interface ApiResponse<T> {
-  status: boolean;
-  data: T;
-}
 
 export interface CreateReportData {
   title: string;
@@ -33,14 +29,19 @@ export const reportService = {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        return { success: false, data: { message: `HTTP error! status: ${response.status}` } };
       }
 
-      const data: ApiResponse<Report> = await response.json();
-      return data;
+      const result: { status: boolean; data: Report } = await response.json();
+      if (result.status === true) {
+        return { success: true, data: result.data };
+      } else {
+        return { success: false, data: { message: "Failed to create report" } };
+      }
     } catch (error) {
       console.error('Error creating report:', error);
-      throw error;
+      const message = error instanceof Error ? error.message : "Cannot reach server";
+      return { success: false, data: { message } };
     }
   },
 
@@ -49,14 +50,19 @@ export const reportService = {
       const response = await fetch(`${API_BASE}/reports`);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        return { success: false, data: { message: `HTTP error! status: ${response.status}` } };
       }
 
-      const data: ApiResponse<Report[]> = await response.json();
-      return data;
+      const result: { status: boolean; data: Report[] } = await response.json();
+      if (result.status === true) {
+        return { success: true, data: result.data };
+      } else {
+        return { success: false, data: { message: "Failed to fetch reports" } };
+      }
     } catch (error) {
       console.error('Error fetching reports:', error);
-      throw error;
+      const message = error instanceof Error ? error.message : "Cannot reach server";
+      return { success: false, data: { message } };
     }
   },
 
@@ -65,14 +71,19 @@ export const reportService = {
       const response = await fetch(`${API_BASE}/reports/${id}`);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        return { success: false, data: { message: `HTTP error! status: ${response.status}` } };
       }
 
-      const data: ApiResponse<Report> = await response.json();
-      return data;
+      const result: { status: boolean; data: Report } = await response.json();
+      if (result.status === true) {
+        return { success: true, data: result.data };
+      } else {
+        return { success: false, data: { message: "Failed to fetch report" } };
+      }
     } catch (error) {
       console.error('Error fetching report:', error);
-      throw error;
+      const message = error instanceof Error ? error.message : "Cannot reach server";
+      return { success: false, data: { message } };
     }
   },
 };
