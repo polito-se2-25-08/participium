@@ -26,6 +26,7 @@ import { submitReport } from "../../action/reportAction";
 
 export default function ReportFormPage() {
   const [selectedAdress, setSelectedAddress] = useState<string>("");
+  const [location, setLocation] = useState<[number, number] | null>(null);
 
   const [addressError, setAddressError] = useState<boolean>(false);
   const [categoryError, setCategoryError] = useState<boolean>(false);
@@ -71,14 +72,31 @@ export default function ReportFormPage() {
     )
       return;
 
-    photos.forEach((file,) => {
+    formData.append("address", selectedAdress);
+    photos.forEach((file) => {
       formData.append("photos", file);
     });
+
+    if (location) {
+      formData.append("latitude", location[0].toString());
+      formData.append("longitude", location[1].toString());
+    }
 
     startTransition(() => {
       formAction(formData);
     });
   };
+
+  useEffect(() => {
+    if (state === null) {
+      return;
+    }
+    if (state.success) {
+      setSelectedAddress("");
+      setLocation(null);
+      setPhotos([]);
+    }
+  }, [state]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -107,7 +125,7 @@ export default function ReportFormPage() {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-5 w-1/2">
+    <div className="flex flex-col gap-4 p-5 w-4/6">
       <PageTitle>Submit a Report</PageTitle>
       <p className="opacity-50 text-center">Report an issue in your area</p>
 
@@ -125,6 +143,8 @@ export default function ReportFormPage() {
             required
             value={selectedAdress}
             showError={addressError}
+            pending={isPending}
+            onChange={() => {}}
           />
 
           <p className="opacity-50">
@@ -134,6 +154,7 @@ export default function ReportFormPage() {
           <MapWindow
             scrollWheelZoom={false}
             setAdress={setSelectedAddress}
+            setLocation={setLocation}
             className="min-h-[350px] w-full"
           />
         </ReportCardContainer>
@@ -153,6 +174,7 @@ export default function ReportFormPage() {
             placeholder="Enter a title"
             required
             showError={titleError}
+            pending={isPending}
           />
 
           <Select
@@ -165,6 +187,7 @@ export default function ReportFormPage() {
             required
             options={REPORT_CATEGORIES}
             showError={categoryError}
+            pending={isPending}
           />
 
           <TextArea
@@ -175,13 +198,14 @@ export default function ReportFormPage() {
             placeholder="Provide a detailed description of the issue (max 2000 characters)"
             required
             showError={descriptionError}
+            pending={isPending}
           />
         </ReportCardContainer>
 
         <ReportCardContainer>
           <SubTitle>Photos</SubTitle>
           <p className="opacity-50">
-            Upload at least {MIN_PHOTOS_PER_REPORT} photo, maximum{" "}
+            Upload at least {MIN_PHOTOS_PER_REPORT} photo, maximum
             {MAX_PHOTOS_PER_REPORT} photos
           </p>
 
@@ -197,13 +221,14 @@ export default function ReportFormPage() {
             required
             showError={photoError}
             onChange={handleFileChange}
+            pending={isPending}
           />
 
           {photos.length > 0 ? (
             <div className="flex gap-2">
               {photos.map((photo, index) => (
                 <img
-                  key={photo.name}
+                  key={index}
                   src={URL.createObjectURL(photo)}
                   alt={photo.name}
                   className="w-32 h-32 object-cover"
@@ -215,7 +240,21 @@ export default function ReportFormPage() {
           )}
         </ReportCardContainer>
 
-        <PrimaryButton type="submit">Submit Report</PrimaryButton>
+        <ReportCardContainer>
+          <SubTitle>Privacy options</SubTitle>
+
+          <div className="flex flex-row gap-3 items-center justify-center">
+            <Input type="checkbox" name="anonymous" id="anonymous" />
+            <p className="opacity-50">
+              If checked, your name will not be visible in the public report
+              list
+            </p>
+          </div>
+        </ReportCardContainer>
+
+        <PrimaryButton pending={isPending} type="submit">
+          Submit Report
+        </PrimaryButton>
       </Form>
     </div>
   );

@@ -1,17 +1,18 @@
 import { useMapEvents } from "react-leaflet";
 import type { MarkerI } from "../interfaces/components/Marker";
 import { fetchAddressByCoordinates } from "../action/MapAction";
-import type { LeafletMouseEvent } from "leaflet";
 
 interface MapClickHandlerProps {
   tempMarker: MarkerI | null;
   setTempMarker: React.Dispatch<React.SetStateAction<MarkerI | null>>;
   setAdress: React.Dispatch<React.SetStateAction<string>> | undefined;
+  setLocation?: React.Dispatch<React.SetStateAction<[number, number] | null>>;
 }
 export default function MapClickHandler({
   tempMarker,
   setTempMarker,
   setAdress,
+  setLocation,
 }: MapClickHandlerProps) {
   const getAddress = async (lng: number, lat: number) => {
     const address = await fetchAddressByCoordinates(lat, lng);
@@ -26,6 +27,10 @@ export default function MapClickHandler({
       }
 
       const { lat, lng } = e.latlng;
+
+      if (setLocation) {
+        setLocation([lat, lng]);
+      }
       const adress = await getAddress(lng, lat);
 
       if (setAdress) {

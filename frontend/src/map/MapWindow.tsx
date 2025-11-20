@@ -15,6 +15,7 @@ interface ReportMapViewProps {
   scrollWheelZoom?: boolean;
   isReport?: boolean;
   setAdress?: React.Dispatch<React.SetStateAction<string>>;
+  setLocation?: React.Dispatch<React.SetStateAction<[number, number] | null>>;
 }
 
 export function MapWindow({
@@ -22,6 +23,7 @@ export function MapWindow({
   scrollWheelZoom = true,
   isReport = false,
   setAdress,
+  setLocation,
 }: ReportMapViewProps) {
   const [tempMarker, setTempMarker] = useState<MarkerI | null>(null);
 
@@ -40,6 +42,7 @@ export function MapWindow({
         tempMarker={tempMarker}
         setTempMarker={setTempMarker}
         setAdress={setAdress}
+        setLocation={setLocation}
       />
       {isReport && <SearchLocationInput setMarker={setTempMarker} />}
 

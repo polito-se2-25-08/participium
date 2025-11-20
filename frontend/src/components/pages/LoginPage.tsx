@@ -38,7 +38,6 @@ export function LoginPage() {
 	};
 
 	useEffect(() => {
-		console.log(state);
 		if (state === null) {
 			return;
 		}
