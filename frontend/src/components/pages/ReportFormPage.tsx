@@ -23,6 +23,9 @@ import {
 } from "../../constants";
 import { submitReport } from "../../action/reportAction";
 import { MapWindow } from "../map/MapWindow";
+import ContentContainer from "../containers/ContentContainer";
+import CheckInput from "../input/variants/CheckInput";
+import FileInput from "../input/variants/FileInput";
 
 export default function ReportFormPage() {
   const [selectedAdress, setSelectedAddress] = useState<string>("");
@@ -125,7 +128,11 @@ export default function ReportFormPage() {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-5 w-4/6">
+    <ContentContainer
+      width="xl:w-1/2 sm:w-1/2 "
+      gap="xl:gap-4 sm:gap-2"
+      padding="p-5"
+    >
       <PageTitle>Submit a Report</PageTitle>
       <p className="opacity-50 text-center">Report an issue in your area</p>
 
@@ -209,9 +216,8 @@ export default function ReportFormPage() {
             {MAX_PHOTOS_PER_REPORT} photos
           </p>
 
-          <Input
+          <FileInput
             name="report_photos"
-            type="file"
             id="photo-upload"
             accept="image/*"
             multiple
@@ -244,7 +250,7 @@ export default function ReportFormPage() {
           <SubTitle>Privacy options</SubTitle>
 
           <div className="flex flex-row gap-3 items-center justify-center">
-            <Input type="checkbox" name="anonymous" id="anonymous" />
+            <CheckInput id="anonymous" name="anonymous" />
             <p className="opacity-50">
               If checked, your name will not be visible in the public report
               list
@@ -256,6 +262,6 @@ export default function ReportFormPage() {
           Submit Report
         </PrimaryButton>
       </Form>
-    </div>
+    </ContentContainer>
   );
 }

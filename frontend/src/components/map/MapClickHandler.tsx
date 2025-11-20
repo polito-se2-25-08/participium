@@ -1,6 +1,6 @@
 import { useMapEvents } from "react-leaflet";
-import type { MarkerI } from "../interfaces/components/Marker";
-import { fetchAddressByCoordinates } from "../action/MapAction";
+import type { MarkerI } from "../../interfaces/components/Marker";
+import { fetchAddressByCoordinates } from "../../action/mapAction";
 
 interface MapClickHandlerProps {
   tempMarker: MarkerI | null;

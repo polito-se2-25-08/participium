@@ -1,12 +1,41 @@
 import type { ReactNode } from "react";
 
 interface ContentContainerProps {
-	children: ReactNode;
+  children: ReactNode;
+  width?: string;
+  gap?: string;
+  padding?: string;
+  marginBottom?: string;
+  marginTop?: string;
+  marginLeft?: string;
+  marginRight?: string;
+  className?: string;
 }
-export default function ContentContainer({ children }: ContentContainerProps) {
-	return (
-		<div className="flex items-center justify-center w-full flex-1">
-			{children}
-		</div>
-	);
+
+export default function ContentContainer({
+  children,
+  width = "",
+  gap = "",
+  padding = "",
+  marginBottom = "",
+  marginTop = "",
+  marginLeft = "",
+  marginRight = "",
+  className = "",
+}: ContentContainerProps) {
+  const classes = [
+    "flex flex-col",
+    width,
+    gap,
+    padding,
+    marginBottom,
+    marginTop,
+    marginLeft,
+    marginRight,
+    className,
+  ]
+    .filter(Boolean) 
+    .join(" ");
+
+  return <div className={classes}>{children}</div>;
 }

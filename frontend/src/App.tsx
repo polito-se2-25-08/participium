@@ -11,6 +11,8 @@ import AccountSetupPage from "./components/pages/AccountSetupPage";
 import { AuthProvider } from "./components/providers/AuthContext";
 import ReportFormPage from "./components/pages/ReportFormPage";
 
+import "./App.css";
+
 export default function App() {
   return (
     <BrowserRouter>

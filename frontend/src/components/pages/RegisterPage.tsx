@@ -6,6 +6,10 @@ import Form from "../form/Form";
 import { loginAction } from "../../action/loginAction";
 import { useAuth } from "../providers/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import ContentContainer from "../containers/ContentContainer";
+import TextInput from "../input/variants/TextInput";
+import EmailInput from "../input/variants/EmailInput";
+import PasswordInput from "../input/variants/PasswordInput";
 
 export function RegisterPage() {
   const [state, formAction, isPending] = useActionState(loginAction, null);
@@ -89,16 +93,19 @@ export function RegisterPage() {
   }, [usernameError, passwordError, emailError, nameError, surnameError]);
 
   return (
-    <div className="flex flex-col gap-4 w-1/4 ">
+    <ContentContainer
+      width="xl:w-1/2 sm:w-1/2 "
+      gap="xl:gap-4 sm:gap-2"
+      padding="p-5"
+    >
       <PageTitle>Registration</PageTitle>
       <p className="opacity-50 text-sm w-full">
         Hi! Welcome to Participium! We hope you will have a good time here.
         Please fill out the form below to register.
       </p>
-      <Form className="gap-4" onSubmit={handleSubmit}>
-        <Input
+      <Form gap={4} onSubmit={handleSubmit}>
+        <TextInput
           placeholder="Place your username here..."
-          type="text"
           hasLabel
           label="Username"
           id="username"
@@ -108,9 +115,8 @@ export function RegisterPage() {
           pending={isPending}
         />
         <div className="flex flex-row gap-4">
-          <Input
+          <TextInput
             placeholder="Place your name here..."
-            type="text"
             hasLabel
             label="Name"
             id="name"
@@ -119,10 +125,9 @@ export function RegisterPage() {
             showError={nameError}
             pending={isPending}
           />
-          <Input
+          <TextInput
             placeholder="Place your surname here..."
             id="surname"
-            type="text"
             hasLabel
             label="Surname"
             required
@@ -131,9 +136,8 @@ export function RegisterPage() {
             pending={isPending}
           />
         </div>
-        <Input
+        <EmailInput
           placeholder="Place your email here..."
-          type="email"
           hasLabel
           label="Email"
           id="email"
@@ -142,9 +146,8 @@ export function RegisterPage() {
           showError={emailError}
           pending={isPending}
         />
-        <Input
+        <PasswordInput
           placeholder="Place your password here..."
-          type="password"
           hasLabel
           label="Password"
           id="Password"
@@ -163,6 +166,6 @@ export function RegisterPage() {
           </span>
         </Link>
       </Form>
-    </div>
+    </ContentContainer>
   );
 }

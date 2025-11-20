@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import type { setupUserI } from "../interfaces/components/setupUser";
-import { setupUser } from "../../api/adminService";
-import "../App.css";
 
+import { setupUser } from "../../api/adminService";
 export function AccountSetupPage() {
-  const [formData, setFormData] = useState<setupUserI>({
+  const [formData, setFormData] = useState({
     name: "",
     surname: "",
     username: "",
