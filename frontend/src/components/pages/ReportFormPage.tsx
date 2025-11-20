@@ -12,7 +12,6 @@ import PageTitle from "../titles/PageTitle";
 import SubTitle from "../titles/SubTitle";
 import Input from "../input/Input";
 
-import { MapWindow } from "../../map/MapWindow";
 import ReportCardContainer from "../containers/ReportCardContainer";
 import Select from "../selects/Select";
 import TextArea from "../textarea/TextArea";
@@ -23,6 +22,7 @@ import {
   REPORT_CATEGORIES,
 } from "../../constants";
 import { submitReport } from "../../action/reportAction";
+import { MapWindow } from "../map/MapWindow";
 
 export default function ReportFormPage() {
   const [selectedAdress, setSelectedAddress] = useState<string>("");
