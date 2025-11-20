@@ -5,92 +5,89 @@ import PageTitle from "../titles/PageTitle";
 import SubTitle from "../titles/SubTitle";
 import Input from "../input/Input";
 
-import { MapWindow } from "../map/MapWindow";
+import { MapWindow } from "../tempMap/MapWindow";
 import ReportCardContainer from "../containers/ReportCardContainer";
 import Select from "../selects/Select";
 import TextArea from "../textarea/TextArea";
 import PrimaryButton from "../buttons/variants/primary/PrimaryButton";
 
 export default function ReportFormPage() {
-	const [selectedAdress, setSelectedAddress] = useState<string>("");
-	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-	};
+  const [selectedAdress, setSelectedAddress] = useState<string>("");
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
 
-	return (
-		<div className="flex flex-col gap-4 p-5 w-1/2">
-			<PageTitle>Submit a Report</PageTitle>
-			<p className="opacity-50 text-center">
-				Report an issue in your area
-			</p>
+  return (
+    <div className="flex flex-col gap-4 p-5 w-1/2">
+      <PageTitle>Submit a Report</PageTitle>
+      <p className="opacity-50 text-center">Report an issue in your area</p>
 
-			<Form onSubmit={handleSubmit} className="gap-3">
-				<ReportCardContainer>
-					<SubTitle>Location Information</SubTitle>
-					<Input
-						name="address"
-						type="text"
-						id="address"
-						hasLabel
-						label="Address"
-						placeholder="Click the map below to select a location..."
-						disabled
-						value={selectedAdress}
-						required
-					/>
+      <Form onSubmit={handleSubmit} className="gap-3">
+        <ReportCardContainer>
+          <SubTitle>Location Information</SubTitle>
+          <Input
+            name="address"
+            type="text"
+            id="address"
+            hasLabel
+            label="Address"
+            placeholder="Click the map below to select a location..."
+            disabled
+            value={selectedAdress}
+            required
+          />
 
-					<p className="opacity-50">
-						Click on the map to select a location and auto-fill the
-						address
-					</p>
+          <p className="opacity-50">
+            Click on the map to select a location and auto-fill the address
+          </p>
 
-					<MapWindow
-						scrollWheelZoom={false}
-						setAdress={setSelectedAddress}
-						className="min-h-[350px] w-full"
-					/>
-				</ReportCardContainer>
+          <MapWindow
+            scrollWheelZoom={false}
+            setAdress={setSelectedAddress}
+            className="min-h-[350px] w-full"
+          />
+        </ReportCardContainer>
 
-				<ReportCardContainer>
-					<SubTitle>Report Information</SubTitle>
-					<p className="opacity-50">
-						Please provide all relevant information about the issue
-					</p>
+        <ReportCardContainer>
+          <SubTitle>Report Information</SubTitle>
+          <p className="opacity-50">
+            Please provide all relevant information about the issue
+          </p>
 
-					<Select
-						id="category"
-						name="category"
-						value={"0"}
-						className=""
-						onChange={() => {}}
-						hasLabel
-						label="Category"
-						placeholder="Select a category"
-						required
-					/>
+          <Select
+            id="category"
+            name="category"
+            value={"0"}
+            className=""
+            onChange={() => {}}
+            hasLabel
+            label="Category"
+            placeholder="Select a category"
+            required
+          />
 
-					<Input
-						name="title"
-						type="text"
-						id="title"
-						hasLabel
-						label="Title"
-						placeholder="Enter a title"
-						value={""}
-						required
-					/>
+          <Input
+            name="title"
+            type="text"
+            id="title"
+            hasLabel
+            label="Title"
+            placeholder="Enter a title"
+            value={""}
+            required
+          />
 
-					<TextArea
-						value={""}
-						onChange={() => {}}
-						hasLabel
-						label="Description"
-						placeholder="Provide a detailed description of the issue (max 2000 characters)"
-						required
-					/>
-				</ReportCardContainer>
+          <TextArea
+            value={""}
+            onChange={() => {}}
+            hasLabel
+            label="Description"
+            placeholder="Provide a detailed description of the issue (max 2000 characters)"
+            required
+          />
+        </ReportCardContainer>
 
-				{/*
+        {/*
 				<section className="form-section">
 					<h3>Photos</h3>
 					<p className="field-hint">
@@ -167,8 +164,8 @@ export default function ReportFormPage() {
 					</button>
 				</div>
 				*/}
-				<PrimaryButton type="submit">Submit Report</PrimaryButton>
-			</Form>
-		</div>
-	);
+        <PrimaryButton type="submit">Submit Report</PrimaryButton>
+      </Form>
+    </div>
+  );
 }
