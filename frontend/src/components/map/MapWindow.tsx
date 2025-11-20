@@ -1,12 +1,13 @@
 import { MapContainer, TileLayer } from "react-leaflet";
 
-import type { MarkerI } from "../interfaces/components/Marker";
+
 import { useState } from "react";
 
 import "leaflet/dist/leaflet.css";
 import MapClickHandler from "./MapClickHandler";
 import SearchLocationInput from "./SearchLocationInput";
 import TempMarker from "./TempMarker";
+import type { MarkerI } from "../../interfaces/components/MarkerI";
 
 const ZOOM = 13;
 
