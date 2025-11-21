@@ -11,7 +11,7 @@ export const loginAction = async (
   const password = formData.get("password") as string;
 
   try {
-    const res = await fetch(`${API_ENDPOINT}/v1/login`, {
+    const res = await fetch(`${API_ENDPOINT}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
