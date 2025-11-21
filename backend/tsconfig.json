@@ -14,7 +14,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "incremental": true
   },
   "include": ["src"],
