@@ -51,14 +51,6 @@ export const submitReport = async (_: unknown, formData: FormData): Promise<ApiR
       }),
     });
 
-    console.log("Response status:", res.status, res.statusText);
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Server error response:", errorText);
-      return { success: false, data: { message: `Server error: ${res.status}` } };
-    }
-
     const result: ApiResponse<NewReportResponse> = await res.json();
     console.log("Server response:", result);
     return result;
