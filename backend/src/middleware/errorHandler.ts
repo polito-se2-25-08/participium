@@ -15,7 +15,6 @@ export const errorHandler = (
 	let statusCode = err.statusCode || 500;
 	let message = err.message || "Something went wrong on the server.";
 	let code = err.code || "INTERNAL_ERROR";
-	const status = `${statusCode}`.startsWith("4") ? "fail" : "error";
 
 	//  Handle Supabase Postgres errors (using code or message)
 	if (err.code) {
@@ -49,7 +48,7 @@ export const errorHandler = (
 		message = "Validation failed.";
 		code = "VALIDATION_ERROR";
 		return res.status(statusCode).json({
-			status,
+			success: false,
 			message,
 			code,
 			errors: err.errors.map((e: any) => ({
@@ -62,7 +61,7 @@ export const errorHandler = (
 	//  Handle operational (custom) errors
 	if (err instanceof AppError && err.isOperational) {
 		return res.status(statusCode).json({
-			status,
+			success: false,
 			message,
 			code,
 			statusCode,
@@ -72,7 +71,7 @@ export const errorHandler = (
 	//  Unknown or programming errors
 	if (process.env.NODE_ENV === "development") {
 		return res.status(statusCode).json({
-			status,
+			success: false,
 			message,
 			code,
 			stack: err.stack,
@@ -82,7 +81,7 @@ export const errorHandler = (
 
 	// 🧩 Production fallback
 	res.status(500).json({
-		status: "error",
+		success: false,
 		message: "Internal server error",
 		code: "INTERNAL_ERROR",
 	});
