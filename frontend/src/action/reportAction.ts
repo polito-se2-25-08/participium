@@ -59,21 +59,9 @@ export const submitReport = async (_: unknown, formData: FormData): Promise<ApiR
       return { success: false, data: { message: `Server error: ${res.status}` } };
     }
 
-    const result: { status: boolean; data: NewReportResponse } = await res.json();
+    const result: ApiResponse<NewReportResponse> = await res.json();
     console.log("Server response:", result);
-    
-    // Backend returns 'status', map to 'success'
-    if (result.status === true) {
-      return { 
-        success: true, 
-        data: result.data 
-      };
-    } else {
-      return {
-        success: false,
-        data: { message: "Report submission failed" }
-      };
-    }
+    return result;
   } catch (err: unknown) {
     console.error("Error submitting report:", err);
     const message = err instanceof Error ? err.message : "Cannot reach server";

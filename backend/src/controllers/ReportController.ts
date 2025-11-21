@@ -17,7 +17,7 @@ export const createReport = async (req: Request, res: Response) => {
     
     if (!user_id) {
       const response: ApiResponse<string> = {
-        status: false,
+        success: false,
         data: "Authentication required"
       };
       return res.status(401).json(response);
@@ -35,7 +35,7 @@ export const createReport = async (req: Request, res: Response) => {
     });
 
     const response: ApiResponse<Report> = {
-      status: true,
+      success: true,
       data: report
     };
     
@@ -43,7 +43,7 @@ export const createReport = async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error("Error creating report:", err);
     const response: ApiResponse<string> = {
-      status: false,
+      success: false,
       data: err.message || "Unknown error occurred"
     };
     return res.status(500).json(response);
@@ -54,14 +54,14 @@ export const getAllReports = async (req: Request, res: Response) => {
   try {
     const reports = await ReportService.getAllReports();
     const response: ApiResponse<Report[]> = {
-      status: true,
+      success: true,
       data: reports
     };
     return res.status(200).json(response);
   } catch (err) {
     console.error("Error fetching reports:", err);
     const response: ApiResponse<null> = {
-      status: false,
+      success: false,
       data: null
     };
     return res.status(500).json(response);
@@ -75,7 +75,7 @@ export const getReportById = async (req: Request, res: Response) => {
 
     if (isNaN(numericId)) {
       const response: ApiResponse<null> = {
-        status: false,
+        success: false,
         data: null
       };
       return res.status(400).json(response);
@@ -83,14 +83,14 @@ export const getReportById = async (req: Request, res: Response) => {
 
     const report = await ReportService.getReportById(numericId);
     const response: ApiResponse<Report> = {
-      status: true,
+      success: true,
       data: report
     };
     return res.status(200).json(response);
   } catch (err) {
     console.error("Error fetching report:", err);
     const response: ApiResponse<null> = {
-      status: false,
+      success: false,
       data: null
     };
     return res.status(500).json(response);

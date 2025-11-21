@@ -32,12 +32,8 @@ export const reportService = {
         return { success: false, data: { message: `HTTP error! status: ${response.status}` } };
       }
 
-      const result: { status: boolean; data: Report } = await response.json();
-      if (result.status === true) {
-        return { success: true, data: result.data };
-      } else {
-        return { success: false, data: { message: "Failed to create report" } };
-      }
+      const result: ApiResponse<Report> = await response.json();
+      return result;
     } catch (error) {
       console.error('Error creating report:', error);
       const message = error instanceof Error ? error.message : "Cannot reach server";
@@ -53,12 +49,8 @@ export const reportService = {
         return { success: false, data: { message: `HTTP error! status: ${response.status}` } };
       }
 
-      const result: { status: boolean; data: Report[] } = await response.json();
-      if (result.status === true) {
-        return { success: true, data: result.data };
-      } else {
-        return { success: false, data: { message: "Failed to fetch reports" } };
-      }
+      const result: ApiResponse<Report[]> = await response.json();
+      return result;
     } catch (error) {
       console.error('Error fetching reports:', error);
       const message = error instanceof Error ? error.message : "Cannot reach server";
@@ -74,12 +66,8 @@ export const reportService = {
         return { success: false, data: { message: `HTTP error! status: ${response.status}` } };
       }
 
-      const result: { status: boolean; data: Report } = await response.json();
-      if (result.status === true) {
-        return { success: true, data: result.data };
-      } else {
-        return { success: false, data: { message: "Failed to fetch report" } };
-      }
+      const result: ApiResponse<Report> = await response.json();
+      return result;
     } catch (error) {
       console.error('Error fetching report:', error);
       const message = error instanceof Error ? error.message : "Cannot reach server";
