@@ -1,7 +1,7 @@
 import type { NewReportResponse } from "../interfaces/dto/report/NewReportResponse";
 import type { ApiResponse } from "../interfaces/dto/Response";
 
-const API_ENDPOINT = import.meta.env.VITE_API_URL;
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 export const submitReport = async (_: unknown, formData: FormData) => {
   const address = formData.get("address") as string;
@@ -36,6 +36,7 @@ export const submitReport = async (_: unknown, formData: FormData) => {
     });
 
     const result: ApiResponse<NewReportResponse> = await res.json();
+    console.log(result);
     return result;
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Cannot reach server";
