@@ -7,8 +7,10 @@ export const getTechnicianCategory = async (
   const { data, error } = await supabase
     .from("Technician_Category")
     .select("category_id")
-    .eq("technician_id", user_id)
+    .eq("user_id", user_id)
+    .limit(1)
     .single();
+  // if multiple categories per technician are allowed, this needs to be adjusted
 
   if (error) {
     throw new AppError(
@@ -20,7 +22,7 @@ export const getTechnicianCategory = async (
 
   if (!data) {
     throw new AppError(
-      `Technician with id ${user_id} not found`,
+      `Technician with user_id ${user_id} not found`,
       404,
       "TECHNICIAN_NOT_FOUND"
     );

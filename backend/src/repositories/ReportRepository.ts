@@ -90,21 +90,27 @@ export const updateReportStatus = async (id: number, status: string) => {
   return data;
 };
 
-export const getReportsByCategory = async (
-  category_id: number
+export const getReportsByCategoryAndStatus = async (
+  category_id: number,
+  status: Report["status"]
 ): Promise<Report[]> => {
   const { data, error } = await supabase
     .from("Report")
     .select("*")
     .eq("category_id", category_id)
+    .eq("status", status)
     .order("timestamp", { ascending: false });
 
   if (error) {
     throw new AppError(
-      `Failed to fetch reports by category: ${error.message}`,
+      `Failed to fetch reports by category and status: ${error.message}`,
       500,
       "DB_FETCH_ERROR"
     );
+  }
+
+  if (!data) {
+    return [];
   }
 
   return data;

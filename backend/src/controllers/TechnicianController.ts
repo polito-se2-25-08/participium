@@ -2,27 +2,30 @@ import { Request, Response } from "express";
 import { Report } from "../models/Report";
 import * as TechnicianService from "../services/TechnicianService";
 import { ApiResponse } from "../dto/ReportDTO";
+import { catchAsync } from "../utils/catchAsync";
+import AppError from "../utils/AppError";
 
-export const getReportsForTechnician = async (req: Request, res: Response) => {
-  try {
-    const { technician_id } = req.params; // Get technician_id from route parameters
-    const numericTechnicianId = Number(technician_id); // Convert to number
+// Get reports assigned to the authenticated technician, with optional status filtering
+export const getReportsForTechnician = catchAsync(
+  async (req: Request, res: Response) => {
+    // Extract authenticated technician user from request
+    const authUser = (req as any).user;
+    if (!authUser?.id) {
+      throw new AppError("Authentication required", 401, "AUTH_REQUIRED");
+    }
+
+    // Get optional status query parameter
+    const statusQuery = req.query.status as Report["status"] | undefined;
+    // Fetch reports for the technician
     const reports: Report[] = await TechnicianService.getReportsForTechnician(
-      numericTechnicianId
-    ); // Fetch reports for the technician
+      authUser.id,
+      statusQuery
+    );
 
-    // Prepare API response
     const response: ApiResponse<Report[]> = {
       success: true,
       data: reports,
     };
     return res.status(200).json(response);
-  } catch (error) {
-    console.error("Error fetching reports for technician:", error);
-    const response: ApiResponse<null> = {
-      success: false,
-      data: null,
-    };
-    return res.status(500).json(response);
   }
-};
+);
