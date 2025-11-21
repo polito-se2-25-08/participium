@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import officerRoutes from "./routes/v1/officer";
+import technicianRoutes from "./routes/v1/technicianRoutes";
 import userRoutes from "./routes/v1/user";
 import adminRoutes from "./routes/v1/adminRoutes";
 import reportRoutes from "./routes/reportRoutes";
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/health", (req, res) => res.send("OK"));
 
 // Routes
+app.use("/api", technicianRoutes);
 app.use("/api", officerRoutes);
 app.use("/api", userRoutes);
 app.use("/api", adminRoutes);
@@ -32,7 +34,7 @@ app.use(errorHandler);
 
 // Start server
 app.listen(port, () => {
-	console.log(`Express is listening at http://${host}:${port}`);
+  console.log(`Express is listening at http://${host}:${port}`);
 });
 
 export default app;
