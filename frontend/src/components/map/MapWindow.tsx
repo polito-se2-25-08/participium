@@ -8,6 +8,7 @@ import MapClickHandler from "./MapClickHandler";
 import SearchLocationInput from "./SearchLocationInput";
 import TempMarker from "./TempMarker";
 import type { MarkerI } from "../../interfaces/components/MarkerI";
+import { ReportMarkers } from "./ReportMarkers";
 
 const ZOOM = 13;
 
@@ -27,6 +28,7 @@ export function MapWindow({
   setLocation,
 }: ReportMapViewProps) {
   const [tempMarker, setTempMarker] = useState<MarkerI | null>(null);
+  const [markerList, setMarkerList] = useState<MarkerI[] | null>(null);
 
   return (
     <MapContainer
@@ -46,7 +48,7 @@ export function MapWindow({
         setLocation={setLocation}
       />
       {isReport && <SearchLocationInput setMarker={setTempMarker} />}
-
+      <ReportMarkers Markers={markerList} setMarkers={setMarkerList} />
       <TempMarker tempMarker={tempMarker} setTempMarker={setTempMarker} />
     </MapContainer>
   );
