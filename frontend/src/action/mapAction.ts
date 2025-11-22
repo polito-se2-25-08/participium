@@ -1,3 +1,8 @@
+import type { MarkerI } from "../interfaces/components/MarkerI";
+
+const API_ENDPOINT =
+  import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
+
 export const fetchCoordinates = async (
 	address: string
 ): Promise<[number, number] | null> => {
@@ -45,3 +50,18 @@ export const fetchAddressByCoordinates = async (
 		return "Address not found";
 	}
 };
+
+export const fetchActiveReports = async (): Promise<MarkerI[]> => {
+	try {
+		const response = await fetch(`${API_ENDPOINT}/reports/active`);
+		if (!response.ok) {
+			throw new Error("Failed to fetch active reports");
+		}
+		const data: MarkerI[] = await response.json();
+		return data;
+	} catch (error) {
+		console.error("Error fetching active reports:", error);
+		return [];
+	}
+
+}
