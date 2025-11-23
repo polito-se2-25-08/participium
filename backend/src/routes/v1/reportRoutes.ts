@@ -6,13 +6,13 @@ import { createReportSchema } from "../../validators/reportValidators";
 
 const router = express.Router();
 
-// POST /api/reports - Create a new report (protected - requires authentication)
-router.post("/reports", protect, validate(createReportSchema), ReportController.createReport);
+// POST /api/v1/reports - Create a new report (protected - requires authentication)
+router.post("/v1/reports", protect, validate(createReportSchema), ReportController.createReport);
 
-// GET /api/reports - Get all reports
-router.get("/reports", ReportController.getAllReports);
+// GET /api/v1/reports - Get all reports
+router.get("/v1/reports", ReportController.getAllReports);
 
-// GET /api/reports/:id - Get a specific report
-router.get("/reports/:id", ReportController.getReportById);
+// GET /api/v1/reports/:id - Get a specific report
+router.get("/v1/reports/:id", ReportController.getReportById);
 
 export default router;
