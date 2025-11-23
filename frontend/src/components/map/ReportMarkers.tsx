@@ -15,64 +15,13 @@ export function ReportMarkers({
   setMarkers,
 }: MarkerListProps) {
 
-  /* useEffect(
+  useEffect(
     () => {
       fetchActiveReports().then((data) => {
         setMarkers(data);
       });
     }
-  ,[]); */
-
-  // Example markers in Turin
-  const exampleMarkers: MarkerI[] = [
-    {
-      title: "Water Leakage",
-      timestamp: new Date().toISOString(),
-      anonymity: false,
-      category: "water issue",
-      userId: "exampleUser1",
-      status: "active",
-      position: [45.0703, 7.6869],
-      adress: "Piazza Castello, Turin",
-    },
-    {
-      title: "Broken Streetlight",
-      timestamp: new Date().toISOString(),
-      anonymity: true,
-      category: "lighting issue",
-      userId: "exampleUser2",
-      status: "active",
-      position: [45.0677, 7.6825],
-      adress: "Mole Antonelliana, Turin",
-    },
-    {
-      title: "Park Bench Damaged",
-      timestamp: new Date().toISOString(),
-      anonymity: false,
-      category: "public furniture",
-      userId: "exampleUser3",
-      status: "active",
-      position: [45.0637, 7.6616],
-      adress: "Parco del Valentino, Turin",
-    },
-    {
-      title: "Train Station Graffiti",
-      timestamp: new Date().toISOString(),
-      anonymity: true,
-      category: "vandalism",
-      userId: "exampleUser4",
-      status: "active",
-      position: [45.0761, 7.6698],
-      adress: "Porta Susa, Turin",
-    },
-  ];
-
-  // Set example markers if Markers is null
-  useEffect(() => {
-    if (Markers === null) {
-      setMarkers(exampleMarkers);
-    }
-  }, [Markers, setMarkers]);
+  ,[]);
 
   const createIcon = (cluster) => {
     return divIcon({

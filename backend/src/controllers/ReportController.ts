@@ -96,3 +96,56 @@ export const getReportById = async (req: Request, res: Response) => {
     return res.status(500).json(response);
   }
 };
+
+export const getActiveReports = async (req: Request, res: Response) => {
+  try {
+    const reports = await ReportService.getActiveReports();
+    const response: ApiResponse<Report[]> = {
+      success: true,
+      data: reports
+    };
+    return res.status(200).json(response);
+  } catch (err) {
+    console.error("Error fetching active reports:", err);
+    const response: ApiResponse<null> = {
+      success: false,
+      data: null
+    };
+    return res.status(500).json(response);
+  }
+};
+
+export const getFilteredReports = async (req: Request, res: Response) => {
+  try {
+    const { userId, category, status, reportsFrom, reportsUntil } = req.query;
+
+    const categoryArray = category 
+      ? (Array.isArray(category) ? (category as string[]) : [category as string]) 
+      : [];
+      
+    const statusArray = status 
+      ? (Array.isArray(status) ? (status as string[]) : [status as string]) 
+      : [];
+
+    const reports = await ReportService.getFilteredReports(
+      userId as string,
+      categoryArray,
+      statusArray,
+      reportsFrom as string,
+      reportsUntil as string
+    );
+
+    const response: ApiResponse<Report[]> = {
+      success: true,
+      data: reports
+    };
+    return res.status(200).json(response);
+  } catch (err) {
+    console.error("Error fetching filtered reports:", err);
+    const response: ApiResponse<null> = {
+      success: false,
+      data: null
+    };
+    return res.status(500).json(response);
+  }
+};

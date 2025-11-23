@@ -35,6 +35,64 @@ export const getAllReports = async (): Promise<Report[]> => {
   return data;
 };
 
+export const getActiveReports = async (): Promise<Report[]> => {
+  const { data, error } = await supabase
+    .from("Report")
+    .select("*")
+    .in("status", ["ASSIGNED", "IN_PROGRESS", "SUSPENDED", "REJECTED", "RESOLVED"])
+    .order("timestamp", { ascending: false });
+ 
+  if (error) {
+    throw new AppError(
+      `Failed to fetch active reports: ${error.message}`,
+      500,
+      "DB_FETCH_ERROR"
+    );
+  }
+  console.log("Active reports fetched:", data);
+  return data;
+};
+
+
+export const getFilteredReports = async (userId: string, category: string[], status: string[], reportsFrom: string, reportsUntil: string): Promise<Report[]> => {
+  
+  const query = supabase.from("Report").select("*");
+  
+  if( userId ) {
+    query.eq("userId", userId);
+  }
+
+  if (category.length > 0) {
+    query.in("category", category);
+  }
+
+  if (status.length > 0) {
+    query.in("status", status);
+  }
+  
+  if(reportsFrom)
+  {
+    query.gte("timestamp", reportsFrom);
+  }
+
+  if(reportsUntil)
+  {
+    query.lte("timestamp", reportsUntil);
+  }
+
+  const { data, error } = await query
+    .order("timestamp", { ascending: false });
+
+  if (error) {
+    throw new AppError(
+      `Failed to fetch filtered reports: ${error.message}`,
+      500,
+      "DB_FETCH_ERROR"
+    );
+  }
+  return data;
+};
+
 export const getReportById = async (id: number): Promise<Report> => {
   const { data, error } = await supabase
     .from("Report")
