@@ -9,4 +9,5 @@ export const createReportSchema = z.object({
   address: z.string().min(5, "Address is required"),
   anonymous: z.boolean(),
   user_id: z.number().optional(),
+  photos: z.array(z.string()).min(1, "At least 1 photo is required").max(3, "Maximum 3 photos allowed"),
 });

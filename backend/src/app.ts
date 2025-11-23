@@ -4,8 +4,8 @@ import cors from "cors";
 import officerRoutes from "./routes/v1/officer";
 import userRoutes from "./routes/v1/user";
 import adminRoutes from "./routes/v1/adminRoutes";
-import reportRoutes from "./routes/reportRoutes";
-import categoryRoutes from "./routes/categoryRoutes";
+import reportRoutes from "./routes/v1/reportRoutes";
+import categoryRoutes from "./routes/v1/categoryRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
@@ -21,11 +21,11 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/health", (req, res) => res.send("OK"));
 
 // Routes
-app.use("/api", officerRoutes);
-app.use("/api", userRoutes);
-app.use("/api", adminRoutes);
-app.use("/api", reportRoutes);
-app.use("/api/categories", categoryRoutes);
+app.use("/api/v1", officerRoutes);
+app.use("/api/v1", userRoutes);
+app.use("/api/v1", adminRoutes);
+app.use("/api/v1", reportRoutes);
+app.use("/api/v1", categoryRoutes);
 
 // Global error handler (MUST be last middleware)
 app.use(errorHandler);

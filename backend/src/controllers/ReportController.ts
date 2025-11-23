@@ -32,6 +32,7 @@ export const createReport = async (req: Request, res: Response) => {
       anonymous: reportData.anonymous,
       user_id,
       timestamp: new Date().toISOString(),
+      photos: reportData.photos,
     });
 
     const response: ApiResponse<Report> = {

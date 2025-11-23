@@ -2,10 +2,14 @@ import { Report } from "../models/Report";
 import { supabase } from "../utils/Supabase";
 import AppError from "../utils/AppError";
 
-export const createReport = async (reportData: Partial<Report>): Promise<Report> => {
+export const createReport = async (
+  reportData: Partial<Report> & { photos: string[] }
+): Promise<Report> => {
+  const { photos, ...reportFields } = reportData;
+
   const { data, error } = await supabase
     .from("Report")
-    .insert([reportData])
+    .insert([reportFields])
     .select()
     .single();
   
@@ -16,6 +20,27 @@ export const createReport = async (reportData: Partial<Report>): Promise<Report>
       "DB_INSERT_ERROR"
     );
   }
+
+  // Insert photos into Report_Photo table
+  if (photos.length > 0) {
+    const photoInserts = photos.map((photo) => ({
+      report_id: data.id,
+      report_photo: photo,
+    }));
+
+    const { error: photoError } = await supabase
+      .from("Report_Photo")
+      .insert(photoInserts);
+
+    if (photoError) {
+      throw new AppError(
+        `Failed to save report photos: ${photoError.message}`,
+        500,
+        "DB_INSERT_ERROR"
+      );
+    }
+  }
+
   return data;
 };
 

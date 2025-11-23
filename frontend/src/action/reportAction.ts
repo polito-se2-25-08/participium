@@ -1,7 +1,7 @@
 import type { NewReportResponse } from "../interfaces/dto/report/NewReportResponse";
 import type { ApiResponse } from "../interfaces/dto/Response";
 
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || 'http://localhost:3000/api';
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT
 
 export const submitReport = async (_: unknown, formData: FormData): Promise<ApiResponse<NewReportResponse>> => {
   const address = formData.get("address") as string;

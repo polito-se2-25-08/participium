@@ -1,8 +1,8 @@
 import express from "express";
-import * as ReportController from "../controllers/ReportController";
-import { protect } from "../middleware/authMiddleware";
-import { validate } from "../middleware/validateMiddleware";
-import { createReportSchema } from "../validators/reportValidators";
+import * as ReportController from "../../controllers/ReportController";
+import { protect } from "../../middleware/authMiddleware";
+import { validate } from "../../middleware/validateMiddleware";
+import { createReportSchema } from "../../validators/reportValidators";
 
 const router = express.Router();
 
