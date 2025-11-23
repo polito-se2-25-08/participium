@@ -1,7 +1,9 @@
 import { Report, ReportInsert } from "../models/Report";
 import * as ReportRepository from "../repositories/ReportRepository";
 
-export const createReport = async (reportData: ReportInsert): Promise<Report> => {
+export const createReport = async (
+  reportData: ReportInsert & { photos: string[] }
+): Promise<Report> => {
   return await ReportRepository.createReport(reportData);
 };
 
