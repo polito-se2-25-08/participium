@@ -1,0 +1,102 @@
+### Technician Flow Test
+### Adjust tokens / IDs after running each step.
+
+@baseUrl = http://localhost:3000/api/v1
+@adminToken = <PUT_ADMIN_JWT_HERE>
+@techUsername = tech_user_cat5
+@techEmail = tech_user_cat5@example.com
+# Fill after creation response:
+@techUserId = <SET_AFTER_STEP_1>
+@techPassword = <SET_AFTER_STEP_1_GENERATED_PASSWORD>
+@techToken = <SET_AFTER_LOGIN>
+
+############################################################
+# 1. Admin creates a TECHNICIAN user (password returned)
+############################################################
+POST {{baseUrl}}/v1/admin/register
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "email": "{{techEmail}}",
+  "username": "{{techUsername}}",
+  "role": "TECHNICIAN",
+  "name": "Tech",
+  "surname": "User"
+}
+
+### After this, copy:
+### - data.id -> @techUserId
+### - data.password (plain) -> @techPassword
+
+############################################################
+# 2. Admin assigns category to technician (e.g. category_id = 5)
+############################################################
+PUT {{baseUrl}}/v1/admin/technicians/{{techUserId}}/category
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "category_id": 5
+}
+
+### Error case: invalid category (e.g. 0)
+PUT {{baseUrl}}/v1/admin/technicians/{{techUserId}}/category
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "category_id": 0
+}
+
+############################################################
+# 3. Technician login to obtain JWT
+############################################################
+# @name technicianLogin
+POST {{baseUrl}}/v1/login
+Content-Type: application/json
+
+{
+  "username": "{{techUsername}}",
+  "password": "{{techPassword}}"
+}
+
+### Copy returned token -> @techToken
+
+############################################################
+# 4. Technician fetch reports for their category (default status = ASSIGNED)
+############################################################
+GET {{baseUrl}}/v1/technician/reports
+Authorization: Bearer {{techToken}}
+
+### With explicit status filter
+GET {{baseUrl}}/v1/technician/reports?status=IN_PROGRESS
+Authorization: Bearer {{techToken}}
+
+### Error: missing token
+GET {{baseUrl}}/v1/technician/reports
+
+### Error: wrong role (use a CITIZEN token)
+GET {{baseUrl}}/v1/technician/reports
+Authorization: Bearer <CITIZEN_TOKEN>
+
+############################################################
+# (Optional) Seed reports (requires existing report creation route)
+# Ensure some reports exist with category_id = 5 and status = ASSIGNED / IN_PROGRESS
+############################################################
+# POST {{baseUrl}}/reports
+# Authorization: Bearer <OFFICER_OR_ADMIN_TOKEN>
+# Content-Type: application/json
+#
+# {
+#   "title": "Broken streetlight",
+#   "description": "Lamp not working",
+#   "latitude": "45.067",
+#   "longitude": "7.682",
+#   "anonymous": false,
+#   "category_id": 5
+# }
+
+############################################################
+# Health check
+GET {{baseUrl}}/health  
