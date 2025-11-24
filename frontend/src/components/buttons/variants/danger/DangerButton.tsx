@@ -23,6 +23,7 @@ export default function DangerButton({
 			onClick={onClick}
 			variant="DANGER"
 			pending={pending}
+			disabled={pending}
 		>
 			{children}
 		</Button>

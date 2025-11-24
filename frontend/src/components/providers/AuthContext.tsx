@@ -7,6 +7,7 @@ interface AuthContextType {
 	token: string | null;
 	loading: boolean;
 	isAuthenticated: boolean;
+	updateUser: (user: User) => void;
 	logout: () => void;
 	login: (user: User, token: string) => void;
 }
@@ -69,9 +70,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		}
 	}
 
+	const updateUser = (user: User) => {
+		setUser(user);
+		localStorage.removeItem("user");
+		localStorage.setItem("user", JSON.stringify(user));
+	};
+
 	const value = {
 		user,
 		token,
+		updateUser,
 		loading,
 		isAuthenticated,
 		login,
@@ -93,5 +101,5 @@ export function useUser() {
 	const ctx = useContext(AuthContext);
 	if (!ctx) throw new Error("useUser must be used within AuthProvider");
 	if (!ctx.user) throw new Error("User not found");
-	return ctx.user;
+	return { user: ctx.user, updateUser: ctx.updateUser };
 }
