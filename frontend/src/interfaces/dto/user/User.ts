@@ -4,5 +4,5 @@ export interface User {
 	surname: string;
 	username: string;
 	email: string;
-	role: "CITIZEN" | "ADMIN";
+	role: "CITIZEN" | "ADMIN" | "OFFICER" | "TECHNICIAN";
 }

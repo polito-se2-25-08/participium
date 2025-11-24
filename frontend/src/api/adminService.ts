@@ -1,6 +1,6 @@
 import type { setupUserI } from "../interfaces/components/setupUser";
 
-const URI = import.meta.env.VITE_API_URL;
+const URI = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export async function CheckServer() {
 	const response = await fetch(URI + "/health");
@@ -13,11 +13,12 @@ export async function CheckServer() {
 	}
 }
 
-export async function setupUser(setupUser: setupUserI): Promise<string> {
+export async function setupUser(setupUser: setupUserI, token: string): Promise<string> {
 	const response = await fetch(URI + "/api/v1/admin/register", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
+			"Authorization": `Bearer ${token}`,
 		},
 		body: JSON.stringify(setupUser),
 	});
@@ -28,5 +29,50 @@ export async function setupUser(setupUser: setupUserI): Promise<string> {
 	} else {
 		console.log(await response.json());
 		throw new Error("Server is not reachable");
+	}
+}
+
+export async function getAllUsers(token: string) {
+	const response = await fetch(URI + "/api/v1/admin/users", {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${token}`,
+		},
+	});
+
+	if (response.ok) {
+		const result = await response.json();
+		return result.data;
+	} else {
+		try {
+			const error = await response.json();
+			throw new Error(error.message || "Failed to fetch users");
+		} catch (e) {
+			throw new Error(`Server error: ${response.status} ${response.statusText}`);
+		}
+	}
+}
+
+export async function assignRole(userId: string, role: string, token: string) {
+	const response = await fetch(URI + `/api/v1/admin/users/${userId}/role`, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${token}`,
+		},
+		body: JSON.stringify({ role }),
+	});
+
+	if (response.ok) {
+		const result = await response.json();
+		return result.data;
+	} else {
+		try {
+			const error = await response.json();
+			throw new Error(error.message || "Failed to assign role");
+		} catch (e) {
+			throw new Error(`Server error: ${response.status} ${response.statusText}`);
+		}
 	}
 }

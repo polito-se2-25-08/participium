@@ -54,7 +54,7 @@ export const fetchAddressByCoordinates = async (
 export const fetchActiveReports = async (): Promise<MarkerI[]> => {
 	try {
 		const token = localStorage.getItem('token');
-		const response = await fetch(`${API_ENDPOINT}/reports/active`, {
+		const response = await fetch(`${API_ENDPOINT}/v1/reports/active`, {
       	headers: { 
         "Content-Type": "application/json",
         ...(token && { 'Authorization': `Bearer ${token}` }),

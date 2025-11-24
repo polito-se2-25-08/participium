@@ -52,9 +52,14 @@ export function ProfilePage() {
       <DangerButton onClick={handleLogout}>Logout</DangerButton>
 
       {user.role === "ADMIN" && (
-        <OutlinePrimaryButton onClick={() => navigate("/setup")}>
-          Setup and account
-        </OutlinePrimaryButton>
+        <>
+          <OutlinePrimaryButton onClick={() => navigate("/setup")}>
+            Setup an account
+          </OutlinePrimaryButton>
+          <OutlinePrimaryButton onClick={() => navigate("/assign-roles")}>
+            Assign Roles
+          </OutlinePrimaryButton>
+        </>
       )}
     </ContentContainer>
   );
