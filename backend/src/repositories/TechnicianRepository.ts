@@ -30,3 +30,20 @@ export const getTechnicianCategory = async (
 
   return data.category_id;
 };
+
+export const upsertTechnicianCategory = async (
+  user_id: number,
+  category_id: number
+): Promise<void> => {
+  const { error } = await supabase
+    .from("Technician_Category")
+    .upsert({ user_id, category_id });
+
+  if (error) {
+    throw new AppError(
+      `Failed to upsert technician category: ${error.message}`,
+      500,
+      "DB_UPSERT_ERROR"
+    );
+  }
+};
