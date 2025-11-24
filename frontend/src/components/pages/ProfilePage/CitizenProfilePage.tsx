@@ -98,6 +98,9 @@ export default function CitizenProfilePage() {
 			firstState.current.profilePicture = data.profilePicture;
 			updateUser(data);
 		}
+		if (!state.success) {
+			setHasModified(false);
+		}
 	}, [state]);
 
 	const handleSubmit = (e: React.FormEvent) => {
@@ -209,8 +212,14 @@ export default function CitizenProfilePage() {
 				</div>
 			</div>
 			<div className="flex flex-row gap-7">
-				<DangerButton onClick={handleLogout}>Logout</DangerButton>
-				<PrimaryButton type="submit" disabled={!hasModified}>
+				<DangerButton pending={isPending} onClick={handleLogout}>
+					Logout
+				</DangerButton>
+				<PrimaryButton
+					pending={isPending}
+					type="submit"
+					disabled={!hasModified}
+				>
 					Save
 				</PrimaryButton>
 			</div>
