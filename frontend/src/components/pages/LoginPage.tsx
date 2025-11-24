@@ -50,7 +50,6 @@ export function LoginPage() {
 			navigate("/dashboard");
 		}
 		if (state.success === false) {
-			console.log(state.data);
 		}
 	}, [state]);
 

@@ -1,7 +1,8 @@
 import type { NewReportResponse } from "../interfaces/dto/report/NewReportResponse";
 import type { ApiResponse } from "../interfaces/dto/Response";
 
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
+const API_ENDPOINT =
+	import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
 
 export const submitReport = async (
 	_: unknown,
@@ -55,7 +56,7 @@ export const submitReport = async (
 		});
 
 		const result: ApiResponse<NewReportResponse> = await res.json();
-		console.log("Server response:", result);
+
 		return result;
 	} catch (err: unknown) {
 		console.error("Error submitting report:", err);

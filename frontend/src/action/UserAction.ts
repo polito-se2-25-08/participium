@@ -77,7 +77,7 @@ export const updateUserAction = async (
 		const userIdValue = formData.get("user_id");
 		const userId = Number(userIdValue);
 
-		const bodyObj: Record<string, unknown> = { userId };
+		const bodyObj: Record<string, unknown> = {};
 
 		const emailNotificationValue = formData.get("email_notification");
 		if (emailNotificationValue !== null) {
@@ -98,7 +98,10 @@ export const updateUserAction = async (
 
 		const res = await fetch(`${API_ENDPOINT}/users/${userId}`, {
 			method: "PATCH",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
 			body,
 		});
 

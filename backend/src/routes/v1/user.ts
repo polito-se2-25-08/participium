@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 
 import { registerSchema, loginSchema } from "../../validators/userValidators";
 import { validate } from "../../middleware/validateMiddleware";
@@ -7,13 +7,15 @@ import {
 	getAllUsers,
 	loginUser,
 	registerUser,
+	updateUser,
 } from "../../controllers/userController";
 
-const router = express.Router();
+const router = Router();
 
 router.post("/v1/register", validate(registerSchema), registerUser);
 router.post("/v1/login", validate(loginSchema), loginUser);
 router.get("/v1/users", getAllUsers);
+router.patch("/v1/users/:id", updateUser);
 
 router.get("/profile", protect, (req, res) => {
 	res.json({ message: "Authorized!", user: (req as any).user });
