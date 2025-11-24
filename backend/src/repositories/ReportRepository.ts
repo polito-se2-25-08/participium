@@ -8,11 +8,6 @@ export const createReport = async (
 ): Promise<Report> => {
   const { photos, ...reportFields } = reportData;
 
-export const createReport = async (
-  reportData: Partial<Report> & { photos: string[] }
-): Promise<Report> => {
-  const { photos, ...reportFields } = reportData;
-
   const { data, error } = await supabase
     .from("Report")
     .insert([reportFields])
