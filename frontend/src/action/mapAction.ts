@@ -1,7 +1,6 @@
 import type { MarkerI } from "../interfaces/components/MarkerI";
 
-const API_ENDPOINT =
-  import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 export const fetchCoordinates = async (
 	address: string
@@ -71,7 +70,10 @@ export const fetchActiveReports = async (): Promise<MarkerI[]> => {
 				adress: report.address,
 				timestamp: new Date(report.timestamp).toLocaleString(),
 				category: report.category,
-				position: [parseFloat(report.latitude), parseFloat(report.longitude)],
+				position: [
+					parseFloat(report.latitude),
+					parseFloat(report.longitude),
+				],
 				anonymity: report.anonymous,
 				userId: report.user_id,
 				status: report.status,
@@ -82,5 +84,4 @@ export const fetchActiveReports = async (): Promise<MarkerI[]> => {
 		console.error("Error fetching active reports:", error);
 		return [];
 	}
-
-}
+};
