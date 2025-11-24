@@ -36,6 +36,9 @@ export const loginUser = catchAsync(async (req: Request, res: Response) => {
 				email: user.email,
 				username: user.username,
 				role: user.role,
+				profilePicture: user.profile_picture,
+				emailNotification: user.email_notification,
+				telegramUsername: user.telegram_username,
 			},
 			token: token,
 		},
@@ -58,10 +61,10 @@ export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
  */
 export const getUserById = catchAsync(async (req: Request, res: Response) => {
 	const userId = parseInt(req.params.id, 10);
-	
+
 	if (isNaN(userId)) {
 		res.status(400).json({
-			status: "error",
+			success: false,
 			message: "Invalid user ID",
 		});
 		return;
@@ -70,38 +73,36 @@ export const getUserById = catchAsync(async (req: Request, res: Response) => {
 	const user = await userService.getUserById(userId);
 
 	res.status(200).json({
-		status: "success",
+		success: true,
 		data: user,
 	});
 });
 
-/**
- * Assign or update a user's role
- * Admin-only endpoint
- * Accepts DB roles: CITIZEN, ADMIN, OFFICER, TECHNICIAN
- */
-export const assignRole = catchAsync(async (req: Request, res: Response) => {
-	const userId = parseInt(req.params.id, 10);
-	const { role } = req.body;
+export const updateUser = catchAsync(async (req: Request, res: Response) => {
+	const userId = parseInt(req.params.id);
 
 	if (isNaN(userId)) {
 		res.status(400).json({
-			status: "error",
-			message: "Invalid user ID",
+			success: false,
+			data: {
+				message: "Invalid user ID",
+			},
 		});
 		return;
 	}
 
-	const updatedUser = await userService.updateUserRole(userId, role);
+	const updatedUser = await userService.updateUser(userId, req.body);
 
 	res.status(200).json({
-		status: "success",
-		message: "Role updated successfully",
+		success: true,
 		data: {
 			id: updatedUser.id,
 			username: updatedUser.username,
 			email: updatedUser.email,
 			role: updatedUser.role,
+			telegramUsername: updatedUser.telegram_username,
+			emailNotification: updatedUser.email_notification,
+			profilePicture: updatedUser.profile_picture,
 		},
 	});
 });

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth, useUser } from "../../providers/AuthContext";
 import DangerButton from "../../buttons/variants/danger/DangerButton";
 
-import DefautlPridilePicture from "../../../assets/DefaultProfilePicture.png";
+import { defaultPicture } from "../../../assets/DefaultPicture";
 import {
 	startTransition,
 	useActionState,
@@ -17,6 +17,7 @@ import CheckInput from "../../input/variants/CheckInput";
 import PrimaryButton from "../../buttons/variants/primary/PrimaryButton";
 import Form from "../../form/Form";
 import { updateUserAction } from "../../../action/UserAction";
+import { fileToBase64 } from "../../../utilis/utils";
 
 export default function CitizenProfilePage() {
 	const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function CitizenProfilePage() {
 	const { user, updateUser } = useUser();
 
 	const [isHovered, setIsHovered] = useState(false);
-	const [telegramUserName, setTelegramUserName] = useState(
+	const [telegramUsername, setTelegramUsername] = useState(
 		user.telegramUsername ?? ""
 	);
 	const [enableNotification, setEnableNotification] = useState(
@@ -32,13 +33,11 @@ export default function CitizenProfilePage() {
 	);
 
 	const [profilePicture, setProfilePicture] = useState<string>(
-		user.profilePicture
-			? `data:image/png;base64,` + user.profilePicture
-			: DefautlPridilePicture
+		user.profilePicture ? user.profilePicture : defaultPicture
 	);
 
 	const firstState = useRef({
-		telegramUserName: telegramUserName,
+		telegramUserName: telegramUsername,
 		enableNotification: enableNotification,
 		profilePicture: profilePicture,
 	});
@@ -58,17 +57,11 @@ export default function CitizenProfilePage() {
 		navigate("/login");
 	};
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files[0]) {
 			const file = e.target.files[0];
-			const reader = new FileReader();
-
-			reader.onloadend = () => {
-				const base64Data = (reader.result as string).split(",")[1];
-				setProfilePicture(`data:image/png;base64,` + base64Data);
-			};
-
-			reader.readAsDataURL(file);
+			const base64 = await fileToBase64(file);
+			setProfilePicture(base64);
 		}
 	};
 
@@ -82,15 +75,16 @@ export default function CitizenProfilePage() {
 			return;
 		}
 		const modified =
-			firstState.current.telegramUserName !== telegramUserName ||
+			firstState.current.telegramUserName !== telegramUsername ||
 			firstState.current.enableNotification !== enableNotification ||
 			firstState.current.profilePicture !== profilePicture;
 
 		setHasModified(modified);
-	}, [profilePicture, telegramUserName, enableNotification]);
+	}, [profilePicture, telegramUsername, enableNotification]);
 
 	useEffect(() => {
 		if (!state) return;
+
 		if (state.success) {
 			const data = state.data;
 			firstState.current.telegramUserName = data.telegramUsername;
@@ -107,8 +101,8 @@ export default function CitizenProfilePage() {
 		e.preventDefault();
 		setHasModified(false);
 		const formData = new FormData();
-		if (telegramUserName !== firstState.current.telegramUserName) {
-			formData.append("telegram_username", telegramUserName);
+		if (telegramUsername !== firstState.current.telegramUserName) {
+			formData.append("telegram_username", telegramUsername);
 		}
 
 		if (enableNotification !== firstState.current.enableNotification) {
@@ -138,7 +132,7 @@ export default function CitizenProfilePage() {
 				>
 					<img
 						className="w-40 h-40 rounded-full hover:scale-105 hover:shadow-lg brightness-100 hover:brightness-80 transition-all transition-filter duration-300 cursor-pointer"
-						src={profilePicture}
+						src={`data:image/png;base64,` + profilePicture}
 						alt="user profile picture"
 						onClick={handleClick}
 					/>
@@ -192,8 +186,8 @@ export default function CitizenProfilePage() {
 					<TextInput
 						id="telegram"
 						name="telegram_username"
-						value={telegramUserName}
-						onChange={(e) => setTelegramUserName(e.target.value)}
+						value={telegramUsername}
+						onChange={(e) => setTelegramUsername(e.target.value)}
 						label="Telegram username"
 						hasLabel
 						placeholder="Enter your telegram username here..."
