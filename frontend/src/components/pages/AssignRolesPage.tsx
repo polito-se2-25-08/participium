@@ -69,7 +69,7 @@ export function AssignRolesPage() {
 
 	if (loading) {
 		return (
-			<ContentContainer width="xl:w-3/4 sm:w-full" padding="p-5">
+			<ContentContainer width="xl:w-3/4 sm:w-full" padding="p-3 sm:p-5">
 				<PageTitle>Assign Roles</PageTitle>
 				<p className="text-gray-600">Loading users...</p>
 			</ContentContainer>
@@ -77,16 +77,17 @@ export function AssignRolesPage() {
 	}
 
 	return (
-		<ContentContainer width="xl:w-3/4 sm:w-full" padding="p-5" gap="gap-4">
+		<ContentContainer width="xl:w-3/4 sm:w-full" padding="p-3 sm:p-5" gap="gap-4">
 			<PageTitle>Assign Roles</PageTitle>
 
 			{error && (
-				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+				<div className="bg-red-100 border border-red-400 text-red-700 px-3 py-2 sm:px-4 sm:py-3 rounded text-sm sm:text-base">
 					{error}
 				</div>
 			)}
 
-			<div className="overflow-x-auto">
+			{/* Desktop Table View - Hidden on Mobile */}
+			<div className="hidden md:block overflow-x-auto">
 				<table className="min-w-full bg-white border border-gray-200 rounded-lg">
 					<thead className="bg-gray-50">
 						<tr>
@@ -138,8 +139,63 @@ export function AssignRolesPage() {
 				</table>
 			</div>
 
+			{/* Mobile Card View - Hidden on Desktop */}
+			<div className="md:hidden space-y-3">
+				{users.map((user) => (
+					<div
+						key={user.id}
+						className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+					>
+						<div className="space-y-3">
+							<div>
+								<p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+									Name
+								</p>
+								<p className="text-sm text-gray-900 font-medium">
+									{user.name} {user.surname}
+								</p>
+							</div>
+							
+							<div>
+								<p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+									Username
+								</p>
+								<p className="text-sm text-gray-900">{user.username}</p>
+							</div>
+							
+							<div>
+								<p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+									Email
+								</p>
+								<p className="text-sm text-gray-900 break-words">{user.email}</p>
+							</div>
+							
+							<div>
+								<p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+									Role
+								</p>
+								<select
+									value={user.role}
+									onChange={(e) =>
+										handleRoleChange(user.id, e.target.value)
+									}
+									disabled={updatingUserId === user.id}
+									className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
+								>
+									{roles.map((role) => (
+										<option key={role} value={role}>
+											{role}
+										</option>
+									))}
+								</select>
+							</div>
+						</div>
+					</div>
+				))}
+			</div>
+
 			{users.length === 0 && !error && (
-				<p className="text-gray-600 text-center py-4">No users found</p>
+				<p className="text-gray-600 text-center py-4 text-sm sm:text-base">No users found</p>
 			)}
 		</ContentContainer>
 	);
