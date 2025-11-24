@@ -8,7 +8,7 @@ import { useUser } from "../providers/AuthContext";
 export default function Dashboard() {
 	const navigate = useNavigate();
 
-	const user = useUser();
+	const { user } = useUser();
 
 	return (
 		<ContentContainer
