@@ -6,8 +6,13 @@ import {
   approveReport,
   rejectReport,
 } from "../../controllers/OfficerController";
+import { protect, restrictTo } from "../../middleware/authMiddleware";
 
 const router = Router();
+
+// All officer routes require authentication and OFFICER role
+router.use(protect);
+router.use(restrictTo("OFFICER"));
 
 router.get("/v1/reports", getAllReports);
 router.get("/v1/report/:id", getReportById);

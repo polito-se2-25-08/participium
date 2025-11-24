@@ -47,7 +47,7 @@ export const registerAction = async (
 	const email = formData.get("email") as string;
 
 	try {
-		const res = await fetch(`${API_ENDPOINT}/v1/register`, {
+		const res = await fetch(`${API_ENDPOINT}/register`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({

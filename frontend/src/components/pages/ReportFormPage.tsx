@@ -162,7 +162,6 @@ export default function ReportFormPage() {
 						hasLabel
 						label="Address"
 						placeholder="Click the map below to select a location..."
-						disabled
 						required
 						value={selectedAdress}
 						showError={addressError}

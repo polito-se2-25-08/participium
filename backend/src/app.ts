@@ -22,11 +22,11 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/health", (req, res) => res.send("OK"));
 
 // Routes
-app.use("/api", officerRoutes);
 app.use("/api", userRoutes);
-app.use("/api", adminRoutes);
 app.use("/api", reportRoutes);
 app.use("/api", categoryRoutes);
+app.use("/api", officerRoutes);
+app.use("/api", adminRoutes);
 
 // Global error handler (MUST be last middleware)
 app.use(errorHandler);
