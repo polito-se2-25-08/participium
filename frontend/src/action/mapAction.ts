@@ -1,6 +1,6 @@
 import type { MarkerI } from "../interfaces/components/MarkerI";
 
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
 
 export const fetchCoordinates = async (
 	address: string
@@ -52,13 +52,13 @@ export const fetchAddressByCoordinates = async (
 
 export const fetchActiveReports = async (): Promise<MarkerI[]> => {
 	try {
-		const token = localStorage.getItem("token");
-		const response = await fetch(`${API_ENDPOINT}/reports/active`, {
-			headers: {
-				"Content-Type": "application/json",
-				...(token && { Authorization: `Bearer ${token}` }),
-			},
-		});
+		const token = localStorage.getItem('token');
+		const response = await fetch(`${API_ENDPOINT}/v1/reports/active`, {
+      	headers: { 
+        "Content-Type": "application/json",
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+    });
 		if (!response.ok) {
 			throw new Error("Failed to fetch active reports");
 		}

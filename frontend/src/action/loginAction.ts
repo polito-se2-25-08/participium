@@ -1,7 +1,7 @@
 import type { LoginReponse } from "../interfaces/dto/login/LoginResponse";
 import type { ApiResponse } from "../interfaces/dto/Response";
 
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
 export const loginAction = async (
 	_: unknown,
 	formData: FormData
@@ -10,7 +10,7 @@ export const loginAction = async (
 	const password = formData.get("password") as string;
 
 	try {
-		const res = await fetch(`${API_ENDPOINT}/login`, {
+		const res = await fetch(`${API_ENDPOINT}/v1/login`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ username, password }),

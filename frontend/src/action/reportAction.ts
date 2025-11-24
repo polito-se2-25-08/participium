@@ -1,7 +1,7 @@
 import type { NewReportResponse } from "../interfaces/dto/report/NewReportResponse";
 import type { ApiResponse } from "../interfaces/dto/Response";
 
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
 
 export const submitReport = async (
 	_: unknown,
@@ -36,7 +36,7 @@ export const submitReport = async (
 	try {
 		const token = localStorage.getItem("token");
 
-		const res = await fetch(`${API_ENDPOINT}/reports`, {
+		const res = await fetch(`${API_ENDPOINT}/v1/reports`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
