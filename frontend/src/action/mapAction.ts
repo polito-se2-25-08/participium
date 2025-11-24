@@ -1,6 +1,6 @@
 import type { MarkerI } from "../interfaces/components/MarkerI";
 
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
 
 export const fetchCoordinates = async (
 	address: string

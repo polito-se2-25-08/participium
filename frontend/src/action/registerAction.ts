@@ -1,7 +1,7 @@
 import type { RegisterResponse } from "../interfaces/dto/register/RegisterResponse";
 import type { ApiResponse } from "../interfaces/dto/Response";
 
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
 
 export const registerAction = async (
 	_: unknown,

@@ -1,5 +1,5 @@
 // src/api/userService.ts
-const API_BASE = "http://localhost:3000/api/v1";
+const API_BASE = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
 
 export interface RegisterData {
   email: string;

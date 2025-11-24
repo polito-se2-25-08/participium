@@ -1,7 +1,7 @@
 import type { Report } from '../types';
 import type { ApiResponse } from '../interfaces/dto/Response';
 
-const API_BASE = import.meta.env.VITE_API_ENDPOINT
+const API_BASE = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api"
 
 export interface CreateReportData {
   title: string;
