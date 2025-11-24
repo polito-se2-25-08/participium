@@ -12,25 +12,42 @@ import { AuthProvider } from "./components/providers/AuthContext";
 import ReportFormPage from "./components/pages/ReportFormPage";
 
 import "./App.css";
+import Acl from "./components/providers/Acl";
+import Redirect from "./components/providers/Redirect";
 
 export default function App() {
-  return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route element={<ProtectedRoutes />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/report" element={<ReportFormPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/setUp" element={<AccountSetupPage />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
-  );
+	return (
+		<BrowserRouter>
+			<AuthProvider>
+				<Routes>
+					<Route element={<Layout />}>
+						<Route path="/" element={<LoginPage />} />
+						<Route path="/register" element={<RegisterPage />} />
+
+						<Route element={<ProtectedRoutes />}>
+							<Route path="/dashboard" element={<Dashboard />} />
+
+							<Route element={<Acl allowedRoles={["ADMIN"]} />}>
+								<Route
+									path="/setup"
+									element={<AccountSetupPage />}
+								/>
+							</Route>
+
+							<Route element={<Acl allowedRoles={["CITIZEN"]} />}>
+								<Route
+									path="/report"
+									element={<ReportFormPage />}
+								/>
+							</Route>
+
+							<Route path="/profile" element={<ProfilePage />} />
+						</Route>
+
+						<Route path="*" element={<Redirect />} />
+					</Route>
+				</Routes>
+			</AuthProvider>
+		</BrowserRouter>
+	);
 }

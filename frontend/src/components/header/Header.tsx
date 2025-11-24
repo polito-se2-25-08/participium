@@ -1,7 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../providers/AuthContext";
 
 export default function Header() {
 	const location = useLocation();
+	const { user } = useAuth();
 
 	const isActive = (path: string) => location.pathname === path;
 
@@ -22,12 +24,18 @@ export default function Header() {
 					>
 						Dashboard
 					</Link>
-					<Link
-						to="/report"
-						className={isActive("/report") ? "text-blue-500" : ""}
-					>
-						Report
-					</Link>
+
+					{user?.role !== "ADMIN" && (
+						<Link
+							to="/report"
+							className={
+								isActive("/report") ? "text-blue-500" : ""
+							}
+						>
+							Report
+						</Link>
+					)}
+
 					<Link
 						to="/profile"
 						className={isActive("/profile") ? "text-blue-500" : ""}
