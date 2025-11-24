@@ -1,7 +1,7 @@
 import type { Report } from '../types';
 import type { ApiResponse } from '../interfaces/dto/Response';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api"
 
 export interface CreateReportData {
   title: string;
@@ -12,6 +12,7 @@ export interface CreateReportData {
   address: string;
   anonymous: boolean;
   user_id?: number;
+  photos: string[];
 }
 
 export const reportService = {
@@ -28,10 +29,6 @@ export const reportService = {
         body: JSON.stringify(reportData),
       });
 
-      if (!response.ok) {
-        return { success: false, data: { message: `HTTP error! status: ${response.status}` } };
-      }
-
       const result: ApiResponse<Report> = await response.json();
       return result;
     } catch (error) {
@@ -45,10 +42,6 @@ export const reportService = {
     try {
       const response = await fetch(`${API_BASE}/reports`);
 
-      if (!response.ok) {
-        return { success: false, data: { message: `HTTP error! status: ${response.status}` } };
-      }
-
       const result: ApiResponse<Report[]> = await response.json();
       return result;
     } catch (error) {
@@ -61,10 +54,6 @@ export const reportService = {
   async getReportById(id: number): Promise<ApiResponse<Report>> {
     try {
       const response = await fetch(`${API_BASE}/reports/${id}`);
-
-      if (!response.ok) {
-        return { success: false, data: { message: `HTTP error! status: ${response.status}` } };
-      }
 
       const result: ApiResponse<Report> = await response.json();
       return result;

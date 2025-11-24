@@ -7,6 +7,7 @@ interface PrimaryButtonProps {
 	type?: "submit" | "button";
 	className?: string;
 	pending?: boolean;
+	disabled?: boolean;
 }
 
 export default function PrimaryButton({
@@ -14,6 +15,7 @@ export default function PrimaryButton({
 	className,
 	type = "button",
 	pending = false,
+	disabled = false,
 	onClick,
 }: PrimaryButtonProps) {
 	return (
@@ -23,6 +25,7 @@ export default function PrimaryButton({
 			variant="PRIMARY"
 			onClick={onClick}
 			pending={pending}
+			disabled={disabled}
 		>
 			{children}
 		</Button>

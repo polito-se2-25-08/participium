@@ -1,13 +1,16 @@
 import { Report } from "../models/Report";
 import { supabase } from "../utils/Supabase";
 import AppError from "../utils/AppError";
+import { getAllCategories } from "../controllers/CategoryController";
 
 export const createReport = async (
-  reportData: Partial<Report>
+  reportData: Partial<Report> & { photos: string[] }
 ): Promise<Report> => {
+  const { photos, ...reportFields } = reportData;
+
   const { data, error } = await supabase
     .from("Report")
-    .insert([reportData])
+    .insert([reportFields])
     .select()
     .single();
 
@@ -18,6 +21,47 @@ export const createReport = async (
       "DB_INSERT_ERROR"
     );
   }
+
+  // Insert photos into Report_Photo table
+  if (photos.length > 0) {
+    const photoInserts = photos.map((photo) => ({
+      report_id: data.id,
+      report_photo: photo,
+    }));
+
+    const { error: photoError } = await supabase
+      .from("Report_Photo")
+      .insert(photoInserts);
+
+    if (photoError) {
+      throw new AppError(
+        `Failed to save report photos: ${photoError.message}`,
+        500,
+        "DB_INSERT_ERROR"
+      );
+    }
+  }
+
+  // Insert photos into Report_Photo table
+  if (photos.length > 0) {
+    const photoInserts = photos.map((photo) => ({
+      report_id: data.id,
+      report_photo: photo,
+    }));
+
+    const { error: photoError } = await supabase
+      .from("Report_Photo")
+      .insert(photoInserts);
+
+    if (photoError) {
+      throw new AppError(
+        `Failed to save report photos: ${photoError.message}`,
+        500,
+        "DB_INSERT_ERROR"
+      );
+    }
+  }
+
   return data;
 };
 
@@ -34,7 +78,107 @@ export const getAllReports = async (): Promise<Report[]> => {
       "DB_FETCH_ERROR"
     );
   }
-  return data;
+
+  const remappedData = data ? await remapCategoryName(data) : [];
+
+  return remappedData;
+};
+
+const remapCategoryName = async (reports: any[]): Promise<Report[]> => {
+  const { data: categories, error: errorCategories } = await supabase
+    .from("Category")
+    .select("*")
+    .order("id", { ascending: true });
+
+  if (errorCategories) {
+    throw new AppError(
+      `Failed to fetch active reports: ${errorCategories.message}`,
+      500,
+      "DB_FETCH_ERROR"
+    );
+  }
+
+  // Map category names to reports
+  const remappedReports = reports.map((report) => {
+    const foundCategory = categories?.find(
+      (cat) => cat.id === report.category_id
+    );
+    return {
+      ...report,
+      category: foundCategory?.category,
+    };
+  });
+
+  return remappedReports;
+};
+
+export const getActiveReports = async (): Promise<Report[]> => {
+  const { data, error } = await supabase
+    .from("Report")
+    .select("*")
+    .in("status", [
+      "ASSIGNED",
+      "IN_PROGRESS",
+      "SUSPENDED",
+      "REJECTED",
+      "RESOLVED",
+    ])
+    .order("timestamp", { ascending: false });
+
+  const remappedData = data ? await remapCategoryName(data) : [];
+
+  if (error) {
+    throw new AppError(
+      `Failed to fetch active reports: ${error.message}`,
+      500,
+      "DB_FETCH_ERROR"
+    );
+  }
+  return remappedData;
+};
+
+export const getFilteredReports = async (
+  userId: string,
+  category: string[],
+  status: string[],
+  reportsFrom: string,
+  reportsUntil: string
+): Promise<Report[]> => {
+  const query = supabase.from("Report").select("*");
+
+  if (userId) {
+    query.eq("userId", userId);
+  }
+
+  if (category.length > 0) {
+    query.in("category", category);
+  }
+
+  if (status.length > 0) {
+    query.in("status", status);
+  }
+
+  if (reportsFrom) {
+    query.gte("timestamp", reportsFrom);
+  }
+
+  if (reportsUntil) {
+    query.lte("timestamp", reportsUntil);
+  }
+
+  const { data, error } = await query.order("timestamp", { ascending: false });
+
+  if (error) {
+    throw new AppError(
+      `Failed to fetch filtered reports: ${error.message}`,
+      500,
+      "DB_FETCH_ERROR"
+    );
+  }
+
+  const remappedData = data ? await remapCategoryName(data) : [];
+
+  return remappedData;
 };
 
 export const getReportById = async (id: number): Promise<Report> => {
@@ -60,7 +204,9 @@ export const getReportById = async (id: number): Promise<Report> => {
     );
   }
 
-  return data;
+  const remappedData = data ? await remapCategoryName([data]) : [];
+
+  return remappedData[0];
 };
 
 export const updateReportStatus = async (id: number, status: string) => {

@@ -27,14 +27,17 @@ export const protect = (req: Request, _res: Response, next: NextFunction) => {
 export const restrictTo = (...allowedRoles: DbRole[]) => {
 	return (req: Request, _res: Response, next: NextFunction) => {
 		const user = (req as any).user;
-		
+
 		if (!user || !user.role) {
 			return next(new AppError("User information not found", 401));
 		}
 
 		if (!allowedRoles.includes(user.role)) {
 			return next(
-				new AppError("You do not have permission to perform this action", 403)
+				new AppError(
+					"You do not have permission to perform this action",
+					403
+				)
 			);
 		}
 

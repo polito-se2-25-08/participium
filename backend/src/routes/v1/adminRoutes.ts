@@ -26,7 +26,7 @@ router.get("/v1/admin/users", getAllUsers);
 router.get("/v1/admin/users/:id", getUserById);
 
 // Assign or update a user's role
-router.put("/v1/admin/users/:id/role", validate(assignRoleSchema), assignRole);
+router.put("/v1/admin/users/:id/role", validate(assignRoleSchema), updateUser);
 
 // Assign or update a technician category
 router.put("/v1/admin/technicians/:id/category", setTechnicianCategory);

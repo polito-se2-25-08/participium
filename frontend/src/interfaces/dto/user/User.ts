@@ -1,8 +1,11 @@
 export interface User {
-	id: string;
+	id: number;
 	name: string;
 	surname: string;
 	username: string;
 	email: string;
-	role: "CITIZEN" | "ADMIN";
+	emailNotification: boolean;
+	telegramUsername: string;
+	profilePicture: string;
+	role: "CITIZEN" | "ADMIN" | "OFFICER";
 }

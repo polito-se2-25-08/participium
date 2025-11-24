@@ -12,4 +12,5 @@ export interface CreateReportDTO {
   address: string;
   anonymous: boolean;
   user_id: number;
+  photos: string[];
 }

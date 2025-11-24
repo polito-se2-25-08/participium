@@ -1,6 +1,5 @@
 import { supabase } from "../utils/Supabase";
-import type { Tables, TablesInsert } from "../utils/DatabaseSchema";
-import type { DbRole } from "../utils/roleMapper";
+import type { Database, Tables, TablesInsert } from "../utils/DatabaseSchema";
 
 type UserRow = Tables<"User">;
 
@@ -49,10 +48,10 @@ export const userRepository = {
 		return data!;
 	},
 
-	async updateUserRole(userId: number, role: DbRole): Promise<UserRow> {
+	async updateUser(userId: number, updates: Partial<any>): Promise<any> {
 		const { data, error } = await supabase
 			.from("User")
-			.update({ role })
+			.update(updates)
 			.eq("id", userId)
 			.select()
 			.single();

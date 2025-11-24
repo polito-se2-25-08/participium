@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 
 import { setupUser } from "../../api/adminService";
+import { useAuth } from "../providers/AuthContext";
+
 export function AccountSetupPage() {
+  const { token } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -24,8 +27,12 @@ export function AccountSetupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!token) {
+      console.error("No authentication token found");
+      return;
+    }
     try {
-      const password = await setupUser(formData);
+      const password = await setupUser(formData, token);
       setPassword(password);
     } catch (error) {
       console.error("Error setting up user:", error);
