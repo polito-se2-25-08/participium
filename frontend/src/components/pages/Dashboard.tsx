@@ -13,7 +13,7 @@ export default function Dashboard() {
 	return (
 		<ContentContainer
 			width="xl:w-5/6 sm:w-1/2 "
-			gap="xl:gap-4 sm:gap-2"
+			gap="xl:gap-2 gap-4"
 			padding="p-5"
 		>
 			<PageTitle>Participium</PageTitle>
