@@ -15,7 +15,7 @@ export const registerAction = async (
   const email = formData.get("email") as string;
 
   try {
-    const res = await fetch(`${API_ENDPOINT}/register`, {
+    const res = await fetch(`${API_ENDPOINT}/v1/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -27,7 +27,19 @@ export const registerAction = async (
       }),
     });
 
+    console.log("Register response status:", res.status, res.statusText);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("Register error response:", errorText);
+      return {
+        success: false,
+        data: { message: `Registration failed: ${res.status}` },
+      };
+    }
+
     const result: ApiResponse<RegisterResponse> = await res.json();
+    console.log("Register result:", result);
     return result;
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Cannot reach server";

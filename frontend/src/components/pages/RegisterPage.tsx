@@ -3,7 +3,7 @@ import PrimaryButton from "../buttons/variants/primary/PrimaryButton";
 import PageTitle from "../titles/PageTitle";
 import Input from "../input/Input";
 import Form from "../form/Form";
-import { loginAction } from "../../action/loginAction";
+import { registerAction } from "../../action/registerAction";
 import { useAuth } from "../providers/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import ContentContainer from "../containers/ContentContainer";
@@ -12,7 +12,7 @@ import EmailInput from "../input/variants/EmailInput";
 import PasswordInput from "../input/variants/PasswordInput";
 
 export function RegisterPage() {
-  const [state, formAction, isPending] = useActionState(loginAction, null);
+  const [state, formAction, isPending] = useActionState(registerAction, null);
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -74,11 +74,13 @@ export function RegisterPage() {
       return;
     }
     if (state.success === true) {
+      // Registration successful, redirect to login
+      navigate("/");
     }
     if (state.success === false) {
-      console.log(state.data);
+      console.error("Registration failed:", state.data);
     }
-  }, [state]);
+  }, [state, navigate]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
