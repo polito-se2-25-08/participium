@@ -14,18 +14,17 @@ export default function SearchLocationInput({
   setMarker,
 }: SearchLocationInputProps) {
   const map = useMap();
-  const formRef = useRef<HTMLFormElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (formRef.current) {
-      L.DomEvent.disableClickPropagation(formRef.current);
+    if (divRef.current) {
+      L.DomEvent.disableClickPropagation(divRef.current);
     }
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const address = formData.get("address") as string;
+  const handleSearch = async () => {
+    const address = inputRef.current?.value;
     if (address) {
       const coords = await fetchCoordinates(address);
       if (coords) {
@@ -46,10 +45,16 @@ export default function SearchLocationInput({
     }
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
+
   return (
-    <form
-      ref={formRef}
-      onSubmit={handleSubmit}
+    <div
+      ref={divRef}
       style={{
         position: "absolute",
         top: "10px",
@@ -61,12 +66,14 @@ export default function SearchLocationInput({
       }}
     >
       <input
+        ref={inputRef}
         type="text"
         name="address"
         placeholder="Search location..."
         style={{ padding: "5px", marginRight: "5px" }}
+        onKeyPress={handleKeyPress}
       />
-      <button type="submit">Search</button>
-    </form>
+      <button type="button" onClick={handleSearch}>Search</button>
+    </div>
   );
 }

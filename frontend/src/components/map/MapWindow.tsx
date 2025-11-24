@@ -56,7 +56,7 @@ export function MapWindow({
         setLocation={setLocation}
       />
       {isReport && <SearchLocationInput setMarker={setTempMarker} />}
-      <ReportMarkers Markers={markerList} setMarkers={setMarkerList} />
+      <ReportMarkers Markers={markerList} setMarkers={setMarkerList} isDashboard={!isReport} />
       <TempMarker tempMarker={tempMarker} setTempMarker={setTempMarker} />
     </MapContainer>
   );

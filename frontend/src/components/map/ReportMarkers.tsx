@@ -8,12 +8,17 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 interface MarkerListProps {
   Markers: MarkerI[] | null;
   setMarkers: React.Dispatch<React.SetStateAction<MarkerI[] | null>>;
+  isDashboard?: boolean;
 }
 
 export function ReportMarkers({
   Markers,
   setMarkers,
+  isDashboard = false,
 }: MarkerListProps) {
+  if (!isDashboard) {
+    return null;
+  }
   const [addresses, setAddresses] = useState<Record<number, string>>({});
 
   useEffect(() => {

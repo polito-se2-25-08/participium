@@ -174,6 +174,7 @@ export default function ReportFormPage() {
             setAdress={setSelectedAddress}
             setLocation={setLocation}
             className="min-h-[350px] w-full"
+            isReport={true}
           />
         </ReportCardContainer>
 
