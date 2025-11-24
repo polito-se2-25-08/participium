@@ -23,3 +23,11 @@ export const getFilteredReports = async (userId: string, category: string[], sta
   return await ReportRepository.getFilteredReports(userId, category, status, reportsFrom, reportsUntil);
 };
 
+export const approveReport = async (id: number): Promise<Report> => {
+  return await ReportRepository.approveReport(id);
+};
+
+export const rejectReport = async (id: number, motivation: string, officer_id: number): Promise<Report> => {
+  return await ReportRepository.rejectReport(id, motivation);
+};
+

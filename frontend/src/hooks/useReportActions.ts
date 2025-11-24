@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { reportService } from '../api/reportService';
 
 interface RejectionModalState {
   isOpen: boolean;
@@ -6,7 +7,7 @@ interface RejectionModalState {
   reportTitle: string;
 }
 
-export function useReportActions() {
+export function useReportActions(onSuccess?: () => void) {
   const [processingReportId, setProcessingReportId] = useState<number | null>(null);
   const [rejectionModal, setRejectionModal] = useState<RejectionModalState>({
     isOpen: false,
@@ -16,9 +17,23 @@ export function useReportActions() {
 
   const handleApprove = async (reportId: number) => {
     setProcessingReportId(reportId);
-    // TODO: Implement approve action
-    console.log("Approve report:", reportId);
-    setTimeout(() => setProcessingReportId(null), 1000);
+    try {
+      const result = await reportService.approveReport(reportId);
+      if (result.success) {
+        onSuccess?.(); // to refresh the list
+      } else {
+        console.error("Failed to approve report:", result.data);
+        const errorMessage = typeof result.data === 'string' 
+          ? result.data 
+          : 'Failed to approve report';
+        alert(errorMessage);
+      }
+    } catch (error) {
+      console.error("Error approving report:", error);
+      alert("Network error: Unable to approve report");
+    } finally {
+      setProcessingReportId(null);
+    }
   };
 
   const openRejectionModal = (reportId: number, reportTitle: string) => {
@@ -36,14 +51,24 @@ export function useReportActions() {
   const handleReject = async (motivation: string) => {
     if (rejectionModal.reportId) {
       setProcessingReportId(rejectionModal.reportId);
-      // TODO: Implement reject action with motivation
-      console.log("Reject report:", rejectionModal.reportId, "Motivation:", motivation);
-      
-      // Close modal and reset after processing
-      setTimeout(() => {
+      try {
+        const result = await reportService.rejectReport(rejectionModal.reportId, motivation);
+        if (result.success) {
+          closeRejectionModal();
+          onSuccess?.(); // Refresh the list
+        } else {
+          console.error("Failed to reject report:", result.data);
+          const errorMessage = typeof result.data === 'string' 
+            ? result.data 
+            : 'Failed to reject report';
+          alert(errorMessage);
+        }
+      } catch (error) {
+        console.error("Error rejecting report:", error);
+        alert("Network error: Unable to reject report");
+      } finally {
         setProcessingReportId(null);
-        closeRejectionModal();
-      }, 1000);
+      }
     }
   };
 

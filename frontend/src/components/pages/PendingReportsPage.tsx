@@ -9,7 +9,7 @@ import { usePendingReports } from "../../hooks/usePendingReports";
 import { useReportActions } from "../../hooks/useReportActions";
 
 export default function PendingReportsPage() {
-  const { reports, loading, error } = usePendingReports();
+  const { reports, loading, error, refetch } = usePendingReports();
   const {
     processingReportId,
     rejectionModal,
@@ -17,7 +17,7 @@ export default function PendingReportsPage() {
     openRejectionModal,
     closeRejectionModal,
     handleReject,
-  } = useReportActions();
+  } = useReportActions(refetch);
 
   const handleRejectClick = (reportId: number) => {
     const report = reports.find((r) => r.id === reportId);

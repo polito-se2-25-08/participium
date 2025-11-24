@@ -1,4 +1,5 @@
 import { Report } from "../models/Report";
+import { RejectionReportInsert } from "../models/RejectionReport";
 import { supabase } from "../utils/Supabase";
 import AppError from "../utils/AppError";
 import { getAllCategories } from "../controllers/CategoryController";
@@ -70,7 +71,7 @@ export const getAllReports = async (): Promise<Report[]> => {
   const { data, error } = await supabase
     .from("Report")
     .select("*")
-    .order("timestamp", { ascending: false });
+    .order("timestamp", { ascending: true });
   
   if (error) {
     throw new AppError(
@@ -227,4 +228,79 @@ export const updateReportStatus = async (id: number, status: string) => {
   }
   
   return data;
+};
+
+export const approveReport = async (id: number): Promise<Report> => {
+  const { data, error } = await supabase
+    .from("Report")
+    .update({ status: "ASSIGNED" })
+    .eq("id", id)
+    .select()
+    .single();
+    
+  if (error) {
+    throw new AppError(
+      `Failed to approve report: ${error.message}`,
+      500,
+      "DB_UPDATE_ERROR"
+    );
+  }
+  
+  if (!data) {
+    throw new AppError(
+      `Report with id ${id} not found`,
+      404,
+      "REPORT_NOT_FOUND"
+    );
+  }
+
+  const remappedData = data ? await remapCategoryName([data]) : [];
+  return remappedData[0];
+};
+
+export const rejectReport = async (id: number, motivation: string): Promise<Report> => {
+  // First, update the report status to rejected
+  const { data: reportData, error: reportError } = await supabase
+    .from("Report")
+    .update({ status: "REJECTED" })
+    .eq("id", id)
+    .select()
+    .single();
+    
+  if (reportError) {
+    throw new AppError(
+      `Failed to reject report: ${reportError.message}`,
+      500,
+      "DB_UPDATE_ERROR"
+    );
+  }
+  
+  if (!reportData) {
+    throw new AppError(
+      `Report with id ${id} not found`,
+      404,
+      "REPORT_NOT_FOUND"
+    );
+  }
+
+  // Insert rejection record
+  const rejectionData: RejectionReportInsert = {
+    report_id: id,
+    motivation: motivation
+  };
+
+  const { error: rejectionError } = await supabase
+    .from("Rejection_Report")
+    .insert([rejectionData]);
+
+  if (rejectionError) {
+    throw new AppError(
+      `Failed to save rejection details: ${rejectionError.message}`,
+      500,
+      "DB_INSERT_ERROR"
+    );
+  }
+
+  const remappedData = reportData ? await remapCategoryName([reportData]) : [];
+  return remappedData[0];
 };

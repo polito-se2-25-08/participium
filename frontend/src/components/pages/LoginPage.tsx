@@ -8,6 +8,7 @@ import ContentContainer from "../containers/ContentContainer";
 import TextInput from "../input/variants/TextInput";
 import PasswordInput from "../input/variants/PasswordInput";
 import { loginAction } from "../../action/UserAction";
+import { getDefaultRouteForRole } from "../../utilis/roleNavigation";
 
 export function LoginPage() {
 	const [state, formAction, isPending] = useActionState(loginAction, null);
@@ -48,12 +49,8 @@ export function LoginPage() {
 			const user = state.data.user;
 			login(user, token);
 			
-			// Redirect based on user role
-			if (user.role === "OFFICER") {
-				navigate("/pending-reports");
-			} else {
-				navigate("/dashboard");
-			}
+			// Redirect based on role
+			navigate(getDefaultRouteForRole(user.role));
 		}
 		if (state.success === false) {
 		}

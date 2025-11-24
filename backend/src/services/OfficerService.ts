@@ -13,3 +13,11 @@ export const updateReportStatus = async (id: number, status: string) => {
 export const getReportById = async (id: number) => {
   return await ReportRepository.getReportById(id);
 };
+
+export const approveReport = async (id: number): Promise<Report> => {
+  return await ReportRepository.approveReport(id);
+};
+
+export const rejectReport = async (id: number, motivation: string): Promise<Report> => {
+  return await ReportRepository.rejectReport(id, motivation);
+};

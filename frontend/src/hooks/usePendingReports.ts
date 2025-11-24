@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { Report } from '../../types';
-import { reportService } from '../../api/reportService';
+import type { Report } from '../types';
+import { reportService } from '../api/reportService';
 
 export function usePendingReports() {
   const [reports, setReports] = useState<Report[]>([]);
@@ -38,7 +38,7 @@ export function usePendingReports() {
 
   const filterPendingReports = (allReports: Report[]): Report[] => {
     return allReports.filter(
-      (report) => report.status === "pending_approval" || report.status === null
+      (report) => report.status === "PENDING_APPROVAL" || report.status === null
     );
   };
 

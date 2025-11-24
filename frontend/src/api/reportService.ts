@@ -79,4 +79,47 @@ export const reportService = {
       return { success: false, data: { message } };
     }
   },
+
+  async approveReport(id: number): Promise<ApiResponse<Report>> {
+    try {
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${API_BASE}/reports/${id}/approve`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
+      });
+
+      const result: ApiResponse<Report> = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Error approving report:', error);
+      const message = error instanceof Error ? error.message : "Cannot reach server";
+      return { success: false, data: { message } };
+    }
+  },
+
+  async rejectReport(id: number, motivation: string): Promise<ApiResponse<Report>> {
+    try {
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${API_BASE}/reports/${id}/reject`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
+        body: JSON.stringify({ motivation }),
+      });
+
+      const result: ApiResponse<Report> = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Error rejecting report:', error);
+      const message = error instanceof Error ? error.message : "Cannot reach server";
+      return { success: false, data: { message } };
+    }
+  },
 };
