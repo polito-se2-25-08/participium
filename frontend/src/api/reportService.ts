@@ -1,7 +1,7 @@
 import type { Report } from '../types';
 import type { ApiResponse } from '../interfaces/dto/Response';
 
-const API_BASE = import.meta.env.VITE_API_ENDPOINT
+const API_BASE = import.meta.env.VITE_API_ENDPOINT || 'http://localhost:3000/api/v1';
 
 export interface CreateReportData {
   title: string;
@@ -40,7 +40,15 @@ export const reportService = {
 
   async getAllReports(): Promise<ApiResponse<Report[]>> {
     try {
-      const response = await fetch(`${API_BASE}/reports`);
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${API_BASE}/reports`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
+      });
 
       const result: ApiResponse<Report[]> = await response.json();
       return result;
@@ -53,7 +61,15 @@ export const reportService = {
 
   async getReportById(id: number): Promise<ApiResponse<Report>> {
     try {
-      const response = await fetch(`${API_BASE}/reports/${id}`);
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${API_BASE}/reports/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
+      });
 
       const result: ApiResponse<Report> = await response.json();
       return result;

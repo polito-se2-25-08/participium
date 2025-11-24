@@ -47,7 +47,13 @@ export function LoginPage() {
       const token = state.data.token;
       const user = state.data.user;
       login(user, token);
-      navigate("/dashboard");
+      
+      // Redirect based on user role
+      if (user.role === "OFFICER") {
+        navigate("/pending-reports");
+      } else {
+        navigate("/dashboard");
+      }
     }
     if (state.success === false) {
       console.log(state.data);

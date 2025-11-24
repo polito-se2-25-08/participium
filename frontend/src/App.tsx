@@ -10,6 +10,7 @@ import ProtectedRoutes from "./components/ProtectedRoutes";
 import AccountSetupPage from "./components/pages/AccountSetupPage";
 import { AuthProvider } from "./components/providers/AuthContext";
 import ReportFormPage from "./components/pages/ReportFormPage";
+import PendingReportsPage from "./components/pages/PendingReportsPage";
 
 import "./App.css";
 
@@ -26,6 +27,7 @@ export default function App() {
               <Route path="/report" element={<ReportFormPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/setUp" element={<AccountSetupPage />} />
+              <Route path="/pending-reports" element={<PendingReportsPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
