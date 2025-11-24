@@ -14,3 +14,12 @@ export const getAllReports = async (): Promise<Report[]> => {
 export const getReportById = async (id: number): Promise<Report> => {
   return await ReportRepository.getReportById(id);
 };
+
+export const getActiveReports = async (): Promise<Report[]> => {
+  return await ReportRepository.getActiveReports();
+};
+
+export const getFilteredReports = async (userId: string, category: string[], status: string[], reportsFrom: string, reportsUntil: string): Promise<Report[]> => {
+  return await ReportRepository.getFilteredReports(userId, category, status, reportsFrom, reportsUntil);
+};
+

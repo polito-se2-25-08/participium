@@ -24,12 +24,18 @@ export default function Header() {
 					>
 						Dashboard
 					</Link>
-					<Link
-						to="/report"
-						className={isActive("/report") ? "text-blue-500" : ""}
-					>
-						Report
-					</Link>
+
+					{user?.role !== "ADMIN" && user?.role !== "OFFICER" && (
+						<Link
+							to="/report"
+							className={
+								isActive("/report") ? "text-blue-500" : ""
+							}
+						>
+							Report
+						</Link>
+					)}
+
 					{user?.role === "OFFICER" && (
 						<Link
 							to="/pending-reports"
@@ -40,6 +46,7 @@ export default function Header() {
 							Review Queue
 						</Link>
 					)}
+
 					<Link
 						to="/profile"
 						className={isActive("/profile") ? "text-blue-500" : ""}

@@ -12,6 +12,9 @@ router.post("/v1/reports", protect, validate(createReportSchema), ReportControll
 // GET /api/v1/reports - Get all reports
 router.get("/v1/reports", ReportController.getAllReports);
 
+//GET /api/v1/reports/active - Get active reports
+router.get("/v1/reports/active", ReportController.getActiveReports);
+
 // GET /api/v1/reports/:id - Get a specific report
 router.get("/v1/reports/:id", ReportController.getReportById);
 

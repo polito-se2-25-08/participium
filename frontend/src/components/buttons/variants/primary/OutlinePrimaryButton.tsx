@@ -6,6 +6,7 @@ interface PrimaryButtonProps {
 	type?: "submit" | "button";
 	className?: string;
 	pending?: boolean;
+	disabled?: boolean;
 	onClick?: () => void;
 }
 export default function OutlinePrimaryButton({
@@ -13,6 +14,7 @@ export default function OutlinePrimaryButton({
 	type = "button",
 	className,
 	pending = false,
+	disabled = false,
 	onClick,
 }: PrimaryButtonProps) {
 	return (
@@ -22,6 +24,7 @@ export default function OutlinePrimaryButton({
 			variant="OUTLINE_PRIMARY"
 			onClick={onClick}
 			pending={pending}
+			disabled={disabled}
 		>
 			{children}
 		</Button>
