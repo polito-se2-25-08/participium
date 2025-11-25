@@ -50,6 +50,10 @@ export interface Report {
   photos: Report_Photo[];
   anonymous: boolean;
   user_id: number;
+  user?: {
+    name: string;
+    surname: string;
+  };
   status: ReportStatus;
   createdAt: Date;
   updatedAt: Date;

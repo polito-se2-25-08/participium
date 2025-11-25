@@ -43,27 +43,6 @@ export const createReport = async (
     }
   }
 
-
-  // Insert photos into Report_Photo table
-  if (photos.length > 0) {
-    const photoInserts = photos.map((photo) => ({
-      report_id: data.id,
-      report_photo: photo,
-    }));
-
-    const { error: photoError } = await supabase
-      .from("Report_Photo")
-      .insert(photoInserts);
-
-    if (photoError) {
-      throw new AppError(
-        `Failed to save report photos: ${photoError.message}`,
-        500,
-        "DB_INSERT_ERROR"
-      );
-    }
-  }
-
   return data;
 };
 
@@ -72,7 +51,8 @@ export const getAllReports = async (): Promise<Report[]> => {
     .from("Report")
     .select(`
       *,
-      photos:Report_Photo(*)
+      photos:Report_Photo(*),
+      user:User(name, surname)
     `)
     .order("timestamp", { ascending: true });
   

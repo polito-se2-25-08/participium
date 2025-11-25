@@ -43,7 +43,7 @@ export default function ReportReviewCard({
               <p className="text-sm text-gray-500">
                 Submitted by:{" "}
                 <span className="font-medium">
-                  {report.anonymous ? "Anonymous" : `User #${report.user_id}`}
+                  {report.anonymous ? "Anonymous" : report.user ? `${report.user.name} ${report.user.surname}` : "Unknown User"}
                 </span>
               </p>
               {report.location && (
