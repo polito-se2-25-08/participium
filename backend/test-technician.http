@@ -4,14 +4,14 @@
 @baseUrl = http://localhost:3000/api
 @adminUsername = admDom
 @adminPassword = Ud5S4*9MPe
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2NDA2NjgxOSwiZXhwIjoxNzY0MDcwNDE5fQ.QNpd0nYbd8-SkDzkxSuDXXpipoRDUESBPHYIcDjBjCM
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2NDA3NTA2MSwiZXhwIjoxNzY0MDc4NjYxfQ.lzpVG4INfGyyCj5S06RiEVLCP_6w2Rf22xGBLu6pZ8g
 
 @techUsername = tech_user_cat5
 @techEmail = tech_user_cat5@example.com
 # Fill after creation response:
 @techUserId = 42
 @techPassword = [hLeT3:K)d$
-@techToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDIsInJvbGUiOiJURUNITklDSUFOIiwiaWF0IjoxNzY0MDY3MDE2LCJleHAiOjE3NjQwNzA2MTZ9.jfEny-FO9VYmNMGN98E3cXWbrn58JZ1bwZJsbJMEiqI
+@techToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDIsInJvbGUiOiJURUNITklDSUFOIiwiaWF0IjoxNzY0MDczODI0LCJleHAiOjE3NjQwNzc0MjR9.Y2vJ0cfwEJV_UGQcMRekym6c5AHc_h1sRtSwCQj6SGU
 
 
 ###############################################
@@ -53,7 +53,7 @@ Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
-  "category_id": 5
+  "category_id": 2
 }
 
 ### Error case: invalid category (e.g. 0)
