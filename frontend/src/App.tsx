@@ -12,55 +12,53 @@ import { AssignRolesPage } from "./components/pages/AssignRolesPage";
 import { AuthProvider } from "./components/providers/AuthContext";
 import ReportFormPage from "./components/pages/ReportFormPage";
 import PendingReportsPage from "./components/pages/PendingReportsPage";
+import CategoryReportsPage from "./components/pages/CategoryReportsPage";
 
 import "./App.css";
 import Acl from "./components/providers/Acl";
 import Redirect from "./components/providers/Redirect";
 
 export default function App() {
-	return (
-		<BrowserRouter>
-			<AuthProvider>
-				<Routes>
-					<Route element={<Layout />}>
-						<Route path="/" element={<LoginPage />} />
-						<Route path="/register" element={<RegisterPage />} />
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-						<Route element={<ProtectedRoutes />}>
-							<Route path="/dashboard" element={<Dashboard />} />
+            <Route element={<ProtectedRoutes />}>
+              <Route path="/dashboard" element={<Dashboard />} />
 
-							<Route element={<Acl allowedRoles={["ADMIN"]} />}>
-								<Route
-									path="/setup"
-									element={<AccountSetupPage />}
-								/>
-								<Route
-									path="/assign-roles"
-									element={<AssignRolesPage />}
-								/>
-							</Route>
+              <Route element={<Acl allowedRoles={["ADMIN"]} />}>
+                <Route path="/setup" element={<AccountSetupPage />} />
+                <Route path="/assign-roles" element={<AssignRolesPage />} />
+              </Route>
 
-							<Route element={<Acl allowedRoles={["CITIZEN"]} />}>
-								<Route
-									path="/report"
-									element={<ReportFormPage />}
-								/>
-							</Route>
+              <Route element={<Acl allowedRoles={["CITIZEN"]} />}>
+                <Route path="/report" element={<ReportFormPage />} />
+              </Route>
 
-							<Route element={<Acl allowedRoles={["OFFICER"]} />}>
-								<Route
-									path="/pending-reports"
-									element={<PendingReportsPage />}
-								/>
-							</Route>
+              <Route element={<Acl allowedRoles={["OFFICER"]} />}>
+                <Route
+                  path="/pending-reports"
+                  element={<PendingReportsPage />}
+                />
+              </Route>
+              <Route element={<Acl allowedRoles={["TECHNICIAN"]} />}>
+                <Route
+                  path="/category-reports"
+                  element={<CategoryReportsPage />}
+                />
+              </Route>
 
-							<Route path="/profile" element={<ProfilePage />} />
-						</Route>
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
 
-						<Route path="*" element={<Redirect />} />
-					</Route>
-				</Routes>
-			</AuthProvider>
-		</BrowserRouter>
-	);
+            <Route path="*" element={<Redirect />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
