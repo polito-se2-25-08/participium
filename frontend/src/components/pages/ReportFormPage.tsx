@@ -55,25 +55,20 @@ export default function ReportFormPage() {
 		const categoryHasError = categoryValue === "";
 		const titleHasError = titleValue === "";
 		const descriptionHasError = descriptionValue === "";
-
-		if (
-			photos.length < MIN_PHOTOS_PER_REPORT ||
-			photos.length > MAX_PHOTOS_PER_REPORT
-		) {
-			setPhotoError(true);
-		}
+		const photoHasError = photos.length < MIN_PHOTOS_PER_REPORT || photos.length > MAX_PHOTOS_PER_REPORT;
 
 		setAddressError(addressHasError);
 		setCategoryError(categoryHasError);
 		setTitleError(titleHasError);
 		setDescriptionError(descriptionHasError);
+		setPhotoError(photoHasError);
 
 		if (
 			addressHasError ||
 			categoryHasError ||
 			titleHasError ||
 			descriptionHasError ||
-			photoError
+			photoHasError
 		)
 			return;
 
@@ -135,10 +130,15 @@ export default function ReportFormPage() {
 		const combinedFiles = [...photos, ...newFiles];
 
 		if (combinedFiles.length > MAX_PHOTOS_PER_REPORT) {
+			alert(`You can only upload a maximum of ${MAX_PHOTOS_PER_REPORT} photos`);
+			e.target.value = "";
 			return;
 		}
 
+		// Reset file input to allow re-uploading the same file
+		e.target.value = "";
 		setPhotos(combinedFiles);
+		setPhotoError(false);
 	};
 
 	return (
@@ -162,7 +162,6 @@ export default function ReportFormPage() {
 						hasLabel
 						label="Address"
 						placeholder="Click the map below to select a location..."
-						disabled
 						required
 						value={selectedAdress}
 						showError={addressError}

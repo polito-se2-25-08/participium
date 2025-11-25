@@ -150,3 +150,81 @@ export const getFilteredReports = async (req: Request, res: Response) => {
     return res.status(500).json(response);
   }
 };
+
+export const approveReport = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const numericId = Number(id);
+
+    if (isNaN(numericId)) {
+      const response: ApiResponse<string> = {
+        success: false,
+        data: "Invalid report ID"
+      };
+      return res.status(400).json(response);
+    }
+
+    const report = await ReportService.approveReport(numericId);
+    const response: ApiResponse<Report> = {
+      success: true,
+      data: report
+    };
+    return res.status(200).json(response);
+  } catch (err: any) {
+    console.error("Error approving report:", err);
+    const response: ApiResponse<string> = {
+      success: false,
+      data: err.message || "Unknown error occurred"
+    };
+    return res.status(500).json(response);
+  }
+};
+
+export const rejectReport = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { motivation } = req.body;
+    const numericId = Number(id);
+
+    if (isNaN(numericId)) {
+      const response: ApiResponse<string> = {
+        success: false,
+        data: "Invalid report ID"
+      };
+      return res.status(400).json(response);
+    }
+
+    if (!motivation || motivation.trim() === "") {
+      const response: ApiResponse<string> = {
+        success: false,
+        data: "Rejection motivation is required"
+      };
+      return res.status(400).json(response);
+    }
+
+    const authenticatedUser = (req as any).user;
+    const officer_id = authenticatedUser?.id;
+
+    if (!officer_id) {
+      const response: ApiResponse<string> = {
+        success: false,
+        data: "Authentication required"
+      };
+      return res.status(401).json(response);
+    }
+
+    const report = await ReportService.rejectReport(numericId, motivation, officer_id);
+    const response: ApiResponse<Report> = {
+      success: true,
+      data: report
+    };
+    return res.status(200).json(response);
+  } catch (err: any) {
+    console.error("Error rejecting report:", err);
+    const response: ApiResponse<string> = {
+      success: false,
+      data: err.message || "Unknown error occurred"
+    };
+    return res.status(500).json(response);
+  }
+};

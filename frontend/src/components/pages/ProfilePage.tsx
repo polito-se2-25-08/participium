@@ -4,6 +4,7 @@ import PageTitle from "../titles/PageTitle";
 import ContentContainer from "../containers/ContentContainer";
 import AdminProfilePage from "./ProfilePage/AdminProfilePage";
 import CitizenProfilePage from "./ProfilePage/CitizenProfilePage";
+import OfficerProfilePage from "./ProfilePage/OfficerProfilePage";
 import ProfileContentContainer from "../containers/ProfileContentContainer";
 
 export function ProfilePage() {
@@ -19,6 +20,7 @@ export function ProfilePage() {
 				<PageTitle>{user.username}</PageTitle>
 				{user.role === "ADMIN" && <AdminProfilePage />}
 				{user.role === "CITIZEN" && <CitizenProfilePage />}
+				{user.role === "OFFICER" && <OfficerProfilePage />}
 			</ProfileContentContainer>
 		</ContentContainer>
 	);

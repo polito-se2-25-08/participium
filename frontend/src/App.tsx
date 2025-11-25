@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { LoginPage } from "./components/pages/LoginPage";
 import { RegisterPage } from "./components/pages/RegisterPage";
@@ -11,6 +11,7 @@ import AccountSetupPage from "./components/pages/AccountSetupPage";
 import { AssignRolesPage } from "./components/pages/AssignRolesPage";
 import { AuthProvider } from "./components/providers/AuthContext";
 import ReportFormPage from "./components/pages/ReportFormPage";
+import PendingReportsPage from "./components/pages/PendingReportsPage";
 
 import "./App.css";
 import Acl from "./components/providers/Acl";
@@ -28,25 +29,32 @@ export default function App() {
 						<Route element={<ProtectedRoutes />}>
 							<Route path="/dashboard" element={<Dashboard />} />
 
-						<Route element={<Acl allowedRoles={["ADMIN"]} />}>
-							<Route
-								path="/setup"
-								element={<AccountSetupPage />}
-							/>
-							<Route
-								path="/assign-roles"
-								element={<AssignRolesPage />}
-							/>
-						</Route>
+							<Route element={<Acl allowedRoles={["ADMIN"]} />}>
+								<Route
+									path="/setup"
+									element={<AccountSetupPage />}
+								/>
+								<Route
+									path="/assign-roles"
+									element={<AssignRolesPage />}
+								/>
+							</Route>
 
-						<Route element={<Acl allowedRoles={["CITIZEN"]} />}>
-							<Route
-								path="/report"
-								element={<ReportFormPage />}
-							/>
-						</Route>
+							<Route element={<Acl allowedRoles={["CITIZEN"]} />}>
+								<Route
+									path="/report"
+									element={<ReportFormPage />}
+								/>
+							</Route>
 
-						<Route path="/profile" element={<ProfilePage />} />
+							<Route element={<Acl allowedRoles={["OFFICER"]} />}>
+								<Route
+									path="/pending-reports"
+									element={<PendingReportsPage />}
+								/>
+							</Route>
+
+							<Route path="/profile" element={<ProfilePage />} />
 						</Route>
 
 						<Route path="*" element={<Redirect />} />

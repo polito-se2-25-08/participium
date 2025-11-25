@@ -11,3 +11,10 @@ export const createReportSchema = z.object({
   user_id: z.number().optional(),
   photos: z.array(z.string()).min(1, "At least 1 photo is required").max(3, "Maximum 3 photos allowed"),
 });
+
+export const rejectReportSchema = z.object({
+  motivation: z.string()
+    .min(10, "Rejection motivation must be at least 10 characters")
+    .max(500, "Rejection motivation is too long")
+    .transform(str => str.trim()),
+});

@@ -8,6 +8,7 @@ import ContentContainer from "../containers/ContentContainer";
 import TextInput from "../input/variants/TextInput";
 import PasswordInput from "../input/variants/PasswordInput";
 import { loginAction } from "../../action/UserAction";
+import { getDefaultRouteForRole } from "../../utilis/roleNavigation";
 
 export function LoginPage() {
 	const [state, formAction, isPending] = useActionState(loginAction, null);
@@ -34,10 +35,10 @@ export function LoginPage() {
 
 		if (usernameHasError || passwordHasError) return;
 
-		startTransition(() => {
-			formAction(formData);
-		});
-	};
+	startTransition(() => {
+		formAction(formData);
+	});
+};
 
 	useEffect(() => {
 		if (state === null) {
@@ -47,13 +48,13 @@ export function LoginPage() {
 			const token = state.data.token;
 			const user = state.data.user;
 			login(user, token);
-			navigate("/dashboard");
+			
+			// Redirect based on role
+			navigate(getDefaultRouteForRole(user.role));
 		}
 		if (state.success === false) {
 		}
-	}, [state]);
-
-	useEffect(() => {
+	}, [state]);	useEffect(() => {
 		if (!usernameError && !passwordError) return;
 		const timeout = setTimeout(() => {
 			setUsernameError(false);

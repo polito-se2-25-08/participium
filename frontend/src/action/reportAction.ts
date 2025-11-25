@@ -37,7 +37,7 @@ export const submitReport = async (
 	try {
 		const token = localStorage.getItem("token");
 
-		const res = await fetch(`${API_ENDPOINT}/v1/reports`, {
+		const res = await fetch(`${API_ENDPOINT}/reports`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
