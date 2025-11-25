@@ -35,8 +35,8 @@ app.use("/api/v1", userRoutes);
 app.use("/api/v1", reportRoutes);
 app.use("/api/v1", categoryRoutes);
 app.use("/api/v1/technician", technicianRoutes);
-app.use("/api/v1", officerRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1", officerRoutes);
 
 // Global error handler (MUST be last middleware)
 app.use(errorHandler);
