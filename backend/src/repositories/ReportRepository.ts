@@ -70,7 +70,10 @@ export const createReport = async (
 export const getAllReports = async (): Promise<Report[]> => {
   const { data, error } = await supabase
     .from("Report")
-    .select("*")
+    .select(`
+      *,
+      photos:Report_Photo(*)
+    `)
     .order("timestamp", { ascending: true });
   
   if (error) {
