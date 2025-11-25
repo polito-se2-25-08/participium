@@ -66,12 +66,12 @@ export const getAllReports = async (): Promise<Report[]> => {
     );
   }
 
-  const remappedData = data ? await remapCategoryName(data) : [];
+  const remappedData = data ? await remapReports(data) : [];
 
   return remappedData;
 };
 
-const remapCategoryName = async (reports: any[]): Promise<Report[]> => {
+const remapReports = async (reports: any[]): Promise<Report[]> => {
   const { data: categories, error: errorCategories } = await supabase
     .from("Category")
     .select("*")
@@ -86,13 +86,37 @@ const remapCategoryName = async (reports: any[]): Promise<Report[]> => {
   }
 
   // Map category names to reports
-  const remappedReports = reports.map((report) => {
+  const categoriesReports = reports.map((report) => {
     const foundCategory = categories?.find(
       (cat) => cat.id === report.category_id
     );
     return {
       ...report,
       category: foundCategory?.category,
+    };
+  });
+
+  const { data: users, error: errorUsers } = await supabase
+    .from("User")
+    .select("*")
+    .order("id", { ascending: true });
+
+  if (errorUsers) {
+    throw new AppError(
+      `Failed to fetch active reports: ${errorUsers.message}`,
+      500,
+      "DB_FETCH_ERROR"
+    );
+  }
+
+  // Map category names to reports
+  const remappedReports = categoriesReports.map((report) => {
+    const foundUser = users?.find(
+      (user) => user.id === report.user_id
+    );
+    return {
+      ...report,
+      user_id: foundUser?.username,
     };
   });
 
@@ -107,12 +131,10 @@ export const getActiveReports = async (): Promise<Report[]> => {
       "ASSIGNED",
       "IN_PROGRESS",
       "SUSPENDED",
-      "REJECTED",
-      "RESOLVED",
     ])
     .order("timestamp", { ascending: false });
 
-  const remappedData = data ? await remapCategoryName(data) : [];
+  const remappedData = data ? await remapReports(data) : [];
 
   if (error) {
     throw new AppError(
@@ -163,7 +185,7 @@ export const getFilteredReports = async (
     );
   }
 
-  const remappedData = data ? await remapCategoryName(data) : [];
+  const remappedData = data ? await remapReports(data) : [];
 
   return remappedData;
 };
@@ -191,7 +213,7 @@ export const getReportById = async (id: number): Promise<Report> => {
     );
   }
 
-  const remappedData = data ? await remapCategoryName([data]) : [];
+  const remappedData = data ? await remapReports([data]) : [];
 
   return remappedData[0];
 };
@@ -247,7 +269,7 @@ export const approveReport = async (id: number): Promise<Report> => {
     );
   }
 
-  const remappedData = data ? await remapCategoryName([data]) : [];
+  const remappedData = data ? await remapReports([data]) : [];
   return remappedData[0];
 };
 
@@ -297,7 +319,7 @@ export const rejectReport = async (
     );
   }
 
-  const remappedData = reportData ? await remapCategoryName([reportData]) : [];
+  const remappedData = reportData ? await remapReports([reportData]) : [];
   return remappedData[0];
 };
 
