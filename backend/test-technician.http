@@ -1,14 +1,30 @@
 ### Technician Flow Test
 ### Adjust tokens / IDs after running each step.
 
-@baseUrl = http://localhost:3000/api/v1
-@adminToken = <PUT_ADMIN_JWT_HERE>
+@baseUrl = http://localhost:3000/api
+@adminUsername = admDom
+@adminPassword = Ud5S4*9MPe
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2NDA2NjgxOSwiZXhwIjoxNzY0MDcwNDE5fQ.QNpd0nYbd8-SkDzkxSuDXXpipoRDUESBPHYIcDjBjCM
+
 @techUsername = tech_user_cat5
 @techEmail = tech_user_cat5@example.com
 # Fill after creation response:
-@techUserId = <SET_AFTER_STEP_1>
-@techPassword = <SET_AFTER_STEP_1_GENERATED_PASSWORD>
-@techToken = <SET_AFTER_LOGIN>
+@techUserId = 42
+@techPassword = [hLeT3:K)d$
+@techToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDIsInJvbGUiOiJURUNITklDSUFOIiwiaWF0IjoxNzY0MDY3MDE2LCJleHAiOjE3NjQwNzA2MTZ9.jfEny-FO9VYmNMGN98E3cXWbrn58JZ1bwZJsbJMEiqI
+
+
+###############################################
+# 0. Login and Get JWT Token
+###############################################
+# @name login
+POST {{baseUrl}}/v1/login
+Content-Type: application/json
+
+{
+  "username": "{{adminUsername}}",
+  "password": "{{adminPassword}}"
+}
 
 ############################################################
 # 1. Admin creates a TECHNICIAN user (password returned)
@@ -73,6 +89,18 @@ Authorization: Bearer {{techToken}}
 GET {{baseUrl}}/v1/technician/reports?status=IN_PROGRESS
 Authorization: Bearer {{techToken}}
 
+### With explicit status filter
+GET {{baseUrl}}/v1/technician/reports?status=SUSPENDED
+Authorization: Bearer {{techToken}}
+
+### With explicit status filter
+GET {{baseUrl}}/v1/technician/reports?status=RESOLVED
+Authorization: Bearer {{techToken}}
+
+### With explicit status filter
+GET {{baseUrl}}/v1/technician/reports?status=REJECTED
+Authorization: Bearer {{techToken}}
+
 ### Error: missing token
 GET {{baseUrl}}/v1/technician/reports
 
@@ -81,22 +109,17 @@ GET {{baseUrl}}/v1/technician/reports
 Authorization: Bearer <CITIZEN_TOKEN>
 
 ############################################################
-# (Optional) Seed reports (requires existing report creation route)
+# (Optional) NEEDS VERIFICATION Seed reports (requires existing report creation route)
 # Ensure some reports exist with category_id = 5 and status = ASSIGNED / IN_PROGRESS
 ############################################################
-# POST {{baseUrl}}/reports
-# Authorization: Bearer <OFFICER_OR_ADMIN_TOKEN>
-# Content-Type: application/json
-#
-# {
-#   "title": "Broken streetlight",
-#   "description": "Lamp not working",
-#   "latitude": "45.067",
-#   "longitude": "7.682",
-#   "anonymous": false,
-#   "category_id": 5
-# }
-
-############################################################
-# Health check
-GET {{baseUrl}}/health  
+#POST {{baseUrl}}/v1/reports
+#Authorization: Bearer {{adminToken}}
+#Content-Type: application/json
+#{
+#  "title": "Broken streetlight",
+#  "description": "Lamp not working",
+#  "latitude": "45.067",
+#  "longitude": "7.682",
+#  "anonymous": false,
+#  "category_id": 5
+#}
