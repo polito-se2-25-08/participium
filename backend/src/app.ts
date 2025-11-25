@@ -23,12 +23,20 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/health", (req, res) => res.send("OK"));
 
 // Routes
-app.use("/api", technicianRoutes);
-app.use("/api", officerRoutes);
+/* 
 app.use("/api", userRoutes);
-app.use("/api", adminRoutes);
 app.use("/api", reportRoutes);
 app.use("/api", categoryRoutes);
+app.use("/api", technicianRoutes);
+app.use("/api", officerRoutes);
+app.use("/api", adminRoutes);
+*/
+app.use("/api/v1", userRoutes);
+app.use("/api/v1", reportRoutes);
+app.use("/api/v1", categoryRoutes);
+app.use("/api/v1/technician", technicianRoutes);
+app.use("/api/v1", officerRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 // Global error handler (MUST be last middleware)
 app.use(errorHandler);

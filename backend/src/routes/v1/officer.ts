@@ -6,9 +6,14 @@ import {
 } from "../../controllers/OfficerController";
 
 const router = Router();
-
+/* 
 router.get("/v1/reports", getAllReports);
 router.get("/v1/report/:id", getReportById);
 router.patch("/v1/status:id", updateReportStatus);
+ */
+
+router.get("/reports", getAllReports);
+router.get("/report/:id", getReportById);
+router.patch("/status/:id", updateReportStatus);
 
 export default router;

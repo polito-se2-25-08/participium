@@ -5,7 +5,8 @@ import { setupUser } from "../../controllers/adminController";
 import {
   getAllUsers,
   getUserById,
-  assignRole,
+  //assignRole,
+  updateUser,
 } from "../../controllers/userController";
 import { setTechnicianCategory } from "../../controllers/adminController";
 import { protect, restrictTo } from "../../middleware/authMiddleware";
@@ -16,7 +17,7 @@ const router = express.Router();
 router.use(protect);
 router.use(restrictTo("ADMIN"));
 
-// User creation by admin (existing functionality)
+/* // User creation by admin (existing functionality)
 router.post("/v1/admin/register", validate(setupSchema), setupUser);
 
 // List all users with their roles
@@ -29,6 +30,21 @@ router.get("/v1/admin/users/:id", getUserById);
 router.put("/v1/admin/users/:id/role", validate(assignRoleSchema), updateUser);
 
 // Assign or update a technician category
-router.put("/v1/admin/technicians/:id/category", setTechnicianCategory);
+router.put("/v1/admin/technicians/:id/category", setTechnicianCategory); 
+*/
 
+// User creation by admin (existing functionality)
+router.post("/register", validate(setupSchema), setupUser);
+
+// List all users with their roles
+router.get("/users", getAllUsers);
+
+// Get a single user by ID
+router.get("/users/:id", getUserById);
+
+// Assign or update a user's role
+router.put("/users/:id/role", validate(assignRoleSchema), updateUser);
+
+// Assign or update a technician category
+router.put("/technicians/:id/category", setTechnicianCategory);
 export default router;
