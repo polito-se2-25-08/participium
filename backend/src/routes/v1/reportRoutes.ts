@@ -1,6 +1,6 @@
 import express from "express";
 import * as ReportController from "../../controllers/ReportController";
-import { protect } from "../../middleware/authMiddleware";
+import { protect, restrictTo } from "../../middleware/authMiddleware";
 import { validate } from "../../middleware/validateMiddleware";
 import { createReportSchema } from "../../validators/reportValidators";
 
@@ -35,5 +35,10 @@ router.get("/reports/active", ReportController.getActiveReports);
 
 // GET /api/v1/reports/:id - Get a specific report
 router.get("/reports/:id", ReportController.getReportById);
+
+router.patch("/reports/:id/status",     
+  //protect,              
+  //restrictTo("TECHNICIAN"), 
+  ReportController.updateReportStatus);
 
 export default router;

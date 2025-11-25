@@ -123,3 +123,17 @@ Authorization: Bearer <CITIZEN_TOKEN>
 #  "anonymous": false,
 #  "category_id": 5
 #}
+
+
+############################################################
+# Update Report Status (Technician)
+# PATCH /v1/reports/:id/status
+# Sets status to one of:
+# "ASSIGNED" | "IN_PROGRESS" | "SUSPENDED" | "RESOLVED"
+############################################################
+PATCH {{baseUrl}}/v1/reports/19/status
+Content-Type: application/json
+
+{
+  "status": "SUSPENDED"
+}

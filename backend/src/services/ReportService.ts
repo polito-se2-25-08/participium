@@ -31,3 +31,6 @@ export const rejectReport = async (id: number, motivation: string, officer_id: n
   return await ReportRepository.rejectReport(id, motivation);
 };
 
+export const updateReportStatus = async (id: number, status: string) => {
+  return await ReportRepository.updateReportStatus(id, status);
+};

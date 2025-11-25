@@ -3,6 +3,8 @@ import * as ReportService from "../services/ReportService";
 import { ApiResponse, CreateReportDTO } from "../dto/ReportDTO";
 import { Report } from "../models/Report";
 import { getCategoryId } from "../utils/categoryMapper";
+import { io, connectedUsers } from "../app";
+import { supabase } from "../utils/Supabase";
 
 export const createReport = async (req: Request, res: Response) => {
   try {
@@ -226,5 +228,69 @@ export const rejectReport = async (req: Request, res: Response) => {
       data: err.message || "Unknown error occurred"
     };
     return res.status(500).json(response);
+  }
+};
+
+export const updateReportStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const numericId = Number(id);
+    if (isNaN(numericId)) {
+      return res.status(400).json({
+        success: false,
+        data: "Invalid report ID",
+      });
+    }
+
+    if (!status) {
+      return res.status(400).json({
+        success: false,
+        data: "Status is required",
+      });
+    }
+
+    const { data: rawReport, error: fetchError } = await supabase
+      .from("Report")
+      .select("user_id")
+      .eq("id", numericId)
+      .single();
+
+    if (fetchError || !rawReport) {
+      return res.status(404).json({
+        success: false,
+        data: "Report not found",
+      });
+    }
+
+    // Update the report status
+    const updatedReport = await ReportService.updateReportStatus(numericId, status);
+
+    const userId = rawReport.user_id; 
+    const socketId = connectedUsers.get(userId);
+    
+    if (socketId) {
+      io.to(socketId).emit("notification", {
+        message: `Your report #${numericId} status has been updated to: ${status}`,
+        reportId: numericId,
+        status: status,
+        timestamp: new Date().toISOString(),
+      });
+      console.log(`Notification sent to user ${userId} for report ${numericId}`);
+    } else {
+      console.log(`User ${userId} is not connected, notification not sent`);
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: updatedReport,
+    });
+  } catch (err: any) {
+    console.error("Error updating report status:", err);
+    return res.status(500).json({
+      success: false,
+      data: err.message || "Unknown error",
+    });
   }
 };
