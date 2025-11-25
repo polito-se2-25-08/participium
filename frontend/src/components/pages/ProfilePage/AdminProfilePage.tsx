@@ -40,11 +40,14 @@ export default function AdminProfilePage() {
 					<span className="flex-1">{user.role}</span>
 				</div>
 			</div>
-			<DangerButton onClick={handleLogout}>Logout</DangerButton>
 
 			<OutlinePrimaryButton onClick={() => navigate("/setup")}>
-				Setup and account
+				Setup an account
 			</OutlinePrimaryButton>
+			<OutlinePrimaryButton onClick={() => navigate("/assign-roles")}>
+				Manage users
+			</OutlinePrimaryButton>
+			<DangerButton onClick={handleLogout}>Logout</DangerButton>
 		</>
 	);
 }

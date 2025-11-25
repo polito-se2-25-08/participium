@@ -7,5 +7,5 @@ export interface User {
 	emailNotification: boolean;
 	telegramUsername: string;
 	profilePicture: string;
-	role: "CITIZEN" | "ADMIN" | "OFFICER";
+	role: "CITIZEN" | "ADMIN" | "OFFICER" | "TECHNICIAN";
 }

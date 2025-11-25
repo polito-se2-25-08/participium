@@ -6,6 +6,7 @@ import AdminProfilePage from "./ProfilePage/AdminProfilePage";
 import CitizenProfilePage from "./ProfilePage/CitizenProfilePage";
 import OfficerProfilePage from "./ProfilePage/OfficerProfilePage";
 import ProfileContentContainer from "../containers/ProfileContentContainer";
+import TechnitianProfilePage from "./ProfilePage/TechnitianProfilePage";
 
 export function ProfilePage() {
 	const { user } = useUser();
@@ -21,6 +22,7 @@ export function ProfilePage() {
 				{user.role === "ADMIN" && <AdminProfilePage />}
 				{user.role === "CITIZEN" && <CitizenProfilePage />}
 				{user.role === "OFFICER" && <OfficerProfilePage />}
+				{user.role === "TECHNICIAN" && <TechnitianProfilePage />}
 			</ProfileContentContainer>
 		</ContentContainer>
 	);

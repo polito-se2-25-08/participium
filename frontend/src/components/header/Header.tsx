@@ -40,7 +40,9 @@ export default function Header() {
 						<Link
 							to="/pending-reports"
 							className={
-								isActive("/pending-reports") ? "text-blue-500" : ""
+								isActive("/pending-reports")
+									? "text-blue-500"
+									: ""
 							}
 						>
 							Review Queue
