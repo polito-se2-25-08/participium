@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { setupUser } from "../../api/adminService";
 import { useAuth } from "../providers/AuthContext";
@@ -22,6 +22,18 @@ export function AccountSetupPage() {
 	});
 
 	const [password, setPassword] = useState<string | null>(null);
+	const [isPending, setIsPending] = useState(false);
+	const [canSubmit, setCanSubmit] = useState(false);
+
+	useEffect(() => {
+		setCanSubmit(
+			formData.name !== "" &&
+				formData.surname !== "" &&
+				formData.username !== "" &&
+				formData.role !== "" &&
+				formData.email !== ""
+		);
+	}, [formData]);
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -34,6 +46,7 @@ export function AccountSetupPage() {
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
+		setIsPending(true);
 		e.preventDefault();
 		if (!token) {
 			console.error("No authentication token found");
@@ -44,6 +57,8 @@ export function AccountSetupPage() {
 			setPassword(password);
 		} catch (error) {
 			console.error("Error setting up user:", error);
+		} finally {
+			setIsPending(false);
 		}
 	};
 
@@ -58,6 +73,7 @@ export function AccountSetupPage() {
 				<Form onSubmit={handleSubmit} gap="gap-4">
 					<div className="flex flex-row gap-5">
 						<TextInput
+							required
 							id={"name"}
 							name={"name"}
 							placeholder="Type the name here..."
@@ -67,6 +83,7 @@ export function AccountSetupPage() {
 							onChange={handleChange}
 						/>
 						<TextInput
+							required
 							id={"surname"}
 							name={"surname"}
 							placeholder="Type the surname here..."
@@ -77,6 +94,7 @@ export function AccountSetupPage() {
 						/>
 					</div>
 					<TextInput
+						required
 						id={"username"}
 						name={"username"}
 						placeholder="Type the usrname here..."
@@ -87,6 +105,7 @@ export function AccountSetupPage() {
 					/>
 
 					<EmailInput
+						required
 						id={"email"}
 						name={"email"}
 						placeholder="Type the email here..."
@@ -96,6 +115,7 @@ export function AccountSetupPage() {
 						onChange={handleChange}
 					/>
 					<Select
+						required
 						id="role"
 						name="role"
 						hasLabel
@@ -109,7 +129,13 @@ export function AccountSetupPage() {
 						onChange={handleChange}
 					/>
 
-					<PrimaryButton type="submit">Create Account</PrimaryButton>
+					<PrimaryButton
+						pending={isPending}
+						type="submit"
+						disabled={!canSubmit}
+					>
+						Create Account
+					</PrimaryButton>
 				</Form>
 
 				{password && (
