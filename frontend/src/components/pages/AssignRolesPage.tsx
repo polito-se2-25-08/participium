@@ -77,7 +77,9 @@ export function AssignRolesPage() {
 		return (
 			<ContentContainer width="xl:w-3/4 sm:w-full" padding="p-3 sm:p-5">
 				<PageTitle>Assign Roles</PageTitle>
-				<p className="text-gray-600">Loading users...</p>
+				<p className="text-gray-600 text-center mt-2">
+					Loading users...
+				</p>
 			</ContentContainer>
 		);
 	}
