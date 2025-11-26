@@ -3,7 +3,7 @@ import React from "react";
 interface Notification {
   message: string;
   reportId: number;
-  status: string;
+  status?: string; // Make it optional
   timestamp: string;
 }
 

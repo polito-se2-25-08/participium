@@ -264,10 +264,12 @@ export const updateReportStatus = async (req: Request, res: Response) => {
       });
     }
 
-    // Update the report status
-    const updatedReport = await ReportService.updateReportStatus(numericId, status);
+    const userId = rawReport.user_id;
 
-    const userId = rawReport.user_id; 
+    // Update the report status and create notification
+    const updatedReport = await ReportService.updateReportStatus(numericId, status, userId);
+
+    // Try to send via WebSocket if user is online
     const socketId = connectedUsers.get(userId);
     
     if (socketId) {
@@ -279,7 +281,7 @@ export const updateReportStatus = async (req: Request, res: Response) => {
       });
       console.log(`Notification sent to user ${userId} for report ${numericId}`);
     } else {
-      console.log(`User ${userId} is not connected, notification not sent`);
+      console.log(`User ${userId} is not connected, notification saved to DB`);
     }
 
     return res.status(200).json({

@@ -131,9 +131,31 @@ Authorization: Bearer <CITIZEN_TOKEN>
 # Sets status to one of:
 # "ASSIGNED" | "IN_PROGRESS" | "SUSPENDED" | "RESOLVED"
 ############################################################
+### Update report status
 PATCH {{baseUrl}}/v1/reports/19/status
 Content-Type: application/json
 
 {
   "status": "SUSPENDED"
 }
+
+### Send a message on a report
+POST {{baseUrl}}/v1/reports/19/messages
+Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN_HERE
+
+{
+  "message": "Hello, any updates?"
+}
+
+### Get unread notifications (simulate login)
+GET {{baseUrl}}/v1/notifications
+###Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get messages for a report
+GET {{baseUrl}}/v1/reports/19/messages
+###Authorization: Bearer YOUR_TOKEN_HERE
+
+### Mark notification as read
+PATCH {{baseUrl}}/v1/notifications/1/read
+###Authorization: Bearer YOUR_TOKEN_HERE
