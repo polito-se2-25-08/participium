@@ -348,3 +348,36 @@ export const getReportsByCategoryAndStatus = async (
 
   return data;
 };
+
+export const getReportsByTechnician = async (
+  category_id: number,
+  status?: Report["status"] | Report["status"][]
+): Promise<Report[]> => {
+  let query = supabase
+    .from("Report")
+    .select(`
+      *,
+      photos:Report_Photo(*),
+      user:User(name, surname)
+    `)
+    .eq("category_id", category_id)
+    .neq("status", "REJECTED")
+    .neq("status", "RESOLVED");
+
+  const { data, error } = await query.order("timestamp", { ascending: false });
+
+  if (error) {
+    throw new AppError(
+      `Failed to fetch reports by category and status: ${error.message}`,
+      500,
+      "DB_FETCH_ERROR"
+    );
+  }
+
+  if (!data) {
+    return [];
+  }
+
+  const remappedData = await remapReports(data);
+  return remappedData;
+};

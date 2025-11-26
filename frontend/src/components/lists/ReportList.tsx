@@ -6,6 +6,8 @@ interface ReportListProps {
   processingReportId: number | null;
   onApprove: (reportId: number) => void;
   onReject: (reportId: number) => void;
+  approveLabel?: string;
+  rejectLabel?: string;
 }
 
 export default function ReportList({
@@ -13,6 +15,8 @@ export default function ReportList({
   processingReportId,
   onApprove,
   onReject,
+  approveLabel,
+  rejectLabel,
 }: ReportListProps) {
   if (reports.length === 0) {
     return (
@@ -25,9 +29,9 @@ export default function ReportList({
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm text-gray-600">
-        {reports.length} report{reports.length !== 1 ? "s" : ""} waiting for review
+        {reports.length} report{reports.length !== 1 ? "s" : ""} in queue
       </p>
-      
+
       {reports.map((report) => (
         <ReportReviewCard
           key={report.id}
@@ -35,6 +39,8 @@ export default function ReportList({
           onApprove={onApprove}
           onReject={onReject}
           isProcessing={processingReportId === report.id}
+          approveLabel={approveLabel}
+          rejectLabel={rejectLabel}
         />
       ))}
     </div>

@@ -6,44 +6,50 @@ import { chooseIcon, fetchActiveReports, fetchAddressByCoordinates } from "../..
 import MarkerClusterGroup from "react-leaflet-cluster";
 
 interface MarkerListProps {
-  Markers: MarkerI[] | null;
-  setMarkers: React.Dispatch<React.SetStateAction<MarkerI[] | null>>;
-  isDashboard?: boolean;
+	Markers: MarkerI[] | null;
+	setMarkers: React.Dispatch<React.SetStateAction<MarkerI[] | null>>;
+	isDashboard?: boolean;
 }
 
 export function ReportMarkers({
-  Markers,
-  setMarkers,
-  isDashboard = false,
+	Markers,
+	setMarkers,
+	isDashboard = false,
 }: MarkerListProps) {
-  if (!isDashboard) {
-    return null;
-  }
-  const [addresses, setAddresses] = useState<Record<number, string>>({});
+	if (!isDashboard) {
+		return null;
+	}
+	const [addresses, setAddresses] = useState<Record<number, string>>({});
 
-  useEffect(() => {
-    fetchActiveReports().then((data) => {
-      setMarkers(data);
-    });
-  }, []);
+	useEffect(() => {
+		fetchActiveReports().then((data) => {
+			setMarkers(data);
+		});
+	}, []);
 
-  const createIcon = (cluster) => {
-    return divIcon({
-      html: `<div class="flex items-center justify-center rounded-full bg-amber-500/25 w-25 h-25 transform -translate-x-10 -translate-y-10 text-xl font-bold">${cluster.getChildCount()}</div>`,
-      iconSize: point(60, 60, true),
-      className: "",
-    });
-  };
+	const createIcon = (cluster: any) => {
+		return divIcon({
+			html: `<div class="flex items-center justify-center rounded-full bg-amber-500/25 w-25 h-25 transform -translate-x-10 -translate-y-10 text-xl font-bold">${cluster.getChildCount()}</div>`,
+			iconSize: point(60, 60, true),
+			className: "",
+		});
+	};
 
-  const handleMarkerClick = async (marker: MarkerI, idx: number) => {
-    if (!addresses[idx]) {
-      setAddresses((prev) => ({ ...prev, [idx]: "Searching address..." }));
-      const address = await fetchAddressByCoordinates(marker.position[0], marker.position[1]);
-      setAddresses((prev) => ({ ...prev, [idx]: address }));
-    }
-  };
+	const handleMarkerClick = async (marker: MarkerI, idx: number) => {
+		if (!addresses[idx]) {
+			setAddresses((prev) => ({
+				...prev,
+				[idx]: "Searching address...",
+			}));
+			const address = await fetchAddressByCoordinates(
+				marker.position[0],
+				marker.position[1]
+			);
+			setAddresses((prev) => ({ ...prev, [idx]: address }));
+		}
+	};
 
-  if (Markers === null) return null;
+	if (Markers === null) return null;
 
   return (
     <MarkerClusterGroup chunkedLoading iconCreateFunction={createIcon}>
