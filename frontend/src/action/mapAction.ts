@@ -1,6 +1,42 @@
+import { divIcon } from "leaflet";
 import type { MarkerI } from "../interfaces/components/MarkerI";
+import barrierIcon from "../assets/markers/architectural_barriers.svg";
+import waterIcon from "../assets/markers/drinking_water.svg";
+import otherIcon from "../assets/markers/other.svg";
+import playIcon from "../assets/markers/playground.svg";
+import lightIcon from "../assets/markers/public_lights.svg";
+import roadIcon from "../assets/markers/road_sign.svg";
+import sewerIcon from "../assets/markers/sewer.svg";
+import furnishingIcon from "../assets/markers/urban_furnishing.svg";
+import wasteIcon from "../assets/markers/waste.svg";
+
+
 
 const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
+
+export const chooseIcon = (category: string) => {
+	switch (category) {
+		case "Water Supply - Drinking Water":
+			return waterIcon;
+		case "Architectural Barriers":
+			return barrierIcon;
+		case "Sewer System":
+			return sewerIcon;
+		case "Public Lighting":
+			return lightIcon;
+		case "Waste":
+			return wasteIcon;
+		case "Road Signs and Traffic Lights":
+			return roadIcon;
+		case "Roads and Urban Furnishing":
+			return furnishingIcon;
+		case "Public Green Areas and Playgrounds":
+			return playIcon;
+		case "Other":
+		default:
+			return otherIcon;
+	}
+}
 
 export const fetchCoordinates = async (
 	address: string
