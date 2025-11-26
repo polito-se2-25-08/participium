@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import type { MarkerI } from "../../interfaces/components/MarkerI";
 import { divIcon, Icon, point } from "leaflet";
 import { Marker, Popup } from "react-leaflet";
-import { chooseIcon, fetchActiveReports, fetchAddressByCoordinates } from "../../action/mapAction";
+import {
+	chooseIcon,
+	fetchActiveReports,
+	fetchAddressByCoordinates,
+} from "../../action/mapAction";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
 interface MarkerListProps {
@@ -51,38 +55,38 @@ export function ReportMarkers({
 
 	if (Markers === null) return null;
 
-  return (
-    <MarkerClusterGroup chunkedLoading iconCreateFunction={createIcon}>
-      {Markers.map((marker, idx) => (
-        <Marker
-          key={idx}
-          position={marker.position}
-          icon={ new Icon(
-            {
-              iconUrl: chooseIcon(marker.category), 
-              iconSize: [45, 45],
-              iconAnchor: [15, 30],
-              popupAnchor: [0, -30],
-            }
-          )}
-          eventHandlers={{
-            click: () => handleMarkerClick(marker, idx),
-          }}
-        >
-          <Popup>
-            <h2>{marker.title}</h2>
-            <p>{addresses[idx] || "Searching address..."}</p>
-            <p>Report time: {marker.timestamp}</p>
-            <p>{marker.category}</p>
-            <p>Status: {marker.status}</p>
-            {marker.anonymity ? (
-              <p>Reported Anonymously</p>
-            ) : (
-              <p>Reported by User: {marker.userId}</p>
-            )}
-          </Popup>
-        </Marker>
-      ))}
-    </MarkerClusterGroup>
-  );
+	return (
+		<MarkerClusterGroup chunkedLoading iconCreateFunction={createIcon}>
+			{Markers.map((marker, idx) => (
+				<Marker
+					key={idx}
+					position={marker.position}
+					icon={
+						new Icon({
+							iconUrl: chooseIcon(marker.category),
+							iconSize: [35, 35],
+							iconAnchor: [15, 30],
+							popupAnchor: [0, -30],
+						})
+					}
+					eventHandlers={{
+						click: () => handleMarkerClick(marker, idx),
+					}}
+				>
+					<Popup>
+						<h2>{marker.title}</h2>
+						<p>{addresses[idx] || "Searching address..."}</p>
+						<p>Report time: {marker.timestamp}</p>
+						<p>{marker.category}</p>
+						<p>Status: {marker.status}</p>
+						{marker.anonymity ? (
+							<p>Reported Anonymously</p>
+						) : (
+							<p>Reported by User: {marker.userId}</p>
+						)}
+					</Popup>
+				</Marker>
+			))}
+		</MarkerClusterGroup>
+	);
 }
