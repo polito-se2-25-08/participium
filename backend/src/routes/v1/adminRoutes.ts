@@ -1,14 +1,17 @@
 import express from "express";
 import { validate } from "../../middleware/validateMiddleware";
 import { setupSchema, assignRoleSchema } from "../../validators/userValidators";
-import { setupUser } from "../../controllers/adminController";
+import {
+  setupUser,
+  setupTechnician,
+  setTechnicianCategory,
+} from "../../controllers/adminController";
 import {
   getAllUsers,
   getUserById,
   //assignRole,
   updateUser,
 } from "../../controllers/userController";
-import { setTechnicianCategory } from "../../controllers/adminController";
 import { protect, restrictTo } from "../../middleware/authMiddleware";
 
 const router = express.Router();
@@ -35,6 +38,9 @@ router.put("/v1/admin/technicians/:id/category", setTechnicianCategory);
 
 // User creation by admin (existing functionality)
 router.post("/register", validate(setupSchema), setupUser);
+
+// Technician creation by admin (new functionality)
+router.post("/register-technician", validate(setupSchema), setupTechnician);
 
 // List all users with their roles
 router.get("/users", getAllUsers);
