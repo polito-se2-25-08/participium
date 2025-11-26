@@ -87,7 +87,7 @@ export default function CitizenProfilePage() {
       firstState.current.telegramUserName = data.telegramUsername;
       firstState.current.enableNotification = data.emailNotification;
       firstState.current.profilePicture = data.profilePicture;
-      updateUser(data);
+      updateUser({ ...user, ...data });
     }
     if (!state.success) {
       setHasModified(false);
