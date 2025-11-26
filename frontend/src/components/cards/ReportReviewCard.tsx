@@ -1,8 +1,5 @@
-import { useState } from "react";
 import type { Report } from "../../types";
-import PrimaryButton from "../buttons/variants/primary/PrimaryButton";
 import DangerButton from "../buttons/variants/danger/DangerButton";
-import ImageZoomModal from "../modals/ImageZoomModal";
 
 interface ReportReviewCardProps {
   report: Report;
@@ -25,8 +22,6 @@ export default function ReportReviewCard({
   rejectLabel = "Reject Report",
   suspendLabel = "Suspend Report",
 }: ReportReviewCardProps) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {

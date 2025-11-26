@@ -17,6 +17,7 @@ export const userService = {
 		password: string;
 		name: string;
 		surname: string;
+		telegram_username?: string | null;
 	}) {
 		const existing = await userRepository.findByUsername(data.username);
 		if (existing) throw new AppError("Username taken", 400);
@@ -34,6 +35,7 @@ export const userService = {
 			role: "CITIZEN",
 			profile_picture: null,
 			email_notification: null,
+			telegram_username: data.telegram_username ?? null,
 		};
 
 		const createdUser = await userRepository.createUser(newUser);
