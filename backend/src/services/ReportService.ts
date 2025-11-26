@@ -1,5 +1,6 @@
 import { Report, ReportInsert } from "../models/Report";
 import * as ReportRepository from "../repositories/ReportRepository";
+import * as NotificationService from "./NotificationService";
 
 export const createReport = async (
   reportData: ReportInsert & { photos: string[] }
@@ -31,3 +32,20 @@ export const rejectReport = async (id: number, motivation: string, officer_id: n
   return await ReportRepository.rejectReport(id, motivation);
 };
 
+export const updateReportStatus = async (
+  id: number,
+  status: string,
+  userId: number
+) => {
+  const report = await ReportRepository.updateReportStatus(id, status);
+
+  // Create notification for the report owner
+  await NotificationService.createNotification({
+    user_id: userId,
+    report_id: id,
+    type: "STATUS_UPDATE",
+    message: `Your report #${id} status has been updated to: ${status}`,
+  });
+
+  return report;
+};

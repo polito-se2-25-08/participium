@@ -1,5 +1,5 @@
 import { Report } from "../models/Report";
-import { getReportsByCategoryAndStatus } from "../repositories/ReportRepository";
+import { getReportsByCategoryAndStatus, getReportsByTechnician} from "../repositories/ReportRepository";
 import { getTechnicianCategory } from "../repositories/TechnicianRepository";
 
 // Function to get reports for a technician based on their category
@@ -9,10 +9,11 @@ export const getReportsForTechnician = async (
 ): Promise<Report[]> => {
   // Fetch technician category
   const category_id = await getTechnicianCategory(technician_id);
-  // Fetch reports for that category and status (if provided otherwise default to "ASSIGNED")
-  const reports = await getReportsByCategoryAndStatus(
-    category_id,
-    statusFilter || "ASSIGNED"
-  );
+  
+  const status = (["ASSIGNED", "IN_PROGRESS", "SUSPENDED"] as Report["status"][]);
+  
+  // Fetch reports for that category
+  const reports = await getReportsByTechnician(category_id, status);
+  
   return reports;
 };
