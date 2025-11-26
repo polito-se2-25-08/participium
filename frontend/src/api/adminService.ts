@@ -1,5 +1,3 @@
-import type { setupUserI } from "../interfaces/components/setupUser";
-
 const URI = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export async function CheckServer() {
@@ -13,12 +11,15 @@ export async function CheckServer() {
 	}
 }
 
-export async function setupUser(setupUser: setupUserI, token: string): Promise<string> {
+export async function setupUser(
+	setupUser: any,
+	token: string
+): Promise<string> {
 	const response = await fetch(URI + "/api/v1/admin/register", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Authorization": `Bearer ${token}`,
+			Authorization: `Bearer ${token}`,
 		},
 		body: JSON.stringify(setupUser),
 	});
@@ -37,7 +38,7 @@ export async function getAllUsers(token: string) {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			"Authorization": `Bearer ${token}`,
+			Authorization: `Bearer ${token}`,
 		},
 	});
 
@@ -49,17 +50,19 @@ export async function getAllUsers(token: string) {
 			const error = await response.json();
 			throw new Error(error.message || "Failed to fetch users");
 		} catch (e) {
-			throw new Error(`Server error: ${response.status} ${response.statusText}`);
+			throw new Error(
+				`Server error: ${response.status} ${response.statusText}`
+			);
 		}
 	}
 }
 
-export async function assignRole(userId: string, role: string, token: string) {
+export async function assignRole(userId: number, role: string, token: string) {
 	const response = await fetch(URI + `/api/v1/admin/users/${userId}/role`, {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
-			"Authorization": `Bearer ${token}`,
+			Authorization: `Bearer ${token}`,
 		},
 		body: JSON.stringify({ role }),
 	});
@@ -72,7 +75,9 @@ export async function assignRole(userId: string, role: string, token: string) {
 			const error = await response.json();
 			throw new Error(error.message || "Failed to assign role");
 		} catch (e) {
-			throw new Error(`Server error: ${response.status} ${response.statusText}`);
+			throw new Error(
+				`Server error: ${response.status} ${response.statusText}`
+			);
 		}
 	}
 }

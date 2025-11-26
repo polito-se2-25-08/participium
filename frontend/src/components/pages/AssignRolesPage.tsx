@@ -10,7 +10,7 @@ export function AssignRolesPage() {
 	const [users, setUsers] = useState<User[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
+	const [updatingUserId, setUpdatingUserId] = useState<number | null>(null);
 
 	const roles: Array<"CITIZEN" | "ADMIN" | "OFFICER" | "TECHNICIAN"> = [
 		"CITIZEN",
@@ -46,7 +46,7 @@ export function AssignRolesPage() {
 		}
 	};
 
-	const handleRoleChange = async (userId: string, newRole: string) => {
+	const handleRoleChange = async (userId: number, newRole: string) => {
 		if (!token) {
 			setError("No authentication token found");
 			return;
