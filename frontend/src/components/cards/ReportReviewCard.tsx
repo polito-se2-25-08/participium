@@ -64,16 +64,6 @@ export default function ReportReviewCard({
                 </span>
               </p>
 
-              {report.location && (
-                <p className="text-sm text-gray-500">
-                  Location:{" "}
-                  <span className="font-medium">
-                    {report.location.latitude.toFixed(6)},{" "}
-                    {report.location.longitude.toFixed(6)}
-                  </span>
-                </p>
-              )}
-
               <p className="text-sm text-gray-500">
                 Date:{" "}
                 <span className="font-medium">{formatDate(reportDate)}</span>
