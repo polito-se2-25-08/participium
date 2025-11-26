@@ -2,8 +2,8 @@
 ### Adjust tokens / IDs after running each step.
 
 @baseUrl = http://localhost:3000/api
-@adminUsername = admDom
-@adminPassword = Ud5S4*9MPe
+@adminUsername = Haland
+@adminPassword = Secret123!
 @adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2NDA3NTA2MSwiZXhwIjoxNzY0MDc4NjYxfQ.lzpVG4INfGyyCj5S06RiEVLCP_6w2Rf22xGBLu6pZ8g
 
 @techUsername = tech_user_cat5
