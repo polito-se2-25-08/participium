@@ -136,7 +136,7 @@ PATCH {{baseUrl}}/v1/reports/19/status
 Content-Type: application/json
 
 {
-  "status": "SUSPENDED"
+  "status": "IN_PROGRESS"
 }
 
 ### Send a message on a report

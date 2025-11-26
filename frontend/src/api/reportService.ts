@@ -154,5 +154,35 @@ export const reportService = {
         error instanceof Error ? error.message : "Cannot reach server";
       return { success: false, data: { message } };
     }
+
+    
+  },
+
+  async updateReportStatus(
+  id: number,
+  status: string
+  ): Promise<ApiResponse<Report>> {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`${API_BASE}/reports/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify({ status }),
+      });
+
+      const result: ApiResponse<Report> = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error updating report status:", error);
+      const message =
+        error instanceof Error ? error.message : "Cannot reach server";
+      return { success: false, data: { message } };
+    }
   },
 };
+
+

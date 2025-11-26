@@ -5,6 +5,7 @@ import { Report } from "../models/Report";
 import { getCategoryId } from "../utils/categoryMapper";
 import { io, connectedUsers } from "../app";
 import { supabase } from "../utils/Supabase";
+import { title } from "process";
 
 export const createReport = async (req: Request, res: Response) => {
   try {
@@ -251,9 +252,10 @@ export const updateReportStatus = async (req: Request, res: Response) => {
       });
     }
 
+    // Fetch user_id AND title to include in notification
     const { data: rawReport, error: fetchError } = await supabase
       .from("Report")
-      .select("user_id")
+      .select("user_id, title")
       .eq("id", numericId)
       .single();
 
@@ -265,20 +267,27 @@ export const updateReportStatus = async (req: Request, res: Response) => {
     }
 
     const userId = rawReport.user_id;
+    const reportTitle = rawReport.title;
 
-    // Update the report status and create notification
-    const updatedReport = await ReportService.updateReportStatus(numericId, status, userId);
+    // Update the report status and create notification in DB
+    const updatedReport = await ReportService.updateReportStatus(
+      numericId,
+      status,
+      userId
+    );
 
     // Try to send via WebSocket if user is online
     const socketId = connectedUsers.get(userId);
-    
+
     if (socketId) {
       io.to(socketId).emit("notification", {
-        message: `Your report #${numericId} status has been updated to: ${status}`,
+        message: `Your report "${reportTitle}" status has been updated to: ${status}`,
         reportId: numericId,
-        status: status,
+        reportTitle,         // <--- new field
+        status,
         timestamp: new Date().toISOString(),
       });
+
       console.log(`Notification sent to user ${userId} for report ${numericId}`);
     } else {
       console.log(`User ${userId} is not connected, notification saved to DB`);

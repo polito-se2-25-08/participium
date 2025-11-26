@@ -7,7 +7,8 @@ import { Layout } from "./components/Layout";
 import Dashboard from "./components/pages/Dashboard";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 
-import AccountSetupPage from "./components/pages/AccountSetupPage";
+import { AccountSetupPage } from "./components/pages/AccountSetupPage";
+
 import { AssignRolesPage } from "./components/pages/AssignRolesPage";
 import { AuthProvider, useAuth } from "./components/providers/AuthContext";
 import ReportFormPage from "./components/pages/ReportFormPage";

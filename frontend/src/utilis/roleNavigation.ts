@@ -5,7 +5,7 @@ export function getDefaultRouteForRole(role: User['role']): string {
     case 'OFFICER':
       return '/pending-reports';
     case 'ADMIN':
-      return '/setup';
+      return '/profile';
     case 'CITIZEN':
       return '/dashboard';
     default:
