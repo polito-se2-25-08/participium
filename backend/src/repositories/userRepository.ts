@@ -1,7 +1,8 @@
 import { supabase } from "../utils/Supabase";
 import type { Database, Tables, TablesInsert } from "../utils/DatabaseSchema";
 
-type UserRow = Tables<"User">;
+export type UserRow = Tables<"User">;
+export type UpdateUserRow = Partial<UserRow>;
 
 export const userRepository = {
 	async findByUsername(username: string): Promise<UserRow | null> {

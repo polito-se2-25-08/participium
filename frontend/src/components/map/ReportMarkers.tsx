@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import type { MarkerI } from "../../interfaces/components/MarkerI";
-import { divIcon, point } from "leaflet";
+import { divIcon, Icon, point } from "leaflet";
 import { Marker, Popup } from "react-leaflet";
 import {
+	chooseIcon,
 	fetchActiveReports,
 	fetchAddressByCoordinates,
 } from "../../action/mapAction";
@@ -60,6 +61,14 @@ export function ReportMarkers({
 				<Marker
 					key={idx}
 					position={marker.position}
+					icon={
+						new Icon({
+							iconUrl: chooseIcon(marker.category),
+							iconSize: [35, 35],
+							iconAnchor: [15, 30],
+							popupAnchor: [0, -30],
+						})
+					}
 					eventHandlers={{
 						click: () => handleMarkerClick(marker, idx),
 					}}

@@ -1,0 +1,12 @@
+# ID of a report to test with (Ensure this report exists in DB)
+@reportId = 20
+@baseUrl = http://localhost:3000/api
+
+@accountToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6IkNJVElaRU4iLCJpYXQiOjE3NjQxNTMxNjEsImV4cCI6MTc2NDE1Njc2MX0.D6bgVd6gqjepuWVA3KXMtg4_BY5WlsKzJs6YsZnbe0s
+
+### 1. Get Active Reports #####################
+GET {{baseUrl}}/v1/reports/active
+Authorization: Bearer {{accountToken}}
+Accept: application/json
+
+###############################################

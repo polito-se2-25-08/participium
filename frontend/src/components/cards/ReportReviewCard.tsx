@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { Report } from "../../types";
-import PrimaryButton from "../buttons/variants/primary/PrimaryButton";
 import DangerButton from "../buttons/variants/danger/DangerButton";
 import ImageZoomModal from "../modals/ImageZoomModal";
 
@@ -26,7 +25,7 @@ export default function ReportReviewCard({
   suspendLabel = "Suspend Report",
 }: ReportReviewCardProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
+  
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -95,7 +94,8 @@ export default function ReportReviewCard({
                       key={photo.id}
                       src={photo.report_photo}
                       alt={`Report photo ${index + 1}`}
-                      className="w-24 h-24 object-cover rounded border border-gray-300"
+                      className="w-24 h-24 object-cover rounded border border-gray-300 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => setSelectedImage(photo.report_photo)}
                     />
                   ))}
                 </div>
@@ -137,6 +137,13 @@ export default function ReportReviewCard({
           </DangerButton>
         </div>
       </div>
+
+      <ImageZoomModal
+        isOpen={selectedImage !== null}
+        imageUrl={selectedImage || ""}
+        onClose={() => setSelectedImage(null)}
+        altText="Report photo"
+      />
     </>
   );
 }
