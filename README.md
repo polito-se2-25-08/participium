@@ -1,10 +1,102 @@
-# participium
-A web application for citizen participation in the management of urban environments for the Municipality of Turin
+# Participium
+
+A web application for citizen participation in the management of urban environments for the Municipality of Turin.
+
+## Table of Contents
+
+- [System Description](#system-description)
+- [How to start the application](#how-to-run-with-docker)
+
+# System Description
+
+Participium is a web application designed to facilitate citizen participation in the management of urban environments for the Municipality of Turin. It allows citizens to report issues, tracks the resolution process, and involves various municipal roles in the workflow.
+
+## Features
+
+### 1. User Management & Authentication
+
+- **Registration & Login:** Citizens can register and log in to the system.
+- **Role Management:** Administrators can assign specific roles (Officer, Technician) to users.
+- **Profile Management:** Users can view and manage their profiles.
+
+### 2. Reporting System
+
+- **Create Reports:** Citizens can report issues with details such as:
+  - Title and Description
+  - Category (Technical Office)
+  - Location (Latitude/Longitude)
+  - Photos
+  - Anonymous reporting option
+- **Map Integration:** Reports are geolocated and can be visualized on a map.
+
+### 3. Workflow Management
+
+- **Approval Process:** Municipality Officers review incoming reports to ensure validity before they are passed to technical offices.
+- **Resolution Process:** Technicians pick up approved reports relevant to their expertise and update their status as they work on them.
+
+---
+
+## Roles
+
+The system defines four distinct user roles, each with specific permissions:
+
+1.  **CITIZEN**
+
+    - The default role for new users.
+    - Can create new reports.
+    - Can view the status of their own reports.
+
+2.  **ADMIN**
+
+    - Responsible for system administration.
+    - Can assign roles (Officer, Technician) to other users.
+
+3.  **OFFICER**
+
+    - Acts as a moderator/dispatcher.
+    - Reviews pending reports.
+    - Can **Approve** a report (forwarding it to the relevant Technical Office).
+    - Can **Reject** a report (providing a motivation).
+
+4.  **TECHNICIAN**
+    - Assigned to a specific **Technical Office**.
+    - Can view reports assigned to their category.
+    - Manages the resolution of reports (updating status to in progress, suspended, resolved).
+
+---
+
+## Technical Offices
+
+Reports are classified into specific categories, based on the description and the context specified by the citizen.
+Each Technical Office is responsible for the maintenance of one specific category. Technicians of a given Technical Office are responsible of only the reports of that Technical Office category.
+The different Technical Offices are :
+
+- **Water Supply**
+- **Architectural Barriers**
+- **Sewer System**
+- **Public Lighting**
+- **Waste**
+- **Road Signs & Traffic Lights**
+- **Roads & Urban Furnishings**
+- **Public Green Areas & Playgrounds**
+- **Other**
+
+---
+
+## Report Status Lifecycle
+
+A report progresses through the following statuses:
+
+1.  **PENDING_APPROVAL**: The initial state when a Citizen submits a report.
+2.  **REJECTED**: The report was reviewed by an Officer and deemed invalid or duplicate.
+3.  **ASSIGNED**: The report was approved by an Officer and is now visible to Technicians of the relevant category.
+4.  **IN_PROGRESS**: A Technician has started working on the issue.
+5.  **SUSPENDED**: Work on the issue has been temporarily paused.
+6.  **RESOLVED**: The issue has been fixed and the report is closed.
 
 ## How to run with Docker
 
 The project can be run either by building images locally with `docker-compose.yml` or by using pre-built images published on Docker Hub under https://hub.docker.com/repositories/lorisc2345.
-
 
 ---
 
@@ -65,6 +157,7 @@ docker compose up --build
 ```
 
 This will:
+
 - build and start the backend on port `3000`
 - build and start the frontend on port `5173` (served internally on `4173`)
 
