@@ -7,7 +7,9 @@
     "build": "tsc -p .",
     "start": "node dist/app.js",
     "dev": "tsx watch src/app.ts",
-    "test": "tsx tests/roleMapper.test.ts"
+    "test": "tsx tests/roleMapper.test.ts",
+    "test:reports": "tsx tests/reportService.test.ts",
+    "test:all": "tsx tests/roleMapper.test.ts && tsx tests/reportService.test.ts"
   },
   "keywords": [],
   "author": "",
