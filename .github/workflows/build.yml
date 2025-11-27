@@ -20,6 +20,10 @@ jobs:
           cd backend
           npm install
       - name: Test and Coverage
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           cd backend
           npm run test:coverage
