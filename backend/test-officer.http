@@ -1,0 +1,234 @@
+### Officer API Testing
+### Tests endpoints for managing reports (Approve, Reject, Update Status)
+### Requires an OFFICER role.
+
+@baseUrl = http://localhost:3000/api
+@adminUsername = Haland
+
+@adminPassword = Secret123!
+# Replace with a valid Admin Token if not using the login step below
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2NDA3NTI0MCwiZXhwIjoxNzY0MDc4ODQwfQ._jEHPFjqAAZ7WE2r2hW43I9Vf_GJolUg4YqWWg2PSeE
+
+@officerUsername = officer_test_user
+@officerEmail = officer_test@example.com
+# Fill these after creation/login response:
+@officerUserId = 43
+@officerPassword = :e80V3YQr
+@officerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDMsInJvbGUiOiJPRkZJQ0VSIiwiaWF0IjoxNzY0MDc1ODU3LCJleHAiOjE3NjQwNzk0NTd9.yPGVSFvjA1Ge4w_XfJeKcMPhxaibsvp0RxjLRLu0YSQ
+
+
+# ID of a report to test with (Ensure this report exists in DB)
+@reportId = 20
+
+###############################################
+# 0. Admin Login (to create an Officer)
+###############################################
+# @name adminLogin
+POST {{baseUrl}}/v1/login
+Content-Type: application/json
+
+{
+  "username": "{{adminUsername}}",
+  "password": "{{adminPassword}}"
+}
+
+### Copy token from response -> @adminToken
+
+############################################################
+# 1. Admin creates an OFFICER user
+############################################################
+# @name createOfficer
+POST {{baseUrl}}/v1/admin/register
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "email": "{{officerEmail}}",
+  "username": "{{officerUsername}}",
+  "role": "OFFICER",
+  "name": "Officer",
+  "surname": "Test"
+}
+
+### Copy data.password -> @officerPassword
+
+############################################################
+# 2. Officer Login to obtain JWT
+############################################################
+# @name officerLogin
+POST {{baseUrl}}/v1/login
+Content-Type: application/json
+
+{
+  "username": "{{officerUsername}}",
+  "password": "{{officerPassword}}"
+}
+
+### Copy token from response -> @officerToken
+
+############################################################
+# 3. Get All Reports
+# GET /v1/reports
+############################################################
+GET {{baseUrl}}/v1/reports
+Authorization: Bearer {{officerToken}}
+
+############################################################
+# 4. Get Report by ID
+# GET /v1/report/:id
+############################################################
+GET {{baseUrl}}/v1/report/{{reportId}}
+Authorization: Bearer {{officerToken}}
+
+############################################################
+# 5. Approve a Report
+# PATCH /v1/reports/:id/approve
+# Sets status to ASSIGNED (or similar based on logic)
+############################################################
+PATCH {{baseUrl}}/v1/reports/{{reportId}}/approve
+Authorization: Bearer {{officerToken}}
+Content-Type: application/json
+
+{}
+
+############################################################
+# 6. Reject a Report
+# PATCH /v1/reports/:id/reject
+# Requires motivation
+############################################################
+PATCH {{baseUrl}}/v1/reports/{{reportId}}/reject
+Authorization: Bearer {{officerToken}}
+Content-Type: application/json
+
+{
+  "motivation": "Duplicate report of existing issue."
+}
+
+############################################################
+# 7. Manually Update Report Status
+# PATCH /v1/status/:id
+############################################################
+PATCH {{baseUrl}}/v1/status/{{reportId}}
+Authorization: Bearer {{officerToken}}
+Content-Type: application/json
+
+{
+  "status": "RESOLVED"
+}
+
+############################################################
+# 8. Negative Tests
+############################################################
+
+### Missing// filepath: c:\Users\Simone\01 - SOFTENG2 - OFFICE QUEUE\participium\participium\backend\test-officer.http
+### Officer API Testing
+### Tests endpoints for managing reports (Approve, Reject, Update Status)
+### Requires an OFFICER role.
+
+###############################################
+# 0. Admin Login (to create an Officer)
+###############################################
+# @name adminLogin
+POST {{baseUrl}}/v1/login
+Content-Type: application/json
+
+{
+  "username": "{{adminUsername}}",
+  "password": "{{adminPassword}}"
+}
+
+### Copy token from response -> @adminToken
+
+############################################################
+# 1. Admin creates an OFFICER user
+############################################################
+# @name createOfficer
+POST {{baseUrl}}/v1/admin/register
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "email": "{{officerEmail}}",
+  "username": "{{officerUsername}}",
+  "role": "OFFICER",
+  "name": "Officer",
+  "surname": "Test"
+}
+
+### Copy data.password -> @officerPassword
+
+############################################################
+# 2. Officer Login to obtain JWT
+############################################################
+# @name officerLogin
+POST {{baseUrl}}/v1/login
+Content-Type: application/json
+
+{
+  "username": "{{officerUsername}}",
+  "password": "{{officerPassword}}"
+}
+
+### Copy token from response -> @officerToken
+
+############################################################
+# 3. Get All Reports
+# GET /v1/reports
+############################################################
+GET {{baseUrl}}/v1/reports
+Authorization: Bearer {{officerToken}}
+
+############################################################
+# 4. Get Report by ID
+# GET /v1/report/:id
+############################################################
+GET {{baseUrl}}/v1/report/{{reportId}}
+Authorization: Bearer {{officerToken}}
+
+############################################################
+# 5. Approve a Report
+# PATCH /v1/reports/:id/approve
+# Sets status to ASSIGNED (or similar based on logic)
+############################################################
+PATCH {{baseUrl}}/v1/reports/{{reportId}}/approve
+Authorization: Bearer {{officerToken}}
+Content-Type: application/json
+
+{}
+
+############################################################
+# 6. Reject a Report
+# PATCH /v1/reports/:id/reject
+# Requires motivation
+############################################################
+PATCH {{baseUrl}}/v1/reports/{{reportId}}/reject
+Authorization: Bearer {{officerToken}}
+Content-Type: application/json
+
+{
+  "motivation": "Duplicate report of existing issue."
+}
+
+############################################################
+# 7. Manually Update Report Status
+# PATCH /v1/status/:id
+############################################################
+PATCH {{baseUrl}}/v1/status/{{reportId}}
+Authorization: Bearer {{officerToken}}
+Content-Type: application/json
+
+{
+  "status": "RESOLVED"
+}
+
+############################################################
+# 8. Negative Tests
+############################################################
+
+### Missing Token
+GET {{baseUrl}}/v1/reports
+
+### Wrong Role (Technician trying to access Officer routes)
+# Assuming you have a technician token, otherwise this just tests invalid auth
+GET {{baseUrl}}/v1/reports
+Authorization: Bearer invalid_or_wrong_role_token
