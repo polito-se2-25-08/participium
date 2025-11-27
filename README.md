@@ -26,7 +26,7 @@ At minimum you will need the variables required by the backend (e.g. DB connecti
 Create the frontend environment file `frontend/.env` (optional if defaults are fine):
 
 ```bash
-echo "VITE_API_BASE_URL=http://localhost:3000" > frontend/.env
+echo "VITE_API_ENDOPOINT=http://localhost:3000/api/v1" > frontend/.env
 ```
 
 ### 2. Pull and start containers

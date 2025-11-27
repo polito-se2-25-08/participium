@@ -1,5 +1,4 @@
-const URI = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
+const URI = import.meta.env.VITE_API_ENDPOINT;
 export async function CheckServer() {
 	const response = await fetch(URI + "/health");
 	if (response.ok) {
@@ -15,7 +14,7 @@ export async function setupUser(
 	setupUser: any,
 	token: string
 ): Promise<string> {
-	const response = await fetch(URI + "/api/v1/admin/register", {
+	const response = await fetch(URI + "/admin/register", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -34,7 +33,7 @@ export async function setupUser(
 }
 
 export async function getAllUsers(token: string) {
-	const response = await fetch(URI + "/api/v1/admin/users", {
+	const response = await fetch(URI + "/admin/users", {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
@@ -58,7 +57,7 @@ export async function getAllUsers(token: string) {
 }
 
 export async function assignRole(userId: number, role: string, token: string) {
-	const response = await fetch(URI + `/api/v1/admin/users/${userId}/role`, {
+	const response = await fetch(URI + `/admin/users/${userId}/role`, {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
