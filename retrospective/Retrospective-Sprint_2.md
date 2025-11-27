@@ -11,9 +11,9 @@ sections:
 
 ### Macro statistics
 
-- Number of stories committed vs. done
-- Total points committed vs. done
-- Nr of hours planned vs. spent (as a team)
+- Number of stories committed vs. done 6/7
+- Total points committed vs. done 22/27
+- Nr of hours planned vs. spent (as a team) 123h15m/123h10m
 
 **Remember**a story is done ONLY if it fits the Definition of Done:
 
@@ -26,17 +26,16 @@ sections:
 
 ### Detailed statistics
 
-| Story                                                         | # Tasks | Points | Hours est. | Hours actual |
-| ------------------------------------------------------------- | ------- | ------ | ---------- | ------------ |
-| _Uncategorized_                                               | 9       | 0      | 1w5h30m    | 4d5h         |
-| Register A New Citizen                                        | 6       | 3      | 8h         | 8h20m        |
-| Admin setting up users                                        | 5       | 3      | 7h         | 4h           |
-| Admin assign roles                                            | 6       | 2      | 6h30m      | 0            |
-| Citizen want to select location on the map                    | 7       | 13     | 10h30m     | 4h55m        |
-| Citizen want to fill the report form                          | 6       | 3      | 6h         | 5h30m        |
-| Officer want to approve or reject reports                     | 6       | 3      | 6h30m      | 3h           |
-| Citizens want to see approved reports on map                  | 4       | 8      | 6h30m      | 2h           |
-| Technician want to see an overview of reports assigned to him | 5       | 3      | 6h         | 1h45m        |
+| Story                                                             | # Tasks | Points | Hours est. | Hours actual |
+| ----------------------------------------------------------------- | ------- | ------ | ---------- | ------------ |
+| _Uncategorized_                                                   | 9       | 0      | 1w2d       | 1w1d7h40m    |
+| Admin assign roles                                                | 7       | 2      | 1d         | 7h30m        |
+| Officer want to approve or reject reports                         | 4       | 3      | 7h         | 7h           |
+| Citizens want to see approved reports on map (with zoom clusters) | 4       | 8      | 1d4h       | 1d2h         |
+| Technician want to see an overview of reports assigned to him     | 4       | 3      | 4h         | 4h           |
+| Citizen account configuration                                     | 3       | 3      | 6h         | 6h           |
+| Technical office staff member want to receive assigned reports    | 5       | 3      | 6h45m      | 6h           |
+| Report status update                                              | 5       | 5      | 7h30m      | 1d10m        |
 
 > story `Uncategorized` is for technical tasks, leave out story points (not applicable in this case)
 
@@ -60,45 +59,45 @@ sections:
 ## QUALITY MEASURES
 
 - Unit Testing:
-  - Total hours estimated = 11h
-  - Total hours spent = 1h10m
-  - Nr of automated unit test cases = 24
-  - Coverage = 15%
-- E2E testing:
-  - Total hours estimated = 11h
-  - Total hours spent = 1h10m
-  - Nr of test cases = 11
+  - Total hours estimated = 9h
+  - Total hours spent = 7h40m
+  - Nr of automated unit test cases = 288
+  - Coverage = 98.94%
+- Integration Testing:
+  - Total hours estimated = 7h30m
+  - Total hours spent = 6h10m
+  - Nr of test cases = 45
 - Code review
-  - Total hours estimated = 0h
-  - Total hours spent = 4h
+  - Total hours estimated = 5h
+  - Total hours spent = 7h
 
 ## ASSESSMENT
 
 - What did go wrong in the sprint?
 
-  - We failed to complete story number 3 even if it we completed 4 and 5. We have had some misalignments on the code so the UI was not totally coherent. We also weren't able to focus much on testing. These problems were caused by the fact that we wanted to complete several stories and also that some of them had some dependencies.
+  - We completed story 7 but didn't implement image visualisation in map, which made the implementation not completely compliant with the requirements given by the product owner
 
-- What caused your errors in estimation (if any)?
+- What caused your errors in estimation (if any)?-
 
-  - The amount of work required for the setup and for coordination.
+  - We have a pretty good global estimation, but in some local cases the task required a different amount of time compared the estimation. This was caused by a more broad way of viewing the tasks, separating the task in smaller tasks might be a useful approach.
 
 - What lessons did you learn (both positive and negative) in this sprint?
 
-  - We can put our focus on less stories if needed, and try to have a stricter collaboration.
+  - We learned that we work more effectively if we focus on less stories, and we learned that we should read details of the stories more carefully, to make sure to not skip any part.
 
 - Which improvement goals set in the previous retrospective were you able to achieve?
 
-  - We defined a productive working strategy, and divided the task basing on team members knowledge gap.
+  - We didn't skip stories. We made a lot of tests and had an high coverage. We had a better estimation
 
 - Which ones you were not able to achieve? Why?
 
-  - Comunication was not totally perfect. Could be because the team is still at one of the first sprints so it has improvement margin.
+  - We actually think we achieved all the goals from the last retrospective.
 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
 
   > Propose one or two
 
-  - Team coordination is the number 1 priority, and second one is focusing on quality.
+  - Try to add more stories if we think we can manage to do it. Add even more testing.
 
 - One thing you are proud of as a Team!!
-  - We got compliments from stakeholders for the quality of our work.
+  - We fixed all the problems we had in the last sprint, so we had a really large improvement
