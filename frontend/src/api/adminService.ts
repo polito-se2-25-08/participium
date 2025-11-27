@@ -27,8 +27,50 @@ export async function setupUser(
 		const result = await response.json();
 		return result.data.password;
 	} else {
-		console.log(await response.json());
-		throw new Error("Server is not reachable");
+		const error = await response.json();
+		throw new Error(error.message || "Server is not reachable");
+	}
+}
+
+export async function setupTechnician(
+	userData: any,
+	token: string
+): Promise<string> {
+	const response = await fetch(URI + "/api/v1/admin/register-technician", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(userData),
+	});
+
+	if (response.ok) {
+		const result = await response.json();
+		return result.data.password;
+	} else {
+		const error = await response.json();
+		throw new Error(
+			error.message ||
+				"Server is not reachable or Technician setup failed"
+		);
+	}
+}
+
+export async function getCategories(token: string) {
+	const response = await fetch(URI + "/api/v1/categories", {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	});
+
+	if (response.ok) {
+		const result = await response.json();
+		return result.data;
+	} else {
+		throw new Error("Failed to fetch categories");
 	}
 }
 
