@@ -11,6 +11,7 @@
     "test:reports": "tsx tests/reportService.test.ts",
     "test:citizen-config": "tsx tests/citizenAccountConfig.test.ts",
     "test:all": "tsx tests/roleMapper.test.ts && tsx tests/reportService.test.ts && tsx tests/citizenAccountConfig.test.ts"
+    "coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,9 @@
     "@types/node": "^22.19.1",
     "@types/socket.io": "^3.0.1",
     "ts-node": "^10.9.2",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
