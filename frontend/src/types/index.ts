@@ -46,7 +46,8 @@ export interface Report {
   title: string;
   description: string;
   category: ReportCategory;
-  location: Location;
+  latitude: number;
+  longitude: number;
   photos: Report_Photo[];
   anonymous: boolean;
   user_id: number;
