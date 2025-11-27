@@ -72,8 +72,8 @@ sections:
   - Total hours spent = 6h10m
   - Nr of test cases = 45
 - Code review 
-  - Total hours estimated = 0h
-  - Total hours spent = 4h
+  - Total hours estimated = 5h
+  - Total hours spent = 7h
   
 
 
