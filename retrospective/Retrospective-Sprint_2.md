@@ -63,14 +63,14 @@ sections:
 ## QUALITY MEASURES 
 
 - Unit Testing:
-  - Total hours estimated = 11h
-  - Total hours spent = 1h10m
-  - Nr of automated unit test cases = 24
-  - Coverage = 15%
-- E2E testing:
-  - Total hours estimated = 11h
-  - Total hours spent = 1h10m
-  - Nr of test cases = 11
+  - Total hours estimated = 9h
+  - Total hours spent = 7h40m
+  - Nr of automated unit test cases = 288
+  - Coverage = 98.94%
+- Integration Testing:
+  - Total hours estimated = 7h30m
+  - Total hours spent = 6h10m
+  - Nr of test cases = 45
 - Code review 
   - Total hours estimated = 0h
   - Total hours spent = 4h
