@@ -63,8 +63,8 @@ export function ReportMarkers({
 					position={marker.position}
 					icon={
 						new Icon({
-							iconUrl: chooseIcon(marker.category),
-							iconSize: [35, 35],
+							iconUrl: chooseIcon(marker.category, marker.status),
+							iconSize: [70, 70],
 							iconAnchor: [15, 30],
 							popupAnchor: [0, -30],
 						})
