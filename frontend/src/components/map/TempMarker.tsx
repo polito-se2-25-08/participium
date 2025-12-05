@@ -35,9 +35,9 @@ export default function TempMarker({
 			position={tempMarker.position}
 			icon={ new Icon({
 										iconUrl: temporaryMarker,
-										iconSize: [75, 75],
-										iconAnchor: [15, 30],
-										popupAnchor: [0, -30],
+										iconSize: [70, 70],
+										iconAnchor: [35, 58],
+										popupAnchor: [0, -60],
 									}) 
 				}
 		>

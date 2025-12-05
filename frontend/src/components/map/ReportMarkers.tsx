@@ -65,8 +65,8 @@ export function ReportMarkers({
 						new Icon({
 							iconUrl: chooseIcon(marker.category, marker.status),
 							iconSize: [70, 70],
-							iconAnchor: [15, 30],
-							popupAnchor: [0, -30],
+							iconAnchor: [35, 58],
+							popupAnchor: [0, -60],
 						})
 					}
 					eventHandlers={{
