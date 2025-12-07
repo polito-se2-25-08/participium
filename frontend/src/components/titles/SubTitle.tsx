@@ -16,7 +16,7 @@ export default function SubTitle({
 
 	return (
 		<h2
-			className={`font-semibold text-[#2c3e50] ${fontSize} text-center ${className}`}
+			className={`font-semibold text-[#2c3e50] ${fontSize} text-center  ${className}`}
 		>
 			{children}
 		</h2>

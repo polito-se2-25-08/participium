@@ -8,6 +8,8 @@ import roadIcon from "../assets/markers/road_sign.svg";
 import sewerIcon from "../assets/markers/sewer.svg";
 import furnishingIcon from "../assets/markers/urban_furnishing.svg";
 import wasteIcon from "../assets/markers/waste.svg";
+import type { ApiResponse } from "../interfaces/dto/Response";
+import type { ReportMapI } from "../interfaces/dto/report/NewReportResponse";
 
 const API_ENDPOINT =
 	import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
@@ -84,7 +86,9 @@ export const fetchAddressByCoordinates = async (
 	}
 };
 
-export const fetchActiveReports = async (): Promise<MarkerI[]> => {
+export const fetchActiveReports = async (): Promise<
+	ApiResponse<ReportMapI[]>
+> => {
 	try {
 		const token = localStorage.getItem("token");
 		const response = await fetch(`${API_ENDPOINT}/reports/active`, {
@@ -96,26 +100,16 @@ export const fetchActiveReports = async (): Promise<MarkerI[]> => {
 		if (!response.ok) {
 			throw new Error("Failed to fetch active reports");
 		}
-		const data: MarkerI[] = [];
-		const jsonResponse = await response.json();
-		for (const report of jsonResponse.data) {
-			data.push({
-				title: report.title,
-				adress: report.address,
-				timestamp: new Date(report.timestamp).toLocaleString(),
-				category: report.category,
-				position: [
-					parseFloat(report.latitude),
-					parseFloat(report.longitude),
-				],
-				anonymity: report.anonymous,
-				userId: report.user_id,
-				status: report.status,
-			});
-		}
+
+		const data = await response.json();
+
 		return data;
 	} catch (error) {
-		console.error("Error fetching active reports:", error);
-		return [];
+		return {
+			success: false,
+			data: {
+				message: "Failed to fetch active reports",
+			},
+		};
 	}
 };

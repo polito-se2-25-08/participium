@@ -1,35 +1,32 @@
 import { useEffect, useState } from "react";
-import type { MarkerI } from "../../interfaces/components/MarkerI";
+
 import { divIcon, Icon, point } from "leaflet";
-import { Marker, Popup } from "react-leaflet";
+import { Marker } from "react-leaflet";
+
+import MarkerClusterGroup from "react-leaflet-cluster";
+import type { ClientReportMapI } from "../../../interfaces/dto/report/NewReportResponse";
 import {
 	chooseIcon,
-	fetchActiveReports,
 	fetchAddressByCoordinates,
-} from "../../action/mapAction";
-import MarkerClusterGroup from "react-leaflet-cluster";
+} from "../../../action/mapAction";
 
 interface MarkerListProps {
-	Markers: MarkerI[] | null;
-	setMarkers: React.Dispatch<React.SetStateAction<MarkerI[] | null>>;
+	reports: ClientReportMapI[] | null;
 	isDashboard?: boolean;
+
+	setClickedReportId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export function ReportMarkers({
-	Markers,
-	setMarkers,
+	reports,
 	isDashboard = false,
+
+	setClickedReportId,
 }: MarkerListProps) {
 	if (!isDashboard) {
 		return null;
 	}
 	const [addresses, setAddresses] = useState<Record<number, string>>({});
-
-	useEffect(() => {
-		fetchActiveReports().then((data) => {
-			setMarkers(data);
-		});
-	}, []);
 
 	const createIcon = (cluster: any) => {
 		return divIcon({
@@ -39,53 +36,45 @@ export function ReportMarkers({
 		});
 	};
 
-	const handleMarkerClick = async (marker: MarkerI, idx: number) => {
+	useEffect(() => {
+		console.log(reports);
+	}, [reports]);
+
+	const handleMarkerClick = async (report: ClientReportMapI, idx: number) => {
 		if (!addresses[idx]) {
 			setAddresses((prev) => ({
 				...prev,
 				[idx]: "Searching address...",
 			}));
 			const address = await fetchAddressByCoordinates(
-				marker.position[0],
-				marker.position[1]
+				report.latitude,
+				report.longitude
 			);
 			setAddresses((prev) => ({ ...prev, [idx]: address }));
 		}
+		setClickedReportId(report.id);
 	};
 
-	if (Markers === null) return null;
+	if (reports === null) return null;
 
 	return (
 		<MarkerClusterGroup chunkedLoading iconCreateFunction={createIcon}>
-			{Markers.map((marker, idx) => (
+			{reports.map((report, idx) => (
 				<Marker
 					key={idx}
-					position={marker.position}
+					position={report.coordinates}
 					icon={
 						new Icon({
-							iconUrl: chooseIcon(marker.category),
+							iconUrl: chooseIcon(report.category),
 							iconSize: [35, 35],
 							iconAnchor: [15, 30],
 							popupAnchor: [0, -30],
 						})
 					}
 					eventHandlers={{
-						click: () => handleMarkerClick(marker, idx),
+						click: () => handleMarkerClick(report, idx),
 					}}
-				>
-					<Popup>
-						<h2>{marker.title}</h2>
-						<p>{addresses[idx] || "Searching address..."}</p>
-						<p>Report time: {marker.timestamp}</p>
-						<p>{marker.category}</p>
-						<p>Status: {marker.status}</p>
-						{marker.anonymity ? (
-							<p>Reported Anonymously</p>
-						) : (
-							<p>Reported by User: {marker.userId}</p>
-						)}
-					</Popup>
-				</Marker>
+				></Marker>
 			))}
 		</MarkerClusterGroup>
 	);
