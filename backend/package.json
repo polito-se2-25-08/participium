@@ -10,7 +10,7 @@
     "test": "tsx tests/roleMapper.test.ts",
     "test:reports": "tsx tests/reportService.test.ts",
     "test:citizen-config": "tsx tests/citizenAccountConfig.test.ts",
-    "test:all": "tsx tests/roleMapper.test.ts && tsx tests/reportService.test.ts && tsx tests/citizenAccountConfig.test.ts"
+    "test:all": "tsx tests/roleMapper.test.ts && tsx tests/reportService.test.ts && tsx tests/citizenAccountConfig.test.ts",
     "coverage": "jest --coverage"
   },
   "keywords": [],
