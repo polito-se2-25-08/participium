@@ -24,8 +24,8 @@ router.get("/reports/:id", ReportController.getReportById);
 
 router.patch(
   "/reports/:id/status",
-  //protect,
-  //restrictTo("TECHNICIAN"),
+  protect,
+  restrictTo("TECHNICIAN", "EXTERNAL MAINTAINER"),
   ReportController.updateReportStatus
 );
 
