@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Marker, Popup } from "react-leaflet";
 import { Icon, type LeafletMouseEvent } from "leaflet";
 
-import { fetchAddressByCoordinates } from "../../action/mapAction";
-import type { MarkerI } from "../../interfaces/components/MarkerI";
-import temporaryMarker from "../../assets/markers/temp_marker.svg";
+import temporaryMarker from "../../../assets/markers/temp_marker.svg";
+import { fetchAddressByCoordinates } from "../../../action/mapAction";
+import type { MarkerI } from "../../../interfaces/components/MarkerI";
 
 interface TempMarkerProps {
 	tempMarker: MarkerI | null;
@@ -33,13 +33,14 @@ export default function TempMarker({
 				},
 			}}
 			position={tempMarker.position}
-			icon={ new Icon({
-										iconUrl: temporaryMarker,
-										iconSize: [50, 50],
-										iconAnchor: [15, 30],
-										popupAnchor: [0, -30],
-									}) 
-				}
+			icon={
+				new Icon({
+					iconUrl: temporaryMarker,
+					iconSize: [50, 50],
+					iconAnchor: [15, 30],
+					popupAnchor: [0, -30],
+				})
+			}
 		>
 			<Popup>{isLoading ? "Loading..." : tempMarker.adress}</Popup>
 		</Marker>

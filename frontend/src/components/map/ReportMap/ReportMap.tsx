@@ -5,10 +5,8 @@ import { useState } from "react";
 
 import "leaflet/dist/leaflet.css";
 import MapClickHandler from "./MapClickHandler";
-import SearchLocationInput from "./SearchLocationInput";
-import TempMarker from "./TempMarker";
-import type { MarkerI } from "../../interfaces/components/MarkerI";
-import { ReportMarkers } from "./ReportMarkers";
+import type { MarkerI } from "../../../interfaces/components/MarkerI";
+import TempMarker from "../DashboardMap/TempMarker";
 
 const ZOOM = 13;
 const TURIN_BOUNDS: LatLngBoundsExpression = [
@@ -24,15 +22,13 @@ interface ReportMapViewProps {
 	setLocation?: React.Dispatch<React.SetStateAction<[number, number] | null>>;
 }
 
-export function MapWindow({
+export function ReportMap({
 	className,
 	scrollWheelZoom = true,
-	isReport = false,
 	setAdress,
 	setLocation,
 }: ReportMapViewProps) {
 	const [tempMarker, setTempMarker] = useState<MarkerI | null>(null);
-	const [markerList, setMarkerList] = useState<MarkerI[] | null>(null);
 
 	return (
 		<MapContainer
@@ -54,12 +50,7 @@ export function MapWindow({
 				setAdress={setAdress}
 				setLocation={setLocation}
 			/>
-			{!isReport && <SearchLocationInput setMarker={setTempMarker} />}
-			<ReportMarkers
-				Markers={markerList}
-				setMarkers={setMarkerList}
-				isDashboard={!isReport}
-			/>
+
 			<TempMarker tempMarker={tempMarker} setTempMarker={setTempMarker} />
 		</MapContainer>
 	);
