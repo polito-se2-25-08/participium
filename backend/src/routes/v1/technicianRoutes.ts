@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { getReportsForTechnician } from "../../controllers/TechnicianController";
+import {
+  getReportsForTechnician,
+  getTechnicianCategories,
+} from "../../controllers/TechnicianController";
 import { protect, restrictTo } from "../../middleware/authMiddleware";
 
 const router = Router();
@@ -12,5 +15,6 @@ router.use(restrictTo("TECHNICIAN"));
 //router.get("/v1/technician/reports", getReportsForTechnician);
 
 router.get("/reports", getReportsForTechnician);
+router.get("/categories", getTechnicianCategories);
 
 export default router;

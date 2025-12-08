@@ -29,3 +29,22 @@ export const getReportsForTechnician = catchAsync(
     return res.status(200).json(response);
   }
 );
+
+export const getTechnicianCategories = catchAsync(
+  async (req: Request, res: Response) => {
+    const authUser = (req as any).user;
+    if (!authUser?.id) {
+      throw new AppError("Authentication required", 401, "AUTH_REQUIRED");
+    }
+
+    const categories = await TechnicianService.getCategoriesForTechnician(
+      authUser.id
+    );
+
+    const response: ApiResponse<number[]> = {
+      success: true,
+      data: categories,
+    };
+    return res.status(200).json(response);
+  }
+);

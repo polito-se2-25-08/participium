@@ -111,9 +111,7 @@ const remapReports = async (reports: any[]): Promise<Report[]> => {
 
   // Map category names to reports
   const remappedReports = categoriesReports.map((report) => {
-    const foundUser = users?.find(
-      (user) => user.id === report.user_id
-    );
+    const foundUser = users?.find((user) => user.id === report.user_id);
     return {
       ...report,
       user_id: foundUser?.username,
@@ -127,11 +125,7 @@ export const getActiveReports = async (): Promise<Report[]> => {
   const { data, error } = await supabase
     .from("Report")
     .select("*")
-    .in("status", [
-      "ASSIGNED",
-      "IN_PROGRESS",
-      "SUSPENDED",
-    ])
+    .in("status", ["ASSIGNED", "IN_PROGRESS", "SUSPENDED"])
     .order("timestamp", { ascending: false });
 
   const remappedData = data ? await remapReports(data) : [];
@@ -349,6 +343,7 @@ export const getReportsByCategoryAndStatus = async (
   return data;
 };
 
+/* 
 export const getReportsByTechnician = async (
   category_id: number,
   status?: Report["status"] | Report["status"][]
@@ -369,6 +364,42 @@ export const getReportsByTechnician = async (
   if (error) {
     throw new AppError(
       `Failed to fetch reports by category and status: ${error.message}`,
+      500,
+      "DB_FETCH_ERROR"
+    );
+  }
+
+  if (!data) {
+    return [];
+  }
+
+  const remappedData = await remapReports(data);
+  return remappedData;
+};
+ */
+
+export const getReportsByTechnician = async (
+  category_ids: number[], // Changed from category_id: number
+  status?: Report["status"] | Report["status"][]
+): Promise<Report[]> => {
+  let query = supabase
+    .from("Report")
+    .select(
+      `
+      *,
+      photos:Report_Photo(*),
+      user:User(name, surname)
+    `
+    )
+    .in("category_id", category_ids) // Changed from eq to in
+    .neq("status", "REJECTED")
+    .neq("status", "RESOLVED");
+
+  const { data, error } = await query.order("timestamp", { ascending: false });
+
+  if (error) {
+    throw new AppError(
+      `Failed to fetch reports by categories and status: ${error.message}`,
       500,
       "DB_FETCH_ERROR"
     );
