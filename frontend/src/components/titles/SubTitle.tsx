@@ -4,19 +4,20 @@ interface SubTitleProps {
 	children: ReactNode;
 	className?: string;
 	fontSize?: string;
+	textStart?: boolean;
 }
+
 export default function SubTitle({
 	children,
-	className,
-	fontSize,
+	className = "",
+	fontSize = "text-[1.5rem]",
+	textStart = false,
 }: SubTitleProps) {
-	if (!fontSize) {
-		fontSize = "text-[1.5rem]";
-	}
-
 	return (
 		<h2
-			className={`font-semibold text-[#2c3e50] ${fontSize} text-center  ${className}`}
+			className={`font-semibold text-[#2c3e50] ${fontSize} ${
+				textStart ? "text-start" : "text-center"
+			}   truncate ${className}`}
 		>
 			{children}
 		</h2>
