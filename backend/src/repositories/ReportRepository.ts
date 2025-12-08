@@ -6,6 +6,8 @@ import { getAllCategories } from "../controllers/CategoryController";
 import { ActiveReportDTO } from "../dto/ActiveReport";
 import { mapActiveReportsToDTO } from "../controllers/mapper/ActiveReportToDTO";
 import { ActiveReport } from "../controllers/interface/ActiveReport";
+import { UserReport } from "../controllers/interface/UserReports";
+import { mapReportsToReportsDTO } from "../controllers/mapper/ReportMapper";
 
 export const createReport = async (
 	reportData: Partial<Report> & { photos: string[] }
@@ -403,4 +405,41 @@ export const getReportsByTechnician = async (
 
 	const remappedData = await remapReports(data);
 	return remappedData;
+};
+
+export const getReportsByUserId = async (
+	userId: number
+): Promise<UserReport[]> => {
+	const { data, error } = await supabase
+		.from("Report")
+		.select(
+			`
+        *,
+        category:category_id (
+            category 
+        ),
+        photos:Report_Photo (
+            report_photo
+        )
+    	`
+		)
+		.eq("user_id", userId)
+		.in("status", ["ASSIGNED", "IN_PROGRESS", "SUSPENDED"])
+		.order("timestamp", { ascending: false });
+
+	if (error) {
+		throw new AppError(
+			`Failed to fetch reports by user id: ${error.message}`,
+			500,
+			"DB_FETCH_ERROR"
+		);
+	}
+
+	const userReports = data as UserReport[];
+
+	if (!userReports) {
+		return [];
+	}
+
+	return userReports;
 };
