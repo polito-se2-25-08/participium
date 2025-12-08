@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import {
-  setupUser,
-  setupTechnician,
-  getCategories,
-} from "../../api/adminService";
+import { setupUser, setupTechnician } from "../../api/adminService";
+import { categoryService } from "../../api/categoryService";
 import { useAuth } from "../providers/AuthContext";
 import ContentContainer from "../containers/ContentContainer";
 import Form from "../form/Form";
@@ -35,14 +32,23 @@ export function AccountSetupPage() {
   const [serverError, setServerError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (token) {
-      getCategories(token)
-        .then((data) => {
-          console.log("Fetched categories:", data);
-          setCategories(data);
-        })
-        .catch((err) => console.error("Failed to load categories", err));
-    }
+    const fetchCategories = async () => {
+      if (token) {
+        try {
+          const response = await categoryService.getAllCategories();
+          if (response.success && Array.isArray(response.data)) {
+            console.log("Fetched categories:", response.data);
+            setCategories(response.data);
+          } else {
+            console.error("Failed to load categories:", response.data);
+          }
+        } catch (err) {
+          console.error("Failed to load categories", err);
+        }
+      }
+    };
+
+    fetchCategories();
   }, [token]);
 
   useEffect(() => {

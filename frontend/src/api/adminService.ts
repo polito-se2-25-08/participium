@@ -1,4 +1,4 @@
-const URI = import.meta.env.VITE_API_ENDPOINT;
+const URI = import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api/v1";
 export async function CheckServer() {
   const response = await fetch(URI + "/health");
   if (response.ok) {
@@ -36,7 +36,7 @@ export async function setupTechnician(
   userData: any,
   token: string
 ): Promise<string> {
-  const response = await fetch(URI + "/api/v1/admin/register-technician", {
+  const response = await fetch(URI + "/admin/register-technician", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -53,23 +53,6 @@ export async function setupTechnician(
     throw new Error(
       error.message || "Server is not reachable or Technician setup failed"
     );
-  }
-}
-
-export async function getCategories(token: string) {
-  const response = await fetch(URI + "/api/v1/categories", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (response.ok) {
-    const result = await response.json();
-    return result.data;
-  } else {
-    throw new Error("Failed to fetch categories");
   }
 }
 
