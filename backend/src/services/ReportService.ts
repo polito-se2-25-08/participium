@@ -1,3 +1,5 @@
+import { UserReportDTO } from "../controllers/interface/UserReports";
+import { mapReportsToReportsDTO } from "../controllers/mapper/ReportMapper";
 import { ActiveReportDTO } from "../dto/ActiveReport";
 import { Report, ReportInsert } from "../models/Report";
 import * as ReportRepository from "../repositories/ReportRepository";
@@ -65,4 +67,12 @@ export const updateReportStatus = async (
 	});
 
 	return report;
+};
+
+export const getReportsByUserId = async (
+	userId: number
+): Promise<UserReportDTO[]> => {
+	const reports = await ReportRepository.getReportsByUserId(userId);
+	const mappedReports = mapReportsToReportsDTO(reports);
+	return mappedReports;
 };

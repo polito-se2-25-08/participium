@@ -13,6 +13,7 @@ interface FormProps {
 	marginLeft?: string;
 	marginRight?: string;
 	width?: string;
+	height?: string;
 }
 
 export default function Form({
@@ -27,6 +28,7 @@ export default function Form({
 	marginLeft = "",
 	marginRight = "",
 	width = "w-full",
+	height = "",
 }: FormProps) {
 	const classes = [
 		"flex flex-col",
@@ -38,6 +40,7 @@ export default function Form({
 		marginLeft,
 		marginRight,
 		width,
+		height,
 	]
 		.filter(Boolean)
 		.join(" ");
