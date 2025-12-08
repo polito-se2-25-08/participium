@@ -74,7 +74,7 @@ export default function registerNewReportFeature(bot: Telegraf) {
         case "ASK_TITLE":
           ctx.session.report.title = text;
           ctx.session.reportState = "ASK_DESCRIPTION";
-          return ctx.reply("✏️ Enter the report description:");
+          return ctx.reply("✏️ Enter the report description (minimum 10 characters):");
 
         case "ASK_DESCRIPTION":
           ctx.session.report.description = text;
@@ -86,7 +86,7 @@ export default function registerNewReportFeature(bot: Telegraf) {
         case "ASK_ANONYMOUS":
           ctx.session.report.anonymous = text.toLowerCase().startsWith("y");
           ctx.session.reportState = "ASK_PHOTOS";
-          return ctx.reply("📸 Send photos (or type 'done'):");
+          return ctx.reply("📸 Send photos (minimum 1):");
 
         case "ASK_PHOTOS":
           if (text.toLowerCase() === "done") {
