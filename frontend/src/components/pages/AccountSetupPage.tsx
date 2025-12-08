@@ -156,6 +156,7 @@ export function AccountSetupPage() {
             options={[
               { value: "OFFICER", label: "Officer" },
               { value: "TECHNICIAN", label: "Technician" },
+              { value: "EXTERNAL MAINTAINER", label: "External maintainer" },
             ]}
             value={formData.role}
             onChange={handleChange}

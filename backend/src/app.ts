@@ -10,6 +10,7 @@ import adminRoutes from "./routes/v1/adminRoutes";
 import reportRoutes from "./routes/v1/reportRoutes";
 import categoryRoutes from "./routes/v1/categoryRoutes";
 import { errorHandler } from "./middleware/errorHandler";
+import bot from "./bot";
 
 const app = express();
 const host = "localhost";
@@ -17,6 +18,9 @@ const port = 3000;
 
 // Create HTTP server
 const httpServer = createServer(app);
+
+// Launch bot
+bot.launch().then(() => console.log("Telegram bot started"));
 
 // Initialize Socket.IO
 const io = new Server(httpServer, {

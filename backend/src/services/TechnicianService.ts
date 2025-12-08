@@ -1,6 +1,19 @@
 import { Report } from "../models/Report";
-import { getReportsByCategoryAndStatus, getReportsByTechnician} from "../repositories/ReportRepository";
-import { getTechnicianCategory } from "../repositories/TechnicianRepository";
+import { getReportsByCategoryAndStatus, getReportsByTechnician, getReportById} from "../repositories/ReportRepository";
+import { getTechnicianCategory, getExternalMaintainerCategory } from "../repositories/TechnicianRepository";
+
+// Function to get the category for a technician or external maintainer
+export const getMaintainerCategory = async (
+  user_id: number
+): Promise<number> => {
+  // First try to get the category from Technician_Category table
+  try {
+    return await getTechnicianCategory(user_id);
+  } catch (error) {
+    // If not found in Technician_Category, try External_Company via User_Company
+    return await getExternalMaintainerCategory(user_id);
+  }
+};
 
 // Function to get reports for a technician based on their category
 export const getReportsForTechnician = async (
@@ -8,7 +21,7 @@ export const getReportsForTechnician = async (
   statusFilter?: Report["status"]
 ): Promise<Report[]> => {
   // Fetch technician category
-  const category_id = await getTechnicianCategory(technician_id);
+  const category_id = await getMaintainerCategory(technician_id);
   
   const status = (["ASSIGNED", "IN_PROGRESS", "SUSPENDED"] as Report["status"][]);
   
@@ -16,4 +29,23 @@ export const getReportsForTechnician = async (
   const reports = await getReportsByTechnician(category_id, status);
   
   return reports;
+};
+
+// Function to check if a technician/external maintainer is authorized to update a specific report
+export const canTechnicianUpdateReport = async (
+  technician_id: number,
+  report_id: number
+): Promise<boolean> => {
+  try {
+    // Get the maintainer's category (works for both technicians and external maintainers)
+    const maintainerCategoryId = await getMaintainerCategory(technician_id);
+    
+    // Get the report's category
+    const report = await getReportById(report_id);
+    
+    // Check if the report's category matches the maintainer's category
+    return report.category_id === maintainerCategoryId;
+  } catch (error) {
+    return false;
+  }
 };

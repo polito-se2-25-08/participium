@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as ReportService from "../services/ReportService";
+import * as TechnicianService from "../services/TechnicianService";
 import { ApiResponse, CreateReportDTO } from "../dto/ReportDTO";
 import { Report } from "../models/Report";
 import { getCategoryId } from "../utils/categoryMapper";
@@ -259,6 +260,37 @@ export const updateReportStatus = async (req: Request, res: Response) => {
 			return res.status(400).json({
 				success: false,
 				data: "Status is required",
+			});
+		}
+
+		// Validate status value
+		const validStatuses = ["ASSIGNED", "IN_PROGRESS", "SUSPENDED", "RESOLVED"];
+		if (!validStatuses.includes(status)) {
+			return res.status(400).json({
+				success: false,
+				data: `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+			});
+		}
+
+		// Get authenticated technician
+		const authenticatedUser = (req as any).user;
+		if (!authenticatedUser?.id) {
+			return res.status(401).json({
+				success: false,
+				data: "Authentication required",
+			});
+		}
+
+		// Check if technician is authorized to update this report
+		const canUpdate = await TechnicianService.canTechnicianUpdateReport(
+			authenticatedUser.id,
+			numericId
+		);
+
+		if (!canUpdate) {
+			return res.status(403).json({
+				success: false,
+				data: "You are not authorized to update this report. It does not belong to your category.",
 			});
 		}
 
