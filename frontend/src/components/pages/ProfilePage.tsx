@@ -9,6 +9,7 @@ import OfficerProfilePage from "./ProfilePage/OfficerProfilePage";
 import TechnitianProfilePage from "./ProfilePage/TechnitianProfilePage";
 
 import UserReports from "./componets/UserReports";
+import ExternalMaintainerProfilePage from "./ProfilePage/ExternalMantainerProfilePage";
 
 export function ProfilePage() {
 	const { user } = useUser();
@@ -31,6 +32,7 @@ export function ProfilePage() {
 						<UserReports />
 					</div>
 				)}
+				{user.role === "EXTERNAL MAINTAINER" && <ExternalMaintainerProfilePage />}
 
 				{user.role === "OFFICER" && <OfficerProfilePage />}
 				{user.role === "TECHNICIAN" && <TechnitianProfilePage />}

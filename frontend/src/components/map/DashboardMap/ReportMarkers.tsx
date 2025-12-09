@@ -57,25 +57,25 @@ export function ReportMarkers({
 
   if (reports === null) return null;
 
-  return (
-    <MarkerClusterGroup chunkedLoading iconCreateFunction={createIcon}>
-      {reports.map((report, idx) => (
-        <Marker
-          key={idx}
-          position={report.coordinates}
-          icon={
-            new Icon({
-              iconUrl: chooseIcon(report.category),
-              iconSize: [35, 35],
-              iconAnchor: [15, 30],
-              popupAnchor: [0, -30],
-            })
-          }
-          eventHandlers={{
-            click: () => handleMarkerClick(report, idx),
-          }}
-        ></Marker>
-      ))}
-    </MarkerClusterGroup>
-  );
+	return (
+		<MarkerClusterGroup chunkedLoading iconCreateFunction={createIcon}>
+			{reports.map((report, idx) => (
+				<Marker
+					key={idx}
+					position={report.coordinates}
+					icon={
+						new Icon({
+							iconUrl: chooseIcon(report.category),
+							iconSize: [35, 35],
+							iconAnchor: [15, 30],
+							popupAnchor: [0, -30],
+						})
+					}
+					eventHandlers={{
+						click: () => handleMarkerClick(report, idx),
+					}}
+				></Marker>
+			))}
+		</MarkerClusterGroup>
+	);
 }
