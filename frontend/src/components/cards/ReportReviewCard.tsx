@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Report } from "../../types";
 import DangerButton from "../buttons/variants/danger/DangerButton";
 import ImageZoomModal from "../modals/ImageZoomModal";
+import CommentSection from "../comments/CommentSection";
 
 interface ReportReviewCardProps {
   report: Report;
@@ -25,6 +26,7 @@ export default function ReportReviewCard({
   suspendLabel = "Suspend Report",
 }: ReportReviewCardProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [showComments, setShowComments] = useState(false);
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -125,6 +127,20 @@ export default function ReportReviewCard({
           >
             {rejectLabel}
           </DangerButton>
+        </div>
+
+        <div className="mt-4 pt-2 border-t border-gray-100">
+          <button
+            onClick={() => setShowComments(!showComments)}
+            className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            </svg>
+            {showComments ? "Hide Internal Comments" : "Show Internal Comments"}
+          </button>
+          
+          {showComments && <CommentSection reportId={report.id} />}
         </div>
       </div>
 
