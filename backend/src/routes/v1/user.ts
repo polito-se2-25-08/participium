@@ -4,12 +4,15 @@ import { registerSchema, loginSchema } from "../../validators/userValidators";
 import { validate } from "../../middleware/validateMiddleware";
 import { protect } from "../../middleware/authMiddleware";
 import {
+	createVerificationCode,
 	getAllUsers,
 	loginUser,
 	registerUser,
 	updateUser,
+	verifyUser,
 } from "../../controllers/userController";
 import { getReportsByUserId } from "../../controllers/ReportController";
+import { create } from "axios";
 
 const router = Router();
 /* 
@@ -27,6 +30,8 @@ router.post("/register", validate(registerSchema), registerUser);
 router.post("/login", validate(loginSchema), loginUser);
 router.get("/users", getAllUsers);
 router.patch("/users/:id", updateUser);
+router.get("/users/:id/verify", verifyUser);
+router.post("/users/:id/verify/create", createVerificationCode);
 
 router.get("/users/:id/reports", getReportsByUserId);
 

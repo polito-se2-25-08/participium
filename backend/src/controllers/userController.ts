@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { catchAsync } from "../utils/catchAsync";
 import { userService } from "../services/userService";
+import { getVerificationCode, InitializeVerificationCode } from "../repositories/VerificationCodeRepository";
 
 export const registerUser = catchAsync(async (req: Request, res: Response) => {
 	const { email, username, password, name, surname } = req.body;
@@ -104,5 +105,55 @@ export const updateUser = catchAsync(async (req: Request, res: Response) => {
 			emailNotification: updatedUser.email_notification,
 			profilePicture: updatedUser.profile_picture,
 		},
+	});
+});
+
+export const verifyUser = catchAsync(async (req: Request, res: Response) => {
+	const userId = parseInt(req.params.id);
+	const code = req.query.code as string;
+
+	if (isNaN(userId) || !code) {
+		res.status(400).json({
+			success: false,
+			message: "Invalid user ID or missing code",
+		});
+		return;
+	}
+	const verificationData = await getVerificationCode(userId);
+  	if(verificationData !== null && code === verificationData.code)
+	{
+		res.status(200).json({
+			success: true,
+			data: {
+				result: true,
+			},
+		});
+	}
+	else if(verificationData !== null && code !== verificationData.code)
+	{
+		res.status(200).json({
+			success: true,
+			data: {
+				result: false,
+			},
+		});
+	}
+});
+
+export const createVerificationCode = catchAsync(async (req: Request, res: Response) => {
+	const userId = parseInt(req.params.id);
+
+	if (isNaN(userId)) {
+		res.status(400).json({
+			success: false,
+			message: "Invalid user ID",
+		});
+		return;
+	}
+	await InitializeVerificationCode(userId);
+
+	res.status(201).json({
+		success: true,
+		message: "Verification code created and sent via email",
 	});
 });
