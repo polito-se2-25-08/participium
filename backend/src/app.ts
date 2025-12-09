@@ -9,7 +9,6 @@ import userRoutes from "./routes/v1/user";
 import adminRoutes from "./routes/v1/adminRoutes";
 import reportRoutes from "./routes/v1/reportRoutes";
 import categoryRoutes from "./routes/v1/categoryRoutes";
-import externalCompanyRoutes from "./routes/v1/externalCompanyRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 import bot from "./bot";
 import { MessageService } from "./services/MessageService";
@@ -17,6 +16,7 @@ import { getReportById } from "./repositories/ReportRepository";
 import { mapMessageDBToMessage } from "./controllers/mapper/MessageDBToMessage";
 import { userRepository } from "./repositories/userRepository";
 import is from "zod/v4/locales/is.js";
+import { createNotification } from "./services/NotificationService";
 
 const app = express();
 const host = "localhost";
@@ -77,6 +77,13 @@ io.on("connection", (socket) => {
 						console.log(
 							`Message sent to user ${userId} for report ${reportId}`
 						);
+					} else {
+						const notification = await createNotification({
+							user_id: reportUserId,
+							report_id: reportId,
+							type: "NEW_MESSAGE",
+							message: `New message on report #${reportId}`,
+						});
 					}
 				}
 			}
@@ -107,7 +114,6 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/health", (req, res) => res.send("OK"));
 
 // Routes
-app.use("/api/v1/external-company", externalCompanyRoutes);
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", reportRoutes);
 app.use("/api/v1", categoryRoutes);
