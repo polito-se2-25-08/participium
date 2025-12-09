@@ -9,6 +9,7 @@ import SearchLocationInput from "./SearchLocationInput";
 import TempMarker from "./TempMarker";
 import type { MarkerI } from "../../interfaces/components/MarkerI";
 import { ReportMarkers } from "./ReportMarkers";
+import { MarkerInfo } from "./MarkerInfo";
 
 const ZOOM = 13;
 const TURIN_BOUNDS: LatLngBoundsExpression = [
@@ -61,6 +62,7 @@ export function MapWindow({
 				isDashboard={!isReport}
 			/>
 			<TempMarker tempMarker={tempMarker} setTempMarker={setTempMarker} />
+			{!isReport && <MarkerInfo />}
 		</MapContainer>
 	);
 }
