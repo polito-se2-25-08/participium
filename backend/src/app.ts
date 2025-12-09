@@ -9,6 +9,7 @@ import userRoutes from "./routes/v1/user";
 import adminRoutes from "./routes/v1/adminRoutes";
 import reportRoutes from "./routes/v1/reportRoutes";
 import categoryRoutes from "./routes/v1/categoryRoutes";
+import externalCompanyRoutes from "./routes/v1/externalCompanyRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 import bot from "./bot";
 import { MessageService } from "./services/MessageService";
@@ -25,7 +26,7 @@ const port = 3000;
 const httpServer = createServer(app);
 
 // Launch bot
-bot.launch().then(() => console.log("Telegram bot started"));
+//bot.launch().then(() => console.log("Telegram bot started"));
 
 // Initialize Socket.IO
 const io = new Server(httpServer, {
@@ -106,6 +107,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/health", (req, res) => res.send("OK"));
 
 // Routes
+app.use("/api/v1/external-company", externalCompanyRoutes);
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", reportRoutes);
 app.use("/api/v1", categoryRoutes);

@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../components/providers/AuthContext";
 import type { Report } from "../types";
 import { reportService } from "../api/reportService";
-
 interface UseCategoryReportsReturn {
   reports: Report[];
   loading: boolean;
