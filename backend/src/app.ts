@@ -11,6 +11,8 @@ import reportRoutes from "./routes/v1/reportRoutes";
 import categoryRoutes from "./routes/v1/categoryRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 import bot from "./bot";
+import { MessageService } from "./services/MessageService";
+import { getReportById } from "./controllers/ReportController";
 
 const app = express();
 const host = "localhost";
@@ -24,10 +26,10 @@ bot.launch().then(() => console.log("Telegram bot started"));
 
 // Initialize Socket.IO
 const io = new Server(httpServer, {
-  cors: {
-    origin: "http://localhost:5173",
-    credentials: true,
-  },
+	cors: {
+		origin: "http://localhost:5173",
+		credentials: true,
+	},
 });
 
 // Store connected users: { userId: socketId }
@@ -35,24 +37,34 @@ const connectedUsers = new Map<number, string>();
 
 // Socket.IO connection handling
 io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
+	console.log("Client connected:", socket.id);
 
-  // User registers their ID when they connect
-  socket.on("register", (userId: number) => {
-    connectedUsers.set(userId, socket.id);
-    console.log(`User ${userId} registered with socket ${socket.id}`);
-  });
+	// User registers their ID when they connect
+	socket.on("register", (userId: number) => {
+		connectedUsers.set(userId, socket.id);
+		console.log(`User ${userId} registered with socket ${socket.id}`);
+	});
 
-  socket.on("disconnect", () => {
-    // Remove user from connected users
-    for (const [userId, socketId] of connectedUsers.entries()) {
-      if (socketId === socket.id) {
-        connectedUsers.delete(userId);
-        console.log(`User ${userId} disconnected`);
-        break;
-      }
-    }
-  });
+	socket.on(
+		"add_report_message",
+		(userId: number, message: string, reportId) => {
+			if (connectedUsers.has(userId)) {
+				MessageService.saveMessage(message, reportId, userId);
+				const report = getReportById(reportId);
+			}
+		}
+	);
+
+	socket.on("disconnect", () => {
+		// Remove user from connected users
+		for (const [userId, socketId] of connectedUsers.entries()) {
+			if (socketId === socket.id) {
+				connectedUsers.delete(userId);
+				console.log(`User ${userId} disconnected`);
+				break;
+			}
+		}
+	});
 });
 
 // Make io and connectedUsers accessible to routes
@@ -80,8 +92,8 @@ app.use(errorHandler);
 
 // Start server with Socket.IO
 httpServer.listen(port, () => {
-  console.log(`Express is listening at http://${host}:${port}`);
-  console.log(`Socket.IO is ready for connections`);
+	console.log(`Express is listening at http://${host}:${port}`);
+	console.log(`Socket.IO is ready for connections`);
 });
 
 export default app;
