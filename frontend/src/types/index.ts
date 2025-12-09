@@ -79,3 +79,17 @@ export interface Rejection_Report {
   id: number;
   motivation: string;
 }
+
+export interface Comment {
+  id: number;
+  reportId: number;
+  userId: number;
+  user: {
+    name: string;
+    surname: string;
+    role: string;
+    profile_picture?: string;
+  };
+  content: string;
+  createdAt: string;
+}
