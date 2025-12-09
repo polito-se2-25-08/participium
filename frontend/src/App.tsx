@@ -48,8 +48,8 @@ function AppContent() {
               <Route path="/pending-reports" element={<PendingReportsPage />} />
             </Route>
 
-            {/* 🔥 New TECHNICIAN route from merge */}
-            <Route element={<Acl allowedRoles={["TECHNICIAN"]} />}>
+            {/* TECHNICIAN and EXTERNAL MAINTAINER routes */}
+            <Route element={<Acl allowedRoles={["TECHNICIAN", "EXTERNAL MAINTAINER"]} />}>
               <Route path="/category-reports" element={<CategoryReportsPage />} />
             </Route>
 
