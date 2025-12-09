@@ -25,6 +25,9 @@ interface ReportReviewCardProps {
 
   // NEW FIELD
   externalAssigned?: boolean;
+  
+  // NEW FIELD: Control comment section visibility
+  allowComments?: boolean;
 }
 
 export default function ReportReviewCard({
@@ -39,6 +42,7 @@ export default function ReportReviewCard({
   suspendLabel = "Suspend Report",
   assignLabel = "Assign External Office",
   externalAssigned = false,
+  allowComments = true,
 }: ReportReviewCardProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showComments, setShowComments] = useState(false);
@@ -177,19 +181,21 @@ export default function ReportReviewCard({
           </DangerButton>
         </div>
 
-        <div className="mt-4 pt-2 border-t border-gray-100">
-          <button
-            onClick={() => setShowComments(!showComments)}
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-            </svg>
-            {showComments ? "Hide Internal Comments" : "Show Internal Comments"}
-          </button>
-          
-          {showComments && <CommentSection reportId={report.id} />}
-        </div>
+        {allowComments && (
+          <div className="mt-4 pt-2 border-t border-gray-100">
+            <button
+              onClick={() => setShowComments(!showComments)}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+              </svg>
+              {showComments ? "Hide Internal Comments" : "Show Internal Comments"}
+            </button>
+            
+            {showComments && <CommentSection reportId={report.id} />}
+          </div>
+        )}
       </div>
 
       <ImageZoomModal
