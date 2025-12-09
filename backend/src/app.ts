@@ -21,7 +21,7 @@ const port = 3000;
 const httpServer = createServer(app);
 
 // Launch bot
-bot.launch().then(() => console.log("Telegram bot started"));
+//bot.launch().then(() => console.log("Telegram bot started"));
 
 // Initialize Socket.IO
 const io = new Server(httpServer, {
@@ -69,14 +69,13 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/health", (req, res) => res.send("OK"));
 
 // Routes
-
+app.use("/api/v1/external-company", externalCompanyRoutes);
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", reportRoutes);
 app.use("/api/v1", categoryRoutes);
 app.use("/api/v1/technician", technicianRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1", officerRoutes);
-app.use("/api/v1/external-company", externalCompanyRoutes);
 
 // Global error handler (MUST be last middleware)
 app.use(errorHandler);

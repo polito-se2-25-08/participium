@@ -48,6 +48,7 @@ export interface Report {
   category: ReportCategory;
   latitude: number;
   longitude: number;
+  
   photos: Report_Photo[];
   anonymous: boolean;
   user_id: number;
@@ -60,6 +61,7 @@ export interface Report {
   updatedAt: Date;
   rejection?: Rejection_Report;
   assignedOffice?: string;
+  assignedExternalOfficeId?: number | null;
 }
 
 export interface Category {
