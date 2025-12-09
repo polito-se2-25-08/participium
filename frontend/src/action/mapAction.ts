@@ -1,16 +1,41 @@
-import type { MarkerI } from "../interfaces/components/MarkerI";
-import barrierIcon from "../assets/markers/architectural_barriers.svg";
-import waterIcon from "../assets/markers/drinking_water.svg";
-import otherIcon from "../assets/markers/other.svg";
-import playIcon from "../assets/markers/playground.svg";
-import lightIcon from "../assets/markers/public_lights.svg";
-import roadIcon from "../assets/markers/road_sign.svg";
-import sewerIcon from "../assets/markers/sewer.svg";
-import furnishingIcon from "../assets/markers/urban_furnishing.svg";
-import wasteIcon from "../assets/markers/waste.svg";
 import type { ApiResponse } from "../interfaces/dto/Response";
 import type { ReportMapI } from "../interfaces/dto/report/NewReportResponse";
-import type { ApiResponse } from "../interfaces/dto/Response";
+
+import waterIconAssigned from "../assets/markers/assigned/drinking_water.svg";
+import waterIconWip from "../assets/markers/wip/drinking_water.svg";
+import waterIconSuspended from "../assets/markers/suspended/drinking_water.svg";
+
+import barrierIconAssigned from "../assets/markers/assigned/architectural_barriers.svg";
+import barrierIconWip from "../assets/markers/wip/architectural_barriers.svg";
+import barrierIconSuspended from "../assets/markers/suspended/architectural_barriers.svg";
+
+import otherIconAssigned from "../assets/markers/assigned/other.svg";
+import otherIconWip from "../assets/markers/wip/other.svg";
+import otherIconSuspended from "../assets/markers/suspended/other.svg";
+
+import playIconAssigned from "../assets/markers/assigned/playground.svg";
+import playIconWip from "../assets/markers/wip/playground.svg";
+import playIconSuspended from "../assets/markers/suspended/playground.svg";
+
+import roadIconAssigned from "../assets/markers/assigned/road_sign.svg";
+import roadIconWip from "../assets/markers/wip/road_sign.svg";
+import roadIconSuspended from "../assets/markers/suspended/road_sign.svg";
+
+import sewerIconAssigned from "../assets/markers/assigned/sewer.svg";
+import sewerIconWip from "../assets/markers/wip/sewer.svg";
+import sewerIconSuspended from "../assets/markers/suspended/sewer.svg";
+
+import wasteIconAssigned from "../assets/markers/assigned/waste.svg";
+import wasteIconWip from "../assets/markers/wip/waste.svg";
+import wasteIconSuspended from "../assets/markers/suspended/waste.svg";
+
+import lightIconAssigned from "../assets/markers/assigned/public_lights.svg";
+import lightIconWip from "../assets/markers/wip/public_lights.svg";
+import lightIconSuspended from "../assets/markers/suspended/public_lights.svg";
+
+import furnishingIconAssigned from "../assets/markers/assigned/urban_furnishing.svg";
+import furnishingIconWip from "../assets/markers/wip/urban_furnishing.svg";
+import furnishingIconSuspended from "../assets/markers/suspended/urban_furnishing.svg";
 
 //wip = rgb(29.8% 72.2% 31.4%)
 //assigned = rgb(93.3% 86.3% 23.5%)
