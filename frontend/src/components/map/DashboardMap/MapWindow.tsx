@@ -11,6 +11,7 @@ import TempMarker from "./TempMarker";
 import SearchLocationInput from "./SearchLocationInput";
 import type { ClientReportMapI } from "../../../interfaces/dto/report/NewReportResponse";
 import type { MarkerI } from "../../../interfaces/components/MarkerI";
+import { MarkerInfo } from "./MarkerInfo";
 
 const ZOOM = 13;
 const TURIN_BOUNDS: LatLngBoundsExpression = [
@@ -67,6 +68,7 @@ export function MapWindow({
 				setClickedReportId={setClickedReportId}
 			/>
 			<TempMarker tempMarker={tempMarker} setTempMarker={setTempMarker} />
+			<MarkerInfo />
 		</MapContainer>
 	);
 }

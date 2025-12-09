@@ -33,14 +33,13 @@ export default function TempMarker({
 				},
 			}}
 			position={tempMarker.position}
-			icon={
-				new Icon({
-					iconUrl: temporaryMarker,
-					iconSize: [50, 50],
-					iconAnchor: [15, 30],
-					popupAnchor: [0, -30],
-				})
-			}
+			icon={ new Icon({
+										iconUrl: temporaryMarker,
+										iconSize: [70, 70],
+										iconAnchor: [35, 58],
+										popupAnchor: [0, -60],
+									}) 
+				}
 		>
 			<Popup>{isLoading ? "Loading..." : tempMarker.adress}</Popup>
 		</Marker>

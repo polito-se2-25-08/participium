@@ -17,29 +17,45 @@ export const errorHandler = (
 	let code = err.code || "INTERNAL_ERROR";
 
 	//  Handle Supabase Postgres errors (using code or message)
-	if (err.code) {
-		switch (err.code) {
-			case "23505": // unique constraint violation
-				statusCode = 400;
-				message = "Duplicate value for a field that must be unique.";
-				code = "SUPABASE_DUPLICATE";
-				break;
-			case "23503": // foreign key violation
-				statusCode = 400;
-				message = "Invalid reference to another record.";
-				code = "SUPABASE_FK_VIOLATION";
-				break;
-			case "22P02": // invalid input syntax (e.g. UUID error)
-				statusCode = 400;
-				message = "Invalid input format.";
-				code = "SUPABASE_INVALID_INPUT";
-				break;
-			default:
-				if (err.message?.includes("duplicate key")) {
+	const isSupabaseError = err.code && /^[0-9A-Z]{5}$/.test(err.code);
+	const hasDuplicateKeyMessage = err.message?.includes("duplicate key");
+	
+	if (isSupabaseError || hasDuplicateKeyMessage) {
+		// Handle by code if available
+		if (isSupabaseError) {
+			switch (err.code) {
+				case "23505": // unique constraint violation
 					statusCode = 400;
+					message = "Duplicate value for a field that must be unique.";
 					code = "SUPABASE_DUPLICATE";
-				}
+					break;
+				case "23503": // foreign key violation
+					statusCode = 400;
+					message = "Invalid reference to another record.";
+					code = "SUPABASE_FK_VIOLATION";
+					break;
+				case "22P02": // invalid input syntax (e.g. UUID error)
+					statusCode = 400;
+					message = "Invalid input format.";
+					code = "SUPABASE_INVALID_INPUT";
+					break;
+			}
 		}
+		
+		// Handle by message if no code match
+		if (hasDuplicateKeyMessage) {
+			statusCode = 400;
+			code = "SUPABASE_DUPLICATE";
+		}
+		
+		// Return early for Supabase errors
+		return res.status(statusCode).json({
+			success: false,
+			message,
+			code,
+			details: err.details,
+			hint: err.hint,
+		});
 	}
 
 	// 🧩 Handle validation errors

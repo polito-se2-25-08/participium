@@ -65,10 +65,10 @@ export function ReportMarkers({
 					position={report.coordinates}
 					icon={
 						new Icon({
-							iconUrl: chooseIcon(report.category),
-							iconSize: [35, 35],
-							iconAnchor: [15, 30],
-							popupAnchor: [0, -30],
+							iconUrl: chooseIcon(report.category, report.status ? report.status : "PENDING_ASSIGNMENT"),
+							iconSize: [70, 70],
+							iconAnchor: [35, 58],
+							popupAnchor: [0, -60],
 						})
 					}
 					eventHandlers={{
