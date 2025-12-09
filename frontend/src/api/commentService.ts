@@ -1,65 +1,57 @@
 import type { Comment } from "../types";
+import type { ApiResponse } from "../interfaces/dto/Response";
 
-// Mock data store
-let mockComments: Comment[] = [
-  {
-    id: 1,
-    reportId: 1,
-    userId: 2,
-    user: {
-      name: "John",
-      surname: "Officer",
-      role: "OFFICER",
-    },
-    content: "I have reviewed the initial report. Needs site visit.",
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id: 2,
-    reportId: 1,
-    userId: 3,
-    user: {
-      name: "Jane",
-      surname: "Tech",
-      role: "TECHNICIAN",
-    },
-    content: "Scheduled for tomorrow morning.",
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-  },
-];
+const API_BASE =
+  import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api/v1";
 
 export const commentService = {
-  getComments: async (reportId: number): Promise<{ success: boolean; data: Comment[] }> => {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    
-    const comments = mockComments.filter((c) => c.reportId === reportId);
-    return { success: true, data: comments.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()) };
+  getComments: async (reportId: number): Promise<ApiResponse<Comment[]>> => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`${API_BASE}/reports/${reportId}/comments`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      });
+
+      const result: ApiResponse<Comment[]> = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      const message =
+        error instanceof Error ? error.message : "Cannot reach server";
+      return { success: false, data: { message } };
+    }
   },
 
   addComment: async (
     reportId: number, 
     content: string, 
-    currentUser?: { id: number; name: string; surname: string; role: string }
-  ): Promise<{ success: boolean; data?: Comment }> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _currentUser?: { id: number; name: string; surname: string; role: string }
+  ): Promise<ApiResponse<Comment>> => {
+    try {
+      const token = localStorage.getItem("token");
 
-    // In a real app, the backend would determine the user from the token
-    // Here we use the passed user for the mock, or fallback to a default
-    const newComment: Comment = {
-      id: Math.max(0, ...mockComments.map(c => c.id)) + 1,
-      reportId,
-      userId: currentUser?.id || 999,
-      user: {
-        name: currentUser?.name || "Current",
-        surname: currentUser?.surname || "User",
-        role: currentUser?.role || "OFFICER",
-      },
-      content,
-      createdAt: new Date().toISOString(),
-    };
+      const response = await fetch(`${API_BASE}/reports/${reportId}/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify({ content }),
+      });
 
-    mockComments.push(newComment);
-    return { success: true, data: newComment };
+      const result: ApiResponse<Comment> = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      const message =
+        error instanceof Error ? error.message : "Cannot reach server";
+      return { success: false, data: { message } };
+    }
   },
 };

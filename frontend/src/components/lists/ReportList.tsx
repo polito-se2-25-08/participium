@@ -8,6 +8,7 @@ interface ReportListProps {
   onReject: (reportId: number) => void;
   approveLabel?: string;
   rejectLabel?: string;
+  allowComments?: boolean;
 }
 
 export default function ReportList({
@@ -17,6 +18,7 @@ export default function ReportList({
   onReject,
   approveLabel,
   rejectLabel,
+  allowComments = true,
 }: ReportListProps) {
   if (reports.length === 0) {
     return (
@@ -41,6 +43,7 @@ export default function ReportList({
           isProcessing={processingReportId === report.id}
           approveLabel={approveLabel}
           rejectLabel={rejectLabel}
+          allowComments={allowComments}
         />
       ))}
     </div>
