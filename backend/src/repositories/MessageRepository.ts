@@ -1,24 +1,28 @@
+import { MessageDB } from "../controllers/interface/MessageDB";
 import { supabase } from "../utils/Supabase";
 
-export const messageRepository = {
+export const MessageRepository = {
 	saveMessage: async (
 		message: string,
 		reportId: number,
 		senderId: number
 	) => {
-		const { error } = await supabase.from("Report_Message").insert({
-			message: message,
-			report_id: reportId,
-			sender_id: senderId,
-			timestamp: new Date().toISOString(),
-		});
-
-		console.error(error);
+		const { data, error } = await supabase
+			.from("Report_Message")
+			.insert({
+				message: message,
+				report_id: reportId,
+				sender_id: senderId,
+				timestamp: new Date().toISOString(),
+			})
+			.select()
+			.single();
 
 		if (error) {
-			return false;
+			console.error(error);
+			throw new Error(error.message);
 		}
 
-		return true;
+		return data as MessageDB;
 	},
 };

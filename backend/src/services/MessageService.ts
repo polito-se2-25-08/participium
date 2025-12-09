@@ -1,4 +1,4 @@
-import { messageRepository } from "../repositories/MessageRepository";
+import { MessageRepository } from "../repositories/MessageRepository";
 
 export const MessageService = {
 	saveMessage: async (
@@ -6,7 +6,7 @@ export const MessageService = {
 		reportId: number,
 		senderId: number
 	) => {
-		const reponse = await messageRepository.saveMessage(
+		const reponse = await MessageRepository.saveMessage(
 			message,
 			reportId,
 			senderId
