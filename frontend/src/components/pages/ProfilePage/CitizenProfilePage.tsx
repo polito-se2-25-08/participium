@@ -17,7 +17,6 @@ import CheckInput from "../../input/variants/CheckInput";
 import PrimaryButton from "../../buttons/variants/primary/PrimaryButton";
 import Form from "../../form/Form";
 import {
-	fetchUserReportsById,
 	updateUserAction,
 } from "../../../action/UserAction";
 import { fileToBase64 } from "../../../utilis/utils";

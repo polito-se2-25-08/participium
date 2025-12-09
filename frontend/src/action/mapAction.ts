@@ -1,4 +1,3 @@
-import type { MarkerI } from "../interfaces/components/MarkerI";
 import barrierIcon from "../assets/markers/architectural_barriers.svg";
 import waterIcon from "../assets/markers/drinking_water.svg";
 import otherIcon from "../assets/markers/other.svg";
