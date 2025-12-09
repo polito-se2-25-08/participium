@@ -9,6 +9,7 @@ import userRoutes from "./routes/v1/user";
 import adminRoutes from "./routes/v1/adminRoutes";
 import reportRoutes from "./routes/v1/reportRoutes";
 import categoryRoutes from "./routes/v1/categoryRoutes";
+import externalCompanyRoutes from "./routes/v1/externalCompanyRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 import bot from "./bot";
 
@@ -68,12 +69,14 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/health", (req, res) => res.send("OK"));
 
 // Routes
+
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", reportRoutes);
 app.use("/api/v1", categoryRoutes);
 app.use("/api/v1/technician", technicianRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1", officerRoutes);
+app.use("/api/v1/external-company", externalCompanyRoutes);
 
 // Global error handler (MUST be last middleware)
 app.use(errorHandler);

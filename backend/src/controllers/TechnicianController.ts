@@ -29,3 +29,38 @@ export const getReportsForTechnician = catchAsync(
     return res.status(200).json(response);
   }
 );
+
+export const assignExternalOffice = catchAsync(
+  async (req: Request, res: Response) => {
+    const reportId = Number(req.params.id);
+    const { assignedExternalOfficeId } = req.body;
+
+    if (isNaN(reportId)) {
+      throw new AppError("Invalid report ID", 400, "INVALID_ID");
+    }
+   
+    // Only TECHNICIAN can assign/unassign
+    const authUser = (req as any).user;
+    if (authUser.role !== "TECHNICIAN") {
+      throw new AppError(
+        "Only technicians can assign reports externally",
+        403,
+        "NOT_ALLOWED"
+      );
+    }
+    
+    await TechnicianService.assignExternalOffice(
+      reportId,
+      assignedExternalOfficeId
+    );
+
+    res.status(200).json({
+      success: true,
+      message:
+        assignedExternalOfficeId === null
+          ? "External assignment removed"
+          : "Report assigned to external office",
+    });
+  }
+);
+

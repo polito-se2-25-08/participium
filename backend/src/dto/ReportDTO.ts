@@ -13,4 +13,5 @@ export interface CreateReportDTO {
   anonymous: boolean;
   user_id: number;
   photos: string[];
+  assignedExternalOfficeId: number | null;
 }

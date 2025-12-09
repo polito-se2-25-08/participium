@@ -1,6 +1,8 @@
 import { Report } from "../models/Report";
 import { getReportsByCategoryAndStatus, getReportsByTechnician, getReportById} from "../repositories/ReportRepository";
-import { getTechnicianCategory, getExternalMaintainerCategory } from "../repositories/TechnicianRepository";
+import { getTechnicianCategory, getExternalMaintainerCategory, updateReportExternalAssignment } from "../repositories/TechnicianRepository";
+import AppError from "../utils/AppError";
+
 
 // Function to get the category for a technician or external maintainer
 export const getMaintainerCategory = async (
@@ -48,4 +50,36 @@ export const canTechnicianUpdateReport = async (
   } catch (error) {
     return false;
   }
+};
+
+// Prevent modifications when externally assigned
+export const ensureReportNotExternallyAssigned = async (report_id: number) => {
+  const report = await getReportById(report_id);
+
+  if (!report) {
+    throw new AppError("Report not found", 404, "REPORT_NOT_FOUND");
+  }
+
+  if (report.assignedExternalOfficeId !== null) {
+    throw new AppError(
+      "This report is handled by an external office and cannot be modified by local technicians.",
+      403,
+      "EXTERNAL_LOCK"
+    );
+  }
+};
+
+// Assign / Unassign external office
+export const assignExternalOffice = async (
+  report_id: number,
+  externalOfficeId: number | null
+) => {
+  const report = await getReportById(report_id);
+
+  if (!report) {
+    throw new AppError("Report not found", 404, "REPORT_NOT_FOUND");
+  }
+
+  // Allow setting null or a numeric ID
+  await updateReportExternalAssignment(report_id, externalOfficeId);
 };

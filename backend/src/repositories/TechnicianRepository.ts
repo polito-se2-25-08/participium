@@ -95,3 +95,22 @@ export const upsertTechnicianCategory = async (
     );
   }
 };
+
+export const updateReportExternalAssignment = async (
+  report_id: number,
+  externalOfficeId: number | null
+) => {
+  const { error } = await supabase
+    .from("Report")
+    .update({ assignedExternalOfficeId: externalOfficeId })
+    .eq("id", report_id);
+
+  if (error) {
+    throw new AppError(
+      `Failed to update external assignment: ${error.message}`,
+      500,
+      "DB_UPDATE_ERROR"
+    );
+  }
+};
+
