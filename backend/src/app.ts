@@ -18,6 +18,7 @@ import { userRepository } from "./repositories/userRepository";
 import is from "zod/v4/locales/is.js";
 import { createNotification } from "./services/NotificationService";
 import { MessageDTO } from "./dto/MessageDTO";
+import externalCompanyRoutes from "./routes/v1/externalCompanyRoutes";
 
 const app = express();
 const host = "localhost";
@@ -122,12 +123,14 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/health", (req, res) => res.send("OK"));
 
 // Routes
+app.use("/api/v1/external-company", externalCompanyRoutes);
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", reportRoutes);
 app.use("/api/v1", categoryRoutes);
 app.use("/api/v1/technician", technicianRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1", officerRoutes);
+
 
 // Global error handler (MUST be last middleware)
 app.use(errorHandler);

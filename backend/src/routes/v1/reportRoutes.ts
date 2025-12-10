@@ -1,6 +1,7 @@
 import express from "express";
 import * as ReportController from "../../controllers/ReportController";
 import * as ReportMessageController from "../../controllers/ReportMessageController";
+import * as ReportCommentController from "../../controllers/ReportCommentController";
 import * as NotificationController from "../../controllers/NotificationController";
 import { protect, restrictTo } from "../../middleware/authMiddleware";
 import { validate } from "../../middleware/validateMiddleware";
@@ -34,6 +35,19 @@ router.get(
 	"/reports/:id/messages",
 	protect,
 	ReportMessageController.getMessages
+);
+
+// Comment routes (internal comments for reports)
+router.post(
+	"/reports/:id/comments",
+	protect,
+	ReportCommentController.addComment
+);
+
+router.get(
+	"/reports/:id/comments",
+	protect,
+	ReportCommentController.getComments
 );
 
 // Notification routes

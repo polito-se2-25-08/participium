@@ -4,7 +4,7 @@
 @baseUrl = http://localhost:3000/api
 
 ### Technician Credentials
-@techUsername = Haland
+@techUsername = pablo7
 @techPassword = Secret123!
 @techToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2NTMwMDk3OSwiZXhwIjoxNzY1MzA0NTc5fQ.yP9kFmwB8ks7WNih1cV8bBjdJ1KZL9lWChH0FFJ_phs
 
@@ -12,7 +12,7 @@
 @categoryId = 4
 
 ### Company ID placeholder
-@companyId = 3
+@companyId = 1
 
 
 ############################################################

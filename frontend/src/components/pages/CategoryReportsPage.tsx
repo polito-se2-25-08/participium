@@ -143,6 +143,7 @@ export default function CategoryReportsPage() {
                 approveLabel="Start Report"
                 rejectLabel="Resolve Report"
                 suspendLabel="Suspend Report"
+                allowComments={true}
               />
             );
           }
@@ -161,6 +162,7 @@ export default function CategoryReportsPage() {
                 report.status === "SUSPENDED" ? "Resume Report" : "Suspend Report"
               }
               rejectLabel="Resolve Report"
+              allowComments={true}
             />
           );
         })}

@@ -1,10 +1,10 @@
 import * as ReportMessageService from '../../../src/services/ReportMessageService';
 import * as ReportMessageRepository from '../../../src/repositories/ReportMessageRepository';
 import * as NotificationService from '../../../src/services/NotificationService';
-import { io, connectedUsers } from '../../../src/app';
 
 jest.mock('../../../src/repositories/ReportMessageRepository');
 jest.mock('../../../src/services/NotificationService');
+jest.mock('../../../src/bot'); // Mock bot to avoid loading it and its dependencies
 jest.mock('../../../src/app', () => ({
   io: {
     to: jest.fn().mockReturnThis(),
@@ -14,10 +14,15 @@ jest.mock('../../../src/app', () => ({
 }));
 
 describe('ReportMessageService', () => {
+  let io: any;
+  let connectedUsers: Map<any, any>;
+
   beforeEach(() => {
     jest.clearAllMocks();
-    (connectedUsers as Map<number, string>).clear();
-    console.log = jest.fn();
+    const app = require('../../../src/app');
+    connectedUsers = app.connectedUsers;
+    io = app.io;
+    connectedUsers.clear();
   });
 
   describe('createMessage', () => {
@@ -76,7 +81,7 @@ describe('ReportMessageService', () => {
       (NotificationService.createNotification as jest.Mock).mockResolvedValue(mockNotification);
 
       // Simulate user being online
-      connectedUsers.set(2, 'socket-123');
+      connectedUsers.set('2', 'socket-123');
 
       await ReportMessageService.createMessage(messageData, 2);
 
