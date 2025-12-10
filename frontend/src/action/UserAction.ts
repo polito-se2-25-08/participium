@@ -128,6 +128,20 @@ export const fetchUserReportsById = async (userId: number) => {
 	return result;
 };
 
+export const startVerificationAction = async (
+	userId: number
+): Promise<ApiResponse<{ message: string }>> => {
+	const response = await fetch(`${API_ENDPOINT}/users/${userId}/verify`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${localStorage.getItem("token")}`,
+		},
+	});
+	const result: ApiResponse<{ message: string }> = await response.json();
+	return result;
+};
+
 export const verifyAction = async (
 	userId: number, code: string
 ): Promise<ApiResponse<{ result: boolean }>> => {
@@ -136,8 +150,8 @@ export const verifyAction = async (
 		headers: {
 			"Content-Type": "application/json",
 			Authorization: `Bearer ${localStorage.getItem("token")}`,
-			body: JSON.stringify({ code }),
 		},
+		body: JSON.stringify({ code: code }),
 	});
 	const result: ApiResponse<{ result: boolean }> = await response.json();
 	return result;

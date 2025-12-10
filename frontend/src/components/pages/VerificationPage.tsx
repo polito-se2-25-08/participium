@@ -1,19 +1,26 @@
 import React, { useActionState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import ContentContainer from "../containers/ContentContainer";
 import TextInput from "../input/variants/TextInput";
-import { verifyAction } from "../../action/UserAction";
+import { verifyAction, startVerificationAction } from "../../action/UserAction";
 import { useAuth } from "../providers/AuthContext";
 import type { ApiResponse } from "../../interfaces/dto/Response";
 import PrimaryButton from "../buttons/variants/primary/PrimaryButton";
+import PageTitle from "../titles/PageTitle";
 
 export function VerificationPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user?.id) {
+            startVerificationAction(user.id);
+        }
+    }, [user?.id]);
     
     // Wrapper action that matches useActionState's signature
     const wrappedVerifyAction = async (
-        prevState: ApiResponse<{ result: boolean }> | null,
+        _prevState: ApiResponse<{ result: boolean }> | null,
         formData: FormData
     ) => {
         const userId = user?.id;
@@ -25,13 +32,8 @@ export function VerificationPage() {
         } 
         else
         {    
-            // const code = formData.get("code") as string;
-            // return await verifyAction(userId, code);
-            const testResponse: ApiResponse<{ result: boolean }> = {
-                success: true,
-                data: { result: true },
-            };
-            return testResponse;
+            const code = formData.get("code") as string;
+            return await verifyAction(userId, code);
         }
     };
     
@@ -48,6 +50,7 @@ export function VerificationPage() {
     
     return (
         <ContentContainer>
+            <PageTitle>Verify Your Account</PageTitle>
             <form action={formAction}>
                 <br />
                 <p>Your verification code has been sent to your email.</p>

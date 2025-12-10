@@ -64,7 +64,7 @@ export const userRepository = {
 	async verifyUser(userId: number): Promise<UserRow> {
 		const { data, error } = await supabase
 			.from("User")
-			.update({ is_verified: true })
+			.update({ isVerified: true })
 			.eq("id", userId)
 			.select()
 			.single();

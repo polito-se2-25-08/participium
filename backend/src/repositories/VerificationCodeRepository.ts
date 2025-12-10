@@ -11,6 +11,41 @@ export const InitializeVerificationCode = async (
     userId: number,
 ) : Promise<void> => {
 
+    const { data: dataToCheck, error: errorToCheck } = await supabase
+        .from("VerificationCode")
+        .select("*")
+        .eq("userId", userId)
+        .order("expires_at", { ascending: false })
+        .limit(1)
+        .single();
+    
+    // If there's an error other than "not found", throw it
+    if (errorToCheck && errorToCheck.code !== "PGRST116") {
+        throw new AppError(
+            `Failed to get verification code: ${errorToCheck.message}`,
+            500,
+            "DB_SELECT_ERROR"
+        );
+    }
+    
+    // If a valid unexpired code exists, don't create a new one
+    if (dataToCheck !== null) {
+        const lastExpiresAt = new Date(dataToCheck.expires_at);
+        const now = new Date();
+        if (now < lastExpiresAt) {
+            console.log(`Valid code already exists for user ${userId}, not sending new email`);
+            return; // Valid code already exists
+        }
+    }
+
+    console.log(`Creating new verification code for user ${userId}`);
+    
+    // Delete any existing verification codes for this user to prevent duplicates
+    await supabase
+        .from("VerificationCode")
+        .delete()
+        .eq("userId", userId);
+
     const code = Math.floor(100000 + Math.random() * 900000).toString();
 
     const date = new Date();
@@ -50,7 +85,7 @@ export const InitializeVerificationCode = async (
 
 export const getVerificationCode = async (
     userId: number,
-): Promise<String | null> => {
+): Promise<string | null> => {
     const { data, error } = await supabase
         .from("VerificationCode")
         .select("*")
@@ -68,5 +103,22 @@ export const getVerificationCode = async (
             "DB_SELECT_ERROR"
         );
     }
+    
+    // Check if code is expired
+    const expiresAt = new Date(data.expires_at);
+    const now = new Date();
+    if (now > expiresAt) {
+        return null; // Code expired
+    }
+    
     return data.code;
+};
+
+export const deleteVerificationCode = async (
+    userId: number,
+): Promise<void> => {
+    await supabase
+        .from("VerificationCode")
+        .delete()
+        .eq("userId", userId);
 };

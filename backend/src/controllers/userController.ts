@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { catchAsync } from "../utils/catchAsync";
 import { userService } from "../services/userService";
-import { getVerificationCode, InitializeVerificationCode } from "../repositories/VerificationCodeRepository";
+import { getVerificationCode, InitializeVerificationCode, deleteVerificationCode } from "../repositories/VerificationCodeRepository";
 import { userRepository } from "../repositories/userRepository";
 
 export const registerUser = catchAsync(async (req: Request, res: Response) => {
@@ -112,36 +112,56 @@ export const updateUser = catchAsync(async (req: Request, res: Response) => {
 
 export const verifyUser = catchAsync(async (req: Request, res: Response) => {
 	const userId = parseInt(req.params.id);
-	const code = req.query.code as string;
+	const code = req.body.code as string;
 
 	if (isNaN(userId) || !code) {
 		res.status(400).json({
 			success: false,
-			message: "Invalid user ID or missing code",
+			data: {
+				message: "Invalid user ID or missing code",
+			},
 		});
 		return;
 	}
+	
 	const verificationCode = await getVerificationCode(userId);
-  	if(verificationCode !== null && code === verificationCode)
-	{
+	
+	// No code found or code expired
+	if (verificationCode === null) {
+		res.status(400).json({
+			success: false,
+			data: {
+				message: "Verification code not found or expired",
+				result: false,
+			},
+		});
+		return;
+	}
+	
+	// Code matches - verify user and cleanup
+	if (code === verificationCode) {
 		await userRepository.verifyUser(userId);
+		await deleteVerificationCode(userId); // Cleanup used code
 		res.status(200).json({
 			success: true,
 			data: {
 				result: true,
 			},
 		});
+		return;
 	}
-	else if(verificationCode !== null && code !== verificationCode)
-	{
-		res.status(200).json({
-			success: true,
+	
+	// Code doesn't match
+	res.status(200).json({
+		success: true,
 			data: {
 				result: false,
 			},
-		});
-	}
+	});
 });
+
+// In-memory lock to prevent concurrent verification code creation
+const verificationLocks = new Map<number, Promise<void>>();
 
 export const createVerificationCode = catchAsync(async (req: Request, res: Response) => {
 	const userId = parseInt(req.params.id);
@@ -153,7 +173,26 @@ export const createVerificationCode = catchAsync(async (req: Request, res: Respo
 		});
 		return;
 	}
-	await InitializeVerificationCode(userId);
+
+	// Check if there's already a pending request for this user
+	const existingLock = verificationLocks.get(userId);
+	if (existingLock) {
+		console.log(`Request already in progress for user ${userId}, waiting...`);
+		await existingLock;
+		res.status(200).json({
+			success: true,
+			message: "Verification code already sent",
+		});
+		return;
+	}
+
+	// Create a lock for this user
+	const lockPromise = InitializeVerificationCode(userId).finally(() => {
+		verificationLocks.delete(userId);
+	});
+	verificationLocks.set(userId, lockPromise);
+
+	await lockPromise;
 
 	res.status(201).json({
 		success: true,
