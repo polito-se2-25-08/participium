@@ -58,7 +58,10 @@ export const createReport = async (req: Request, res: Response) => {
 
 export const getAllReports = async (req: Request, res: Response) => {
 	try {
-		const reports = await ReportService.getAllReports();
+		const authenticatedUser = (req as any).user;
+		const userRole = authenticatedUser?.role || "CITIZEN";
+
+		const reports = await ReportService.getAllReports(userRole);
 		const response: ApiResponse<Report[]> = {
 			success: true,
 			data: reports,
@@ -87,7 +90,10 @@ export const getReportById = async (req: Request, res: Response) => {
 			return res.status(400).json(response);
 		}
 
-		const report = await ReportService.getReportById(numericId);
+		const authenticatedUser = (req as any).user;
+		const userRole = authenticatedUser?.role || "CITIZEN";
+
+		const report = await ReportService.getReportById(numericId, userRole);
 		const response: ApiResponse<Report> = {
 			success: true,
 			data: report,
@@ -105,7 +111,10 @@ export const getReportById = async (req: Request, res: Response) => {
 
 export const getActiveReports = async (req: Request, res: Response) => {
 	try {
-		const reports = await ReportService.getActiveReports();
+		const authenticatedUser = (req as any).user;
+		const userRole = authenticatedUser?.role || "CITIZEN";
+
+		const reports = await ReportService.getActiveReports(userRole);
 		const response: ApiResponse<ActiveReportDTO[]> = {
 			success: true,
 			data: reports,
@@ -138,12 +147,16 @@ export const getFilteredReports = async (req: Request, res: Response) => {
 				: [status as string]
 			: [];
 
+		const authenticatedUser = (req as any).user;
+		const userRole = authenticatedUser?.role || "CITIZEN";
+
 		const reports = await ReportService.getFilteredReports(
 			userId as string,
 			categoryArray,
 			statusArray,
 			reportsFrom as string,
-			reportsUntil as string
+			reportsUntil as string,
+			userRole
 		);
 
 		const response: ApiResponse<Report[]> = {

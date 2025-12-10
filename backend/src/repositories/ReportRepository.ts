@@ -51,7 +51,9 @@ export const createReport = async (
 	return data;
 };
 
-export const getAllReports = async (): Promise<Report[]> => {
+export const getAllReports = async (
+	userRole: string = "CITIZEN"
+): Promise<Report[]> => {
 	const { data, error } = await supabase
 		.from("Report")
 		.select(
@@ -71,12 +73,15 @@ export const getAllReports = async (): Promise<Report[]> => {
 		);
 	}
 
-	const remappedData = data ? await remapReports(data) : [];
+	const remappedData = data ? await remapReports(data, userRole) : [];
 
 	return remappedData;
 };
 
-const remapReports = async (reports: any[]): Promise<Report[]> => {
+const remapReports = async (
+	reports: any[],
+	userRole: string = "CITIZEN"
+): Promise<Report[]> => {
 	const { data: categories, error: errorCategories } = await supabase
 		.from("Category")
 		.select("*")
@@ -117,16 +122,24 @@ const remapReports = async (reports: any[]): Promise<Report[]> => {
 	// Map category names to reports
 	const remappedReports = categoriesReports.map((report) => {
 		const foundUser = users?.find((user) => user.id === report.user_id);
+		const isAnonymous = report.anonymous;
+		const canSeeAnonymous = ["OFFICER", "TECHNICIAN", "ADMIN"].includes(
+			userRole
+		);
+		const shouldHide = isAnonymous && !canSeeAnonymous;
+
 		return {
 			...report,
-			user_id: foundUser?.username,
+			user_id: shouldHide ? "Anonymous" : foundUser?.username,
 		};
 	});
 
 	return remappedReports;
 };
 
-export const getActiveReports = async (): Promise<ActiveReportDTO[]> => {
+export const getActiveReports = async (
+	userRole: string = "CITIZEN"
+): Promise<ActiveReportDTO[]> => {
 	const { data, error } = await supabase
 		.from("Report")
 		.select(
@@ -151,7 +164,7 @@ export const getActiveReports = async (): Promise<ActiveReportDTO[]> => {
 
 	const activeResports = data as ActiveReport[];
 
-	const mappedData = mapActiveReportsToDTO(activeResports);
+	const mappedData = mapActiveReportsToDTO(activeResports, userRole);
 
 	if (error) {
 		throw new AppError(
@@ -170,7 +183,8 @@ export const getFilteredReports = async (
 	category: string[],
 	status: string[],
 	reportsFrom: string,
-	reportsUntil: string
+	reportsUntil: string,
+	userRole: string = "CITIZEN"
 ): Promise<Report[]> => {
 	const query = supabase.from("Report").select("*");
 
@@ -206,12 +220,15 @@ export const getFilteredReports = async (
 		);
 	}
 
-	const remappedData = data ? await remapReports(data) : [];
+	const remappedData = data ? await remapReports(data, userRole) : [];
 
 	return remappedData;
 };
 
-export const getReportById = async (id: number): Promise<Report> => {
+export const getReportById = async (
+	id: number,
+	userRole: string = "CITIZEN"
+): Promise<Report> => {
 	const { data, error } = await supabase
 		.from("Report")
 		.select("*")
@@ -234,7 +251,7 @@ export const getReportById = async (id: number): Promise<Report> => {
 		);
 	}
 
-	const remappedData = data ? await remapReports([data]) : [];
+	const remappedData = data ? await remapReports([data], userRole) : [];
 
 	return remappedData[0];
 };

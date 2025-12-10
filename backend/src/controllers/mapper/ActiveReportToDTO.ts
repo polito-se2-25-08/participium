@@ -1,7 +1,14 @@
 import { ActiveReportDTO } from "../../dto/ActiveReport";
 import { ActiveReport } from "../interface/ActiveReport";
 
-export const mapActiveReportToDTO = (report: ActiveReport): ActiveReportDTO => {
+export const mapActiveReportToDTO = (
+	report: ActiveReport,
+	userRole: string = "CITIZEN"
+): ActiveReportDTO => {
+	const isAnonymous = report.anonymous;
+	const canSeeAnonymous = ["OFFICER", "TECHNICIAN", "ADMIN"].includes(userRole);
+	const shouldHide = isAnonymous && !canSeeAnonymous;
+
 	return {
 		id: report.id,
 		title: report.title,
@@ -18,13 +25,15 @@ export const mapActiveReportToDTO = (report: ActiveReport): ActiveReportDTO => {
 		status: report.status,
 		category: report.category.category,
 		photos: report.photos.map((photo) => photo.report_photo),
-		reporterName: report.User.name,
-		reporterSurname: report.User.surname,
-		reporterUsername: report.User.username,
-		reporterProfilePicture: report.User.profile_picture,
+		reporterName: shouldHide ? "Anonymous" : report.User.name,
+		reporterSurname: shouldHide ? "" : report.User.surname,
+		reporterUsername: shouldHide ? "anonymous" : report.User.username,
+		reporterProfilePicture: shouldHide ? "" : report.User.profile_picture,
 	};
 };
 
 export const mapActiveReportsToDTO = (
-	reports: ActiveReport[]
-): ActiveReportDTO[] => reports.map(mapActiveReportToDTO);
+	reports: ActiveReport[],
+	userRole: string = "CITIZEN"
+): ActiveReportDTO[] =>
+	reports.map((report) => mapActiveReportToDTO(report, userRole));

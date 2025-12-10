@@ -11,16 +11,23 @@ export const createReport = async (
 	return await ReportRepository.createReport(reportData);
 };
 
-export const getAllReports = async (): Promise<Report[]> => {
-	return await ReportRepository.getAllReports();
+export const getAllReports = async (
+	userRole: string = "CITIZEN"
+): Promise<Report[]> => {
+	return await ReportRepository.getAllReports(userRole);
 };
 
-export const getReportById = async (id: number): Promise<Report> => {
-	return await ReportRepository.getReportById(id);
+export const getReportById = async (
+	id: number,
+	userRole: string = "CITIZEN"
+): Promise<Report> => {
+	return await ReportRepository.getReportById(id, userRole);
 };
 
-export const getActiveReports = async (): Promise<ActiveReportDTO[]> => {
-	return await ReportRepository.getActiveReports();
+export const getActiveReports = async (
+	userRole: string = "CITIZEN"
+): Promise<ActiveReportDTO[]> => {
+	return await ReportRepository.getActiveReports(userRole);
 };
 
 export const getFilteredReports = async (
@@ -28,14 +35,16 @@ export const getFilteredReports = async (
 	category: string[],
 	status: string[],
 	reportsFrom: string,
-	reportsUntil: string
+	reportsUntil: string,
+	userRole: string = "CITIZEN"
 ): Promise<Report[]> => {
 	return await ReportRepository.getFilteredReports(
 		userId,
 		category,
 		status,
 		reportsFrom,
-		reportsUntil
+		reportsUntil,
+		userRole
 	);
 };
 
