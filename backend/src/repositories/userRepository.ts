@@ -1,5 +1,6 @@
 import { supabase } from "../utils/Supabase";
 import type { Database, Tables, TablesInsert } from "../utils/DatabaseSchema";
+import { verify } from "crypto";
 
 export type UserRow = Tables<"User">;
 export type UpdateUserRow = Partial<UserRow>;
@@ -60,4 +61,14 @@ export const userRepository = {
 		if (error) throw error;
 		return data;
 	},
+	async verifyUser(userId: number): Promise<UserRow> {
+		const { data, error } = await supabase
+			.from("User")
+			.update({ isVerified: true })
+			.eq("id", userId)
+			.select()
+			.single();
+		if (error) throw error;
+		return data;
+	}
 };

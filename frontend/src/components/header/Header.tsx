@@ -8,7 +8,7 @@ export default function Header() {
   const isActive = (path: string) => location.pathname === path;
 
   const hideNav =
-    location.pathname === "/" || location.pathname === "/register";
+    location.pathname === "/" || location.pathname === "/register" || location.pathname === "/verify";
 
   return (
     <header className="flex flex-row justify-between bg-[#222] text-white items-center p-4 shadow-2xl font-bold">

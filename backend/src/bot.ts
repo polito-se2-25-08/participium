@@ -15,5 +15,9 @@ bot.use(new LocalSession({ database: "sessions.json" }).middleware());
 registerLoginFeature(bot);
 registerNewReportFeature(bot);
 
+// Graceful shutdown handlers
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
+
 export default bot;
 
