@@ -217,7 +217,7 @@ export function AssignRolesPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Role
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -251,14 +251,14 @@ export function AssignRolesPage() {
                     </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 justify-end">
                       {user.role === "TECHNICIAN" && (
                         <button
                           onClick={() => handleManageCategories(user.id)}
                           disabled={updatingUserId === user.id}
                           className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs disabled:bg-gray-400 transition-colors"
                         >
-                          Categories
+                          Offices
                         </button>
                       )}
                       <button
@@ -333,7 +333,7 @@ export function AssignRolesPage() {
                       disabled={updatingUserId === user.id}
                       className="w-full bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded text-sm disabled:bg-gray-400 transition-colors"
                     >
-                      Manage Categories
+                      Manage Offices
                     </button>
                   )}
                   <button
@@ -361,12 +361,12 @@ export function AssignRolesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 transform transition-all">
             <h3 className="text-lg font-medium text-gray-900 mb-4">
-              Manage Technician Categories
+              Manage Technician Offices
             </h3>
             <div className="mb-6 max-h-60 overflow-y-auto border rounded p-2">
               {allCategories.length === 0 ? (
                 <p className="text-sm text-gray-500 text-center py-4">
-                  No categories available
+                  No offices available
                 </p>
               ) : (
                 <div className="grid grid-cols-2 gap-2">
