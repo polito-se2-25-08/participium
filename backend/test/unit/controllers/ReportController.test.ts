@@ -118,16 +118,14 @@ describe('ReportController', () => {
 
   describe('getAllReports', () => {
     it('should get all reports successfully', async () => {
-      const mockReports = [
-        { id: 1, title: 'Report 1' },
-        { id: 2, title: 'Report 2' },
-      ];
+      const mockReports = [{ id: 1, title: 'Test Report' }];
+      (mockRequest as any).user = undefined;
 
       (ReportService.getAllReports as jest.Mock).mockResolvedValue(mockReports);
 
       await ReportController.getAllReports(mockRequest as Request, mockResponse as Response);
 
-      expect(ReportService.getAllReports).toHaveBeenCalled();
+      expect(ReportService.getAllReports).toHaveBeenCalledWith('CITIZEN');
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
@@ -152,12 +150,13 @@ describe('ReportController', () => {
     it('should get report by ID successfully', async () => {
       const mockReport = { id: 1, title: 'Test Report' };
       mockRequest.params = { id: '1' };
+      (mockRequest as any).user = undefined;
 
       (ReportService.getReportById as jest.Mock).mockResolvedValue(mockReport);
 
       await ReportController.getReportById(mockRequest as Request, mockResponse as Response);
 
-      expect(ReportService.getReportById).toHaveBeenCalledWith(1);
+      expect(ReportService.getReportById).toHaveBeenCalledWith(1, 'CITIZEN');
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
@@ -188,19 +187,32 @@ describe('ReportController', () => {
   });
 
   describe('getActiveReports', () => {
-    it('should get active reports successfully', async () => {
+    it('should get active reports successfully with CITIZEN role default', async () => {
       const mockReports = [{ id: 1, status: 'PENDING' }];
+      (mockRequest as any).user = undefined;
 
       (ReportService.getActiveReports as jest.Mock).mockResolvedValue(mockReports);
 
       await ReportController.getActiveReports(mockRequest as Request, mockResponse as Response);
 
-      expect(ReportService.getActiveReports).toHaveBeenCalled();
+      expect(ReportService.getActiveReports).toHaveBeenCalledWith('CITIZEN');
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
         data: mockReports,
       });
+    });
+
+    it('should get active reports successfully with OFFICER role', async () => {
+      const mockReports = [{ id: 1, status: 'PENDING' }];
+      (mockRequest as any).user = { role: 'OFFICER' };
+
+      (ReportService.getActiveReports as jest.Mock).mockResolvedValue(mockReports);
+
+      await ReportController.getActiveReports(mockRequest as Request, mockResponse as Response);
+
+      expect(ReportService.getActiveReports).toHaveBeenCalledWith('OFFICER');
+      expect(responseStatus).toHaveBeenCalledWith(200);
     });
 
     it('should handle service errors', async () => {
@@ -224,6 +236,7 @@ describe('ReportController', () => {
         category: 'pothole',
         status: 'PENDING',
       };
+      (mockRequest as any).user = undefined;
 
       (ReportService.getFilteredReports as jest.Mock).mockResolvedValue(mockReports);
 
@@ -234,7 +247,8 @@ describe('ReportController', () => {
         ['pothole'],
         ['PENDING'],
         undefined,
-        undefined
+        undefined,
+        'CITIZEN'
       );
       expect(responseStatus).toHaveBeenCalledWith(200);
     });
@@ -244,6 +258,7 @@ describe('ReportController', () => {
         category: ['pothole', 'graffiti'],
         status: ['PENDING', 'APPROVED'],
       };
+      (mockRequest as any).user = undefined;
 
       (ReportService.getFilteredReports as jest.Mock).mockResolvedValue([]);
 
@@ -254,7 +269,8 @@ describe('ReportController', () => {
         ['pothole', 'graffiti'],
         ['PENDING', 'APPROVED'],
         undefined,
-        undefined
+        undefined,
+        'CITIZEN'
       );
     });
 

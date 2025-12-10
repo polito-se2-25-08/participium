@@ -45,7 +45,7 @@ describe('ReportService', () => {
 
       const result = await ReportService.getAllReports();
 
-      expect(ReportRepository.getAllReports).toHaveBeenCalled();
+      expect(ReportRepository.getAllReports).toHaveBeenCalledWith('CITIZEN');
       expect(result).toEqual(mockReports);
     });
   });
@@ -58,7 +58,7 @@ describe('ReportService', () => {
 
       const result = await ReportService.getReportById(1);
 
-      expect(ReportRepository.getReportById).toHaveBeenCalledWith(1);
+      expect(ReportRepository.getReportById).toHaveBeenCalledWith(1, 'CITIZEN');
       expect(result).toEqual(mockReport);
     });
   });
@@ -74,7 +74,7 @@ describe('ReportService', () => {
 
       const result = await ReportService.getActiveReports();
 
-      expect(ReportRepository.getActiveReports).toHaveBeenCalled();
+      expect(ReportRepository.getActiveReports).toHaveBeenCalledWith('CITIZEN');
       expect(result).toEqual(mockReports);
     });
   });
@@ -106,7 +106,8 @@ describe('ReportService', () => {
         filters.category,
         filters.status,
         filters.reportsFrom,
-        filters.reportsUntil
+        filters.reportsUntil,
+        'CITIZEN'
       );
       expect(result).toEqual(mockReports);
     });
