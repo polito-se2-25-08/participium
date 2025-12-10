@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import OutlinePrimaryButton from "../../buttons/variants/primary/OutlinePrimaryButton";
 import { useAuth, useUser } from "../../providers/AuthContext";
 import DangerButton from "../../buttons/variants/danger/DangerButton";
+import SubTitle from "../../titles/SubTitle";
 
 export default function AdminProfilePage() {
 	const navigate = useNavigate();
@@ -13,7 +14,8 @@ export default function AdminProfilePage() {
 		navigate("/login");
 	};
 	return (
-		<>
+		<div className="flex flex-col rounded-xl shadow-xl border border-gray-600 p-8 gap-3">
+			<SubTitle fontSize="text-[1.9rem]">{user.username}</SubTitle>
 			<div className="flex flex-col gap-2">
 				<div className="flex">
 					<span className="font-semibold w-32">Name:</span>
@@ -48,6 +50,6 @@ export default function AdminProfilePage() {
 				Manage users
 			</OutlinePrimaryButton>
 			<DangerButton onClick={handleLogout}>Logout</DangerButton>
-		</>
+		</div>
 	);
 }

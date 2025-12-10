@@ -1,6 +1,6 @@
-export type DbRole = "CITIZEN" | "ADMIN" | "OFFICER" | "TECHNICIAN";
+export type DbRole = "CITIZEN" | "ADMIN" | "OFFICER" | "TECHNICIAN" | "EXTERNAL_MAINTAINER";
 
-export const VALID_DB_ROLES: DbRole[] = ["CITIZEN", "ADMIN", "OFFICER", "TECHNICIAN"];
+export const VALID_DB_ROLES: DbRole[] = ["CITIZEN", "ADMIN", "OFFICER", "TECHNICIAN", "EXTERNAL_MAINTAINER"];
 
 /**
  * Validates and normalizes a role string to a DB role.

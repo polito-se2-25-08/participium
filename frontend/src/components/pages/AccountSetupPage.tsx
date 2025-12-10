@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { setupUser, setupTechnician } from "../../api/adminService";
 import { categoryService } from "../../api/categoryService";
+import { externalCompanyService } from "../../api/externalcompanyService";
 import { useAuth } from "../providers/AuthContext";
 import ContentContainer from "../containers/ContentContainer";
 import Form from "../form/Form";
@@ -14,6 +15,8 @@ import SubTitle from "../titles/SubTitle";
 
 export function AccountSetupPage() {
   const { token } = useAuth();
+
+  // ----- FORM STATE -----
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -21,16 +24,27 @@ export function AccountSetupPage() {
     role: "",
     email: "",
     category_ids: [] as string[],
+    external_company_id: "", // 👈 Added for External Maintainer
   });
 
+  // ----- CATEGORY STATE -----
   const [categories, setCategories] = useState<
     { id: number; category: string }[]
   >([]);
+
+  // ----- EXTERNAL COMPANIES -----
+  const [companies, setCompanies] = useState<
+    { id: number; company_name: string }[]
+  >([]);
+
   const [password, setPassword] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [canSubmit, setCanSubmit] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
+  // ========================================
+  // FETCH CATEGORIES (for TECHNICIAN role)
+  // ========================================
   useEffect(() => {
     const fetchCategories = async () => {
       if (token) {
@@ -51,9 +65,31 @@ export function AccountSetupPage() {
     fetchCategories();
   }, [token]);
 
+  // ========================================
+  // FETCH COMPANIES (for EXTERNAL_MAINTAINER)
+  // ========================================
+  useEffect(() => {
+    if (formData.role !== "EXTERNAL_MAINTAINER") return;
+
+    externalCompanyService
+      .getAllCompanies()
+      .then((res) => {
+        setCompanies(res.data || []);
+      })
+      .catch((err) => console.error("Failed to load companies", err));
+  }, [formData.role]);
+
+  // ========================================
+  // FORM VALIDATION
+  // ========================================
   useEffect(() => {
     const isTechnician = formData.role === "TECHNICIAN";
-    const isCategoryValid = !isTechnician || formData.category_ids.length > 0; // Category is required only for TECHNICIAN role
+    const isExternal = formData.role === "EXTERNAL_MAINTAINER";
+
+    const categoryValid = !isTechnician || formData.category_ids.length > 0; // category required only for TECHNICIAN
+
+    const externalCompanyValid =
+      !isExternal || formData.external_company_id !== ""; // company required only for EXTERNAL MAINTAINER
 
     setCanSubmit(
       formData.name !== "" &&
@@ -61,16 +97,21 @@ export function AccountSetupPage() {
         formData.username !== "" &&
         formData.role !== "" &&
         formData.email !== "" &&
-        isCategoryValid
+        categoryValid &&
+        externalCompanyValid
     );
   }, [formData]);
 
+  // ========================================
+  // HANDLE INPUT CHANGE
+  // ========================================
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
     }));
   };
@@ -90,22 +131,31 @@ export function AccountSetupPage() {
     });
   };
 
+  // ========================================
+  // HANDLE SUBMIT
+  // ========================================
   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     setIsPending(true);
     setServerError(null);
     setPassword(null);
-    e.preventDefault();
+
     if (!token) {
       console.error("No authentication token found");
       return;
     }
+
     try {
       let generatedPassword;
+
       if (formData.role === "TECHNICIAN") {
         generatedPassword = await setupTechnician(formData, token);
       } else {
+        // OFFICER or EXTERNAL_MAINTAINER
         generatedPassword = await setupUser(formData, token);
       }
+
       setPassword(generatedPassword);
     } catch (error: any) {
       console.error("Error setting up user:", error);
@@ -115,6 +165,9 @@ export function AccountSetupPage() {
     }
   };
 
+  // ========================================
+  // RENDER COMPONENT
+  // ========================================
   return (
     <ContentContainer
       width="xl:w-1/2 sm:w-1/2 "
@@ -122,23 +175,25 @@ export function AccountSetupPage() {
       padding="p-5"
     >
       <PageTitle>Account Setup</PageTitle>
+
       <div className="flex flex-col rounded-xl shadow-xl border border-gray-600 p-8 gap-3">
         <Form onSubmit={handleSubmit} gap="gap-4">
           <div className="flex flex-row gap-5">
             <TextInput
               required
-              id={"name"}
-              name={"name"}
+              id="name"
+              name="name"
               placeholder="Type the name here..."
               hasLabel
               label="Name"
               value={formData.name}
               onChange={handleChange}
             />
+
             <TextInput
               required
-              id={"surname"}
-              name={"surname"}
+              id="surname"
+              name="surname"
               placeholder="Type the surname here..."
               hasLabel
               label="Surname"
@@ -146,11 +201,12 @@ export function AccountSetupPage() {
               onChange={handleChange}
             />
           </div>
+
           <TextInput
             required
-            id={"username"}
-            name={"username"}
-            placeholder="Type the usrname here..."
+            id="username"
+            name="username"
+            placeholder="Type the username here..."
             hasLabel
             label="Username"
             value={formData.username}
@@ -159,14 +215,16 @@ export function AccountSetupPage() {
 
           <EmailInput
             required
-            id={"email"}
-            name={"email"}
+            id="email"
+            name="email"
             placeholder="Type the email here..."
             hasLabel
             label="Email"
             value={formData.email}
             onChange={handleChange}
           />
+
+          {/* ROLE SELECTION */}
           <Select
             required
             id="role"
@@ -177,11 +235,13 @@ export function AccountSetupPage() {
             options={[
               { value: "OFFICER", label: "Officer" },
               { value: "TECHNICIAN", label: "Technician" },
+              { value: "EXTERNAL_MAINTAINER", label: "External maintainer" },
             ]}
             value={formData.role}
             onChange={handleChange}
           />
 
+          {/* CATEGORY INPUT (TECHNICIAN ONLY) */}
           {formData.role === "TECHNICIAN" && (
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium text-gray-700">
@@ -213,12 +273,32 @@ export function AccountSetupPage() {
             </div>
           )}
 
+          {/* COMPANY INPUT (EXTERNAL MAINTAINER ONLY) */}
+          {formData.role === "EXTERNAL_MAINTAINER" && (
+            <Select
+              required
+              id="external_company_id"
+              name="external_company_id"
+              hasLabel
+              placeholder="Select External Company"
+              label="External Company"
+              options={companies.map((company) => ({
+                value: String(company.id),
+                label: company.company_name,
+              }))}
+              value={formData.external_company_id}
+              onChange={handleChange}
+            />
+          )}
+
+          {/* SERVER ERROR */}
           {serverError && (
             <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm text-center">
               {serverError}
             </div>
           )}
 
+          {/* SUBMIT BUTTON */}
           <PrimaryButton
             pending={isPending}
             type="submit"
@@ -228,6 +308,7 @@ export function AccountSetupPage() {
           </PrimaryButton>
         </Form>
 
+        {/* PASSWORD DISPLAY */}
         {password && (
           <div className="shadow-xl bg-amber-200 rounded p-4 flex flex-col">
             <SubTitle>Password generated</SubTitle>

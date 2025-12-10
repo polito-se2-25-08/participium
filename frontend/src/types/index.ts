@@ -46,7 +46,9 @@ export interface Report {
   title: string;
   description: string;
   category: ReportCategory;
-  location: Location;
+  latitude: number;
+  longitude: number;
+  
   photos: Report_Photo[];
   anonymous: boolean;
   user_id: number;
@@ -59,6 +61,7 @@ export interface Report {
   updatedAt: Date;
   rejection?: Rejection_Report;
   assignedOffice?: string;
+  assignedExternalOfficeId?: number | null;
 }
 
 export interface Category {
@@ -75,4 +78,18 @@ export interface Report_Photo {
 export interface Rejection_Report {
   id: number;
   motivation: string;
+}
+
+export interface Comment {
+  id: number;
+  reportId: number;
+  userId: number;
+  user: {
+    name: string;
+    surname: string;
+    role: string;
+    profile_picture?: string;
+  };
+  content: string;
+  createdAt: string;
 }

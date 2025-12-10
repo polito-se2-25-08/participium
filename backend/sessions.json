@@ -1,0 +1,17 @@
+{
+  "sessions": [
+    {
+      "id": "5358728156:5358728156",
+      "data": {
+        "reportState": "ASK_DESCRIPTION",
+        "report": {
+          "photos": [],
+          "title": "Hahaha"
+        },
+        "loginState": null,
+        "username": "Alice",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6IkNJVElaRU4iLCJpYXQiOjE3NjUyMTg4MDMsImV4cCI6MTc2NTIyMjQwM30.MmpG2tpsyNFePK-ZD4lGkTexcfDqrEBdnQxfGgKuZoo"
+      }
+    }
+  ]
+}

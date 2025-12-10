@@ -22,11 +22,12 @@ import {
 	REPORT_CATEGORIES,
 } from "../../constants";
 import { submitReport } from "../../action/reportAction";
-import { MapWindow } from "../map/MapWindow";
+
 import ContentContainer from "../containers/ContentContainer";
 import CheckInput from "../input/variants/CheckInput";
 import FileInput from "../input/variants/FileInput";
 import TextInput from "../input/variants/TextInput";
+import { ReportMap } from "../map/ReportMap/ReportMap";
 
 export default function ReportFormPage() {
 	const navigate = useNavigate();
@@ -55,7 +56,9 @@ export default function ReportFormPage() {
 		const categoryHasError = categoryValue === "";
 		const titleHasError = titleValue === "";
 		const descriptionHasError = descriptionValue === "";
-		const photoHasError = photos.length < MIN_PHOTOS_PER_REPORT || photos.length > MAX_PHOTOS_PER_REPORT;
+		const photoHasError =
+			photos.length < MIN_PHOTOS_PER_REPORT ||
+			photos.length > MAX_PHOTOS_PER_REPORT;
 
 		setAddressError(addressHasError);
 		setCategoryError(categoryHasError);
@@ -130,7 +133,9 @@ export default function ReportFormPage() {
 		const combinedFiles = [...photos, ...newFiles];
 
 		if (combinedFiles.length > MAX_PHOTOS_PER_REPORT) {
-			alert(`You can only upload a maximum of ${MAX_PHOTOS_PER_REPORT} photos`);
+			alert(
+				`You can only upload a maximum of ${MAX_PHOTOS_PER_REPORT} photos`
+			);
 			e.target.value = "";
 			return;
 		}
@@ -174,12 +179,11 @@ export default function ReportFormPage() {
 						address
 					</p>
 
-					<MapWindow
+					<ReportMap
 						scrollWheelZoom={false}
 						setAdress={setSelectedAddress}
 						setLocation={setLocation}
 						className="min-h-[350px] w-full"
-						isReport={true}
 					/>
 				</ReportCardContainer>
 

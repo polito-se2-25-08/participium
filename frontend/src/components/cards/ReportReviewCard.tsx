@@ -2,16 +2,32 @@ import { useState } from "react";
 import type { Report } from "../../types";
 import DangerButton from "../buttons/variants/danger/DangerButton";
 import ImageZoomModal from "../modals/ImageZoomModal";
+import CommentSection from "../comments/CommentSection";
 
 interface ReportReviewCardProps {
   report: Report;
+
+  // Existing actions
   onApprove: (reportId: number) => void;
   onReject: (reportId: number) => void;
-  onSuspend?: (reportId: number) => void; // Optional third action
+  onSuspend?: (reportId: number) => void;
+
+  // NEW action
+  onAssignExternal?: (reportId: number) => void;
+
   isProcessing?: boolean;
+
+  // Labels
   approveLabel?: string;
   rejectLabel?: string;
-  suspendLabel?: string; // Optional third button label
+  suspendLabel?: string;
+  assignLabel?: string;
+
+  // NEW FIELD
+  externalAssigned?: boolean;
+  
+  // NEW FIELD: Control comment section visibility
+  allowComments?: boolean;
 }
 
 export default function ReportReviewCard({
@@ -19,12 +35,17 @@ export default function ReportReviewCard({
   onApprove,
   onReject,
   onSuspend,
+  onAssignExternal,
   isProcessing = false,
   approveLabel = "Approve Report",
   rejectLabel = "Reject Report",
   suspendLabel = "Suspend Report",
+  assignLabel = "Assign External Office",
+  externalAssigned = false,
+  allowComments = true,
 }: ReportReviewCardProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [showComments, setShowComments] = useState(false);
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -37,8 +58,18 @@ export default function ReportReviewCard({
     });
   };
 
-  // Handle both timestamp and createdAt field names
   const reportDate = (report as any).timestamp || (report as any).createdAt;
+
+  // Determine number of action buttons
+  const actionCount =
+    2 + (onSuspend ? 1 : 0) + (onAssignExternal ? 1 : 0);
+
+  const gridCols =
+    actionCount === 4
+      ? "grid-cols-4"
+      : actionCount === 3
+      ? "grid-cols-3"
+      : "grid-cols-2";
 
   return (
     <>
@@ -53,6 +84,7 @@ export default function ReportReviewCard({
               <p className="text-sm text-gray-500">
                 Category: <span className="font-medium">{report.category}</span>
               </p>
+
               <p className="text-sm text-gray-500">
                 Submitted by:{" "}
                 <span className="font-medium">
@@ -72,10 +104,19 @@ export default function ReportReviewCard({
           </div>
 
           <div className="flex flex-col items-end gap-3 min-w-[180px]">
+            {/* STATUS BADGE */}
             <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
               {report.status}
             </span>
 
+            {/* NEW: EXTERNAL COMPANY BADGE */}
+            {externalAssigned && (
+              <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-sm font-medium rounded-full">
+                Assigned to external company
+              </span>
+            )}
+
+            {/* PHOTOS */}
             {report.photos && report.photos.length > 0 && (
               <div className="w-full">
                 <div className="flex gap-2 flex-wrap justify-end">
@@ -96,11 +137,11 @@ export default function ReportReviewCard({
 
         <p className="text-gray-700 mb-4">{report.description}</p>
 
+        {/* ACTION BUTTONS */}
         <div
-          className={`grid ${
-            onSuspend ? "grid-cols-3" : "grid-cols-2"
-          } gap-3 mt-6 pt-4 border-t border-gray-200`}
+          className={`grid ${gridCols} gap-3 mt-6 pt-4 border-t border-gray-200`}
         >
+          {/* Approve */}
           <button
             onClick={() => onApprove(report.id)}
             disabled={isProcessing}
@@ -109,6 +150,7 @@ export default function ReportReviewCard({
             {approveLabel}
           </button>
 
+          {/* Suspend */}
           {onSuspend && (
             <button
               onClick={() => onSuspend(report.id)}
@@ -119,6 +161,18 @@ export default function ReportReviewCard({
             </button>
           )}
 
+          {/* Assign External */}
+          {onAssignExternal && (
+            <button
+              onClick={() => onAssignExternal(report.id)}
+              disabled={isProcessing}
+              className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50 transition-colors"
+            >
+              {assignLabel}
+            </button>
+          )}
+
+          {/* Reject */}
           <DangerButton
             onClick={() => onReject(report.id)}
             pending={isProcessing}
@@ -126,6 +180,22 @@ export default function ReportReviewCard({
             {rejectLabel}
           </DangerButton>
         </div>
+
+        {allowComments && (
+          <div className="mt-4 pt-2 border-t border-gray-100">
+            <button
+              onClick={() => setShowComments(!showComments)}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+              </svg>
+              {showComments ? "Hide Internal Comments" : "Show Internal Comments"}
+            </button>
+            
+            {showComments && <CommentSection reportId={report.id} />}
+          </div>
+        )}
       </div>
 
       <ImageZoomModal

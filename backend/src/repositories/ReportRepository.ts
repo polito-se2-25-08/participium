@@ -3,6 +3,11 @@ import { RejectionReportInsert } from "../models/RejectionReport";
 import { supabase } from "../utils/Supabase";
 import AppError from "../utils/AppError";
 import { getAllCategories } from "../controllers/CategoryController";
+import { ActiveReportDTO } from "../dto/ActiveReport";
+import { mapActiveReportsToDTO } from "../controllers/mapper/ActiveReportToDTO";
+import { ActiveReport } from "../controllers/interface/ActiveReport";
+import { UserReport } from "../controllers/interface/UserReports";
+import { mapReportsToReportsDTO } from "../controllers/mapper/ReportMapper";
 
 export const createReport = async (
   reportData: Partial<Report> & { photos: string[] }
@@ -121,14 +126,32 @@ const remapReports = async (reports: any[]): Promise<Report[]> => {
   return remappedReports;
 };
 
-export const getActiveReports = async (): Promise<Report[]> => {
+export const getActiveReports = async (): Promise<ActiveReportDTO[]> => {
   const { data, error } = await supabase
     .from("Report")
-    .select("*")
+    .select(
+      `
+        *,
+        category:category_id (
+            category 
+        ),
+        photos:Report_Photo (
+            report_photo
+        ),
+		User:user_id (
+			name,
+			surname,
+			username,
+			profile_picture
+		)
+    	`
+    )
     .in("status", ["ASSIGNED", "IN_PROGRESS", "SUSPENDED"])
     .order("timestamp", { ascending: false });
 
-  const remappedData = data ? await remapReports(data) : [];
+  const activeResports = data as ActiveReport[];
+
+  const mappedData = mapActiveReportsToDTO(activeResports);
 
   if (error) {
     throw new AppError(
@@ -137,8 +160,10 @@ export const getActiveReports = async (): Promise<Report[]> => {
       "DB_FETCH_ERROR"
     );
   }
-  return remappedData;
+  return mappedData;
 };
+
+const mapActiveReport = () => {};
 
 export const getFilteredReports = async (
   userId: string,
@@ -169,7 +194,9 @@ export const getFilteredReports = async (
     query.lte("timestamp", reportsUntil);
   }
 
-  const { data, error } = await query.order("timestamp", { ascending: false });
+  const { data, error } = await query.order("timestamp", {
+    ascending: false,
+  });
 
   if (error) {
     throw new AppError(
@@ -345,36 +372,40 @@ export const getReportsByCategoryAndStatus = async (
 
 /* 
 export const getReportsByTechnician = async (
-  category_id: number,
-  status?: Report["status"] | Report["status"][]
+	category_id: number,
+	status?: Report["status"] | Report["status"][]
 ): Promise<Report[]> => {
-  let query = supabase
-    .from("Report")
-    .select(`
+	let query = supabase
+		.from("Report")
+		.select(
+			`
       *,
       photos:Report_Photo(*),
       user:User(name, surname)
-    `)
-    .eq("category_id", category_id)
-    .neq("status", "REJECTED")
-    .neq("status", "RESOLVED");
+    `
+		)
+		.eq("category_id", category_id)
+		.neq("status", "REJECTED")
+		.neq("status", "RESOLVED");
 
-  const { data, error } = await query.order("timestamp", { ascending: false });
+	const { data, error } = await query.order("timestamp", {
+		ascending: false,
+	});
 
-  if (error) {
-    throw new AppError(
-      `Failed to fetch reports by category and status: ${error.message}`,
-      500,
-      "DB_FETCH_ERROR"
-    );
-  }
+	if (error) {
+		throw new AppError(
+			`Failed to fetch reports by category and status: ${error.message}`,
+			500,
+			"DB_FETCH_ERROR"
+		);
+	}
 
-  if (!data) {
-    return [];
-  }
+	if (!data) {
+		return [];
+	}
 
-  const remappedData = await remapReports(data);
-  return remappedData;
+	const remappedData = await remapReports(data);
+	return remappedData;
 };
  */
 
@@ -411,4 +442,41 @@ export const getReportsByTechnician = async (
 
   const remappedData = await remapReports(data);
   return remappedData;
+};
+
+export const getReportsByUserId = async (
+  userId: number
+): Promise<UserReport[]> => {
+  const { data, error } = await supabase
+    .from("Report")
+    .select(
+      `
+        *,
+        category:category_id (
+            category 
+        ),
+        photos:Report_Photo (
+            report_photo
+        )
+    	`
+    )
+    .eq("user_id", userId)
+    .in("status", ["ASSIGNED", "IN_PROGRESS", "SUSPENDED"])
+    .order("timestamp", { ascending: false });
+
+  if (error) {
+    throw new AppError(
+      `Failed to fetch reports by user id: ${error.message}`,
+      500,
+      "DB_FETCH_ERROR"
+    );
+  }
+
+  const userReports = data as UserReport[];
+
+  if (!userReports) {
+    return [];
+  }
+
+  return userReports;
 };

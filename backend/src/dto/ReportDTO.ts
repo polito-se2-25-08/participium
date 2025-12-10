@@ -13,4 +13,19 @@ export interface CreateReportDTO {
   anonymous: boolean;
   user_id: number;
   photos: string[];
+  assignedExternalOfficeId: number | null;
+}
+
+export interface CommentDTO {
+  id: number;
+  reportId: number;
+  userId: number;
+  user: {
+    name: string;
+    surname: string;
+    role: string;
+    profile_picture?: string;
+  };
+  content: string;
+  createdAt: string;
 }

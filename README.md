@@ -184,9 +184,36 @@ To remove containers and rebuild from scratch next time, also clear images and v
 
 ```bash
 docker compose down --volumes --rmi local
+
 ```
 
-### 5. Notes
+### 5. Example user credentials
+
+#### Admin
+Username: Haland <br>
+Password: Secret123!
+
+#### Officer
+Username: Loris <br>
+Password: Secret123!
+
+#### Technician
+Username: Clara <br>
+Password: Secret123!
+
+Username: Lara <br>
+Password: Ow9#D9o0OvD.
+
+Username: Alberto <br>
+Password: hAQ1>gAlPK_}
+
+#### Citizen
+Username: Alice <br>
+Password: Secret123!
+
+
+
+### 6. Notes
 
 - The frontend container uses `VITE_API_BASE_URL` (set in `docker-compose.yml` and `frontend/.env`) to reach the backend.
 - If you change ports in `docker-compose.yml`, update corresponding URLs in `.env` files.

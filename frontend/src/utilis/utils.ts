@@ -13,3 +13,21 @@ export function fileToBase64(file: File): Promise<string> {
 		reader.readAsDataURL(file);
 	});
 }
+
+export const formatTimestamp = (timestamp: string) => {
+	if (!timestamp) return "";
+	const date = new Date(timestamp);
+	const now = new Date();
+
+	const isToday =
+		date.getDate() === now.getDate() &&
+		date.getMonth() === now.getMonth() &&
+		date.getFullYear() === now.getFullYear();
+
+	return isToday
+		? date.toLocaleTimeString([], {
+				hour: "2-digit",
+				minute: "2-digit",
+		  })
+		: date.toLocaleDateString([], { day: "2-digit", month: "2-digit" });
+};

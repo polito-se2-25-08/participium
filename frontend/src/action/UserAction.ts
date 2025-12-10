@@ -1,5 +1,6 @@
 import type { LoginReponse } from "../interfaces/dto/login/LoginResponse";
 import type { RegisterResponse } from "../interfaces/dto/register/RegisterResponse";
+import type { UserReport } from "../interfaces/dto/report/UserReport";
 import type { ApiResponse } from "../interfaces/dto/Response";
 import type { User } from "../interfaces/dto/user/User";
 
@@ -112,4 +113,17 @@ export const updateUserAction = async (
 			err instanceof Error ? err.message : "Cannot reach server";
 		return { success: false, data: { message: message } };
 	}
+};
+
+export const fetchUserReportsById = async (userId: number) => {
+	const response = await fetch(`${API_ENDPOINT}/users/${userId}/reports`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${localStorage.getItem("token")}`,
+		},
+	});
+
+	const result: ApiResponse<UserReport[]> = await response.json();
+	return result;
 };

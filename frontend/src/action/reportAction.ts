@@ -23,17 +23,6 @@ export const submitReport = async (
 
 	const photosBase64 = await filesToBase64(photos);
 
-	console.log("Submitting report with data:", {
-		address,
-		category,
-		title,
-		description,
-		anonymous,
-		latitude: numberLatitude,
-		longitude: numberLongitude,
-		photosCount: photosBase64.length,
-	});
-
 	try {
 		const token = localStorage.getItem("token");
 

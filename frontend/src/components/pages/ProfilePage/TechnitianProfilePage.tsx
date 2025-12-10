@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth, useUser } from "../../providers/AuthContext";
 import DangerButton from "../../buttons/variants/danger/DangerButton";
+import SubTitle from "../../titles/SubTitle";
 import { useEffect, useState } from "react";
 import { technicianService } from "../../../api/technicianService";
 import { categoryService } from "../../../api/categoryService";
@@ -46,7 +47,8 @@ export default function TechnitianProfilePage() {
     navigate("/");
   };
   return (
-    <>
+    <div className="flex flex-col rounded-xl shadow-xl border border-gray-600 p-8 gap-3">
+      <SubTitle fontSize="text-[1.9rem]">{user.username}</SubTitle>
       <div className="flex flex-col gap-2">
         <div className="flex">
           <span className="font-semibold w-32">Name:</span>
@@ -86,6 +88,6 @@ export default function TechnitianProfilePage() {
           <DangerButton onClick={handleLogout}>Logout</DangerButton>
         </div>
       </div>
-    </>
+    </div>
   );
 }

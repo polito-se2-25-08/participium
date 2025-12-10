@@ -3,7 +3,6 @@
     "target": "ESNext",
     "module": "node20",
     "lib": ["ESNext"],
-    "rootDir": "./src",
     "outDir": "./dist",
 
     "esModuleInterop": true,
@@ -15,8 +14,10 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "types": ["node", "jest"],
-    "incremental": true
+    "incremental": true,
+
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src"],
+  "include": ["src", "test/**/*.ts"],
   "exclude": ["dist", "node_modules"]
 }

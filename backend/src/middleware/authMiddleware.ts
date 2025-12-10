@@ -5,11 +5,29 @@ import type { DbRole } from "../utils/roleMapper";
 
 export const protect = (req: Request, _res: Response, next: NextFunction) => {
 	const authHeader = req.headers.authorization;
-	if (!authHeader || !authHeader.startsWith("Bearer ")) {
+	
+	// Check if authorization header exists
+	if (!authHeader) {
 		return next(new AppError("Not authorized, token missing", 401));
 	}
 
+	// Check if it contains "Bearer"
+	if (!authHeader.includes("Bearer")) {
+		return next(new AppError("Not authorized, token missing", 401));
+	}
+
+	// Check if it starts with "Bearer " (with space)
+	if (!authHeader.startsWith("Bearer ")) {
+		return next(new AppError("Invalid or expired token", 401));
+	}
+
 	const token = authHeader.split(" ")[1];
+	
+	// Check if token exists after split
+	if (!token) {
+		return next(new AppError("Invalid or expired token", 401));
+	}
+
 	try {
 		const decoded = verifyToken(token);
 		(req as any).user = decoded; // attach decoded payload to request

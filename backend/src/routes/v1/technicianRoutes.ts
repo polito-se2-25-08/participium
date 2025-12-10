@@ -1,12 +1,13 @@
 import { Router } from "express";
 import {
   getReportsForTechnician,
+  assignExternalOffice,
   getTechnicianCategories,
 } from "../../controllers/TechnicianController";
 import { protect, restrictTo } from "../../middleware/authMiddleware";
 
 const router = Router();
-// All routes require authentication and TECHNICIAN role
+// All routes require authentication and TECHNICIAN or EXTERNAL MAINTAINER role
 router.use(protect);
 router.use(restrictTo("TECHNICIAN"));
 
@@ -16,5 +17,6 @@ router.use(restrictTo("TECHNICIAN"));
 
 router.get("/reports", getReportsForTechnician);
 router.get("/categories", getTechnicianCategories);
+router.patch("/reports/:id/external", assignExternalOffice);
 
 export default router;
