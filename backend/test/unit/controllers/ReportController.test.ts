@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
 import * as ReportController from '../../../src/controllers/ReportController';
 import * as ReportService from '../../../src/services/ReportService';
+import * as TechnicianService from '../../../src/services/TechnicianService';
 import { getCategoryId } from '../../../src/utils/categoryMapper';
 
 // Mock dependencies
 jest.mock('../../../src/services/ReportService');
+jest.mock('../../../src/services/TechnicianService');
 jest.mock('../../../src/utils/categoryMapper');
+jest.mock('../../../src/bot'); // Mock bot
 jest.mock('../../../src/app', () => ({
   io: {
     to: jest.fn().mockReturnThis(),
@@ -392,6 +395,7 @@ describe('ReportController', () => {
 
       mockRequest.params = { id: '1' };
       mockRequest.body = { status: 'IN_PROGRESS' };
+      (mockRequest as any).user = { id: 1, role: 'TECHNICIAN' }; // Add user
 
       supabase.from.mockReturnValue({
         select: jest.fn().mockReturnValue({
@@ -405,6 +409,7 @@ describe('ReportController', () => {
       });
 
       (ReportService.updateReportStatus as jest.Mock).mockResolvedValue(mockReport);
+      (TechnicianService.canTechnicianUpdateReport as jest.Mock).mockResolvedValue(true);
 
       await ReportController.updateReportStatus(mockRequest as Request, mockResponse as Response);
 
@@ -503,6 +508,7 @@ describe('ReportController', () => {
 
       mockRequest.params = { id: '1' };
       mockRequest.body = { status: 'IN_PROGRESS' };
+      (mockRequest as any).user = { id: 1, role: 'TECHNICIAN' };
 
       connectedUsers.set(1, 'socket-123');
 
@@ -518,6 +524,7 @@ describe('ReportController', () => {
       });
 
       (ReportService.updateReportStatus as jest.Mock).mockResolvedValue(mockReport);
+      (TechnicianService.canTechnicianUpdateReport as jest.Mock).mockResolvedValue(true);
 
       await ReportController.updateReportStatus(mockRequest as Request, mockResponse as Response);
 
@@ -540,6 +547,7 @@ describe('ReportController', () => {
 
       mockRequest.params = { id: '1' };
       mockRequest.body = { status: 'IN_PROGRESS' };
+      (mockRequest as any).user = { id: 1, role: 'TECHNICIAN' };
 
       connectedUsers.clear();
 
@@ -555,6 +563,7 @@ describe('ReportController', () => {
       });
 
       (ReportService.updateReportStatus as jest.Mock).mockResolvedValue(mockReport);
+      (TechnicianService.canTechnicianUpdateReport as jest.Mock).mockResolvedValue(true);
 
       await ReportController.updateReportStatus(mockRequest as Request, mockResponse as Response);
 

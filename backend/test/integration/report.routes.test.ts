@@ -11,11 +11,11 @@ import { supabase } from '../../src/utils/Supabase';
 jest.mock('../../src/controllers/ReportController');
 jest.mock('../../src/controllers/ReportMessageController');
 jest.mock('../../src/controllers/NotificationController');
-jest.mock('../../src/app', () => ({
-  io: {
+jest.mock('../../src/socket', () => ({
+  getIO: jest.fn(() => ({
     to: jest.fn().mockReturnThis(),
     emit: jest.fn(),
-  },
+  })),
   connectedUsers: new Map(),
 }));
 jest.mock('../../src/utils/Supabase', () => ({
@@ -28,6 +28,9 @@ jest.mock('../../src/utils/jwt', () => ({
   verifyToken: jest.fn((token: string) => {
     if (token === 'citizen-token') {
       return { id: 1, role: 'CITIZEN' };
+    }
+    if (token === 'technician-token') {
+      return { id: 2, role: 'TECHNICIAN' };
     }
     throw new Error('Invalid token');
   }),
@@ -54,6 +57,12 @@ describe('Report Routes Integration Tests', () => {
                 if (authHeader === 'Bearer citizen-token') {
                   return Promise.resolve({
                     data: { id: 1, email: 'citizen@example.com', role: 'CITIZEN' },
+                    error: null,
+                  });
+                }
+                if (authHeader === 'Bearer technician-token') {
+                  return Promise.resolve({
+                    data: { id: 2, email: 'tech@example.com', role: 'TECHNICIAN' },
                     error: null,
                   });
                 }
@@ -201,6 +210,7 @@ describe('Report Routes Integration Tests', () => {
 
   describe('PATCH /api/v1/reports/:id/status', () => {
     it('should update report status', async () => {
+      (global as any).mockAuthHeader = 'Bearer technician-token';
       const mockUpdatedReport = {
         id: 1,
         title: 'Test Report',
@@ -216,6 +226,7 @@ describe('Report Routes Integration Tests', () => {
 
       const response = await request(app)
         .patch('/api/v1/reports/1/status')
+        .set('Authorization', 'Bearer technician-token')
         .send({
           status: 'IN_PROGRESS',
         });
