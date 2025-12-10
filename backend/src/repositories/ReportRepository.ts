@@ -56,10 +56,18 @@ export const getAllReports = async (): Promise<Report[]> => {
 		.from("Report")
 		.select(
 			`
-      *,
-      photos:Report_Photo(*),
-      user:User(name, surname)
-    `
+      		*,
+      		photos:Report_Photo(
+				*
+			),
+      		user:User(
+				name, 
+				surname
+			),
+	  		messages:Report_Message(
+				*
+			)
+    	`
 		)
 		.order("timestamp", { ascending: true });
 
