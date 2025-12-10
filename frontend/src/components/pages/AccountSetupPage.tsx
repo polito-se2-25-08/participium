@@ -20,7 +20,7 @@ export function AccountSetupPage() {
     username: "",
     role: "",
     email: "",
-    category_id: "",
+    category_ids: [] as string[],
   });
 
   const [categories, setCategories] = useState<
@@ -53,7 +53,7 @@ export function AccountSetupPage() {
 
   useEffect(() => {
     const isTechnician = formData.role === "TECHNICIAN";
-    const isCategoryValid = !isTechnician || formData.category_id !== ""; // Category is required only for TECHNICIAN role
+    const isCategoryValid = !isTechnician || formData.category_ids.length > 0; // Category is required only for TECHNICIAN role
 
     setCanSubmit(
       formData.name !== "" &&
@@ -73,6 +73,21 @@ export function AccountSetupPage() {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+    setFormData((prev) => {
+      const currentIds = prev.category_ids;
+      if (checked) {
+        return { ...prev, category_ids: [...currentIds, value] };
+      } else {
+        return {
+          ...prev,
+          category_ids: currentIds.filter((id) => id !== value),
+        };
+      }
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -168,20 +183,34 @@ export function AccountSetupPage() {
           />
 
           {formData.role === "TECHNICIAN" && (
-            <Select
-              required
-              id="category_id"
-              name="category_id"
-              hasLabel
-              placeholder="Select Technical Office"
-              label="Technical Office"
-              options={categories.map((cat) => ({
-                value: String(cat.id),
-                label: cat.category || "Unnamed Category",
-              }))}
-              value={formData.category_id}
-              onChange={handleChange}
-            />
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-gray-700">
+                Technical Offices <span className="text-red-500">*</span>
+              </label>
+              <div className="flex flex-col gap-2 p-3 border border-gray-300 rounded-md max-h-48 overflow-y-auto bg-white">
+                {categories.length === 0 ? (
+                  <p className="text-sm text-gray-500">
+                    No categories available
+                  </p>
+                ) : (
+                  categories.map((cat) => (
+                    <label
+                      key={cat.id}
+                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        value={String(cat.id)}
+                        checked={formData.category_ids.includes(String(cat.id))}
+                        onChange={handleCategoryChange}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      {cat.category || "Unnamed Category"}
+                    </label>
+                  ))
+                )}
+              </div>
+            </div>
           )}
 
           {serverError && (

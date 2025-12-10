@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { getAllUsers, assignRole, deleteUser } from "../../api/adminService";
+import {
+  getAllUsers,
+  assignRole,
+  deleteUser,
+  getTechnicianCategories,
+  updateTechnicianCategories,
+} from "../../api/adminService";
+import { categoryService } from "../../api/categoryService";
 import { useAuth } from "../providers/AuthContext";
 import PageTitle from "../titles/PageTitle";
 import ContentContainer from "../containers/ContentContainer";
@@ -17,6 +24,16 @@ export function AssignRolesPage() {
     userId: number | null;
   }>({ isOpen: false, userId: null });
 
+  const [categoryModal, setCategoryModal] = useState<{
+    isOpen: boolean;
+    userId: number | null;
+    selectedCategories: number[];
+  }>({ isOpen: false, userId: null, selectedCategories: [] });
+
+  const [allCategories, setAllCategories] = useState<
+    { id: number; category: string }[]
+  >([]);
+
   // Define possible roles to show (excluding "CITIZEN")
   const roles: Array<"ADMIN" | "OFFICER" | "TECHNICIAN"> = [
     "ADMIN",
@@ -27,8 +44,16 @@ export function AssignRolesPage() {
   useEffect(() => {
     if (token) {
       fetchUsers();
+      fetchCategories();
     }
   }, [token]);
+
+  const fetchCategories = async () => {
+    const response = await categoryService.getAllCategories();
+    if (response.success && Array.isArray(response.data)) {
+      setAllCategories(response.data);
+    }
+  };
 
   const fetchUsers = async () => {
     if (!token) {
@@ -67,6 +92,52 @@ export function AssignRolesPage() {
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update role");
+    } finally {
+      setUpdatingUserId(null);
+    }
+  };
+
+  const handleManageCategories = async (userId: number) => {
+    if (!token) return;
+    try {
+      setUpdatingUserId(userId);
+      const categories = await getTechnicianCategories(userId, token);
+      setCategoryModal({
+        isOpen: true,
+        userId,
+        selectedCategories: categories,
+      });
+    } catch (err) {
+      setError("Failed to load technician categories");
+    } finally {
+      setUpdatingUserId(null);
+    }
+  };
+
+  const toggleCategory = (categoryId: number) => {
+    setCategoryModal((prev) => {
+      const isSelected = prev.selectedCategories.includes(categoryId);
+      return {
+        ...prev,
+        selectedCategories: isSelected
+          ? prev.selectedCategories.filter((id) => id !== categoryId)
+          : [...prev.selectedCategories, categoryId],
+      };
+    });
+  };
+
+  const saveCategories = async () => {
+    const { userId, selectedCategories } = categoryModal;
+    if (!token || !userId) return;
+
+    try {
+      setUpdatingUserId(userId);
+      await updateTechnicianCategories(userId, selectedCategories, token);
+      setCategoryModal({ isOpen: false, userId: null, selectedCategories: [] });
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to update categories"
+      );
     } finally {
       setUpdatingUserId(null);
     }
@@ -180,14 +251,24 @@ export function AssignRolesPage() {
                     </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    {/* Delete button for Desktop view */}
-                    <button
-                      onClick={() => promptDeleteUser(user.id)}
-                      disabled={updatingUserId === user.id}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs disabled:bg-gray-400 transition-colors"
-                    >
-                      Delete
-                    </button>
+                    <div className="flex gap-2">
+                      {user.role === "TECHNICIAN" && (
+                        <button
+                          onClick={() => handleManageCategories(user.id)}
+                          disabled={updatingUserId === user.id}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs disabled:bg-gray-400 transition-colors"
+                        >
+                          Categories
+                        </button>
+                      )}
+                      <button
+                        onClick={() => promptDeleteUser(user.id)}
+                        disabled={updatingUserId === user.id}
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs disabled:bg-gray-400 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -245,8 +326,16 @@ export function AssignRolesPage() {
                     ))}
                   </select>
                 </div>
-                <div className="pt-2">
-                  {/* Delete button for Mobile view */}
+                <div className="pt-2 flex flex-col gap-2">
+                  {user.role === "TECHNICIAN" && (
+                    <button
+                      onClick={() => handleManageCategories(user.id)}
+                      disabled={updatingUserId === user.id}
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded text-sm disabled:bg-gray-400 transition-colors"
+                    >
+                      Manage Categories
+                    </button>
+                  )}
                   <button
                     onClick={() => promptDeleteUser(user.id)}
                     disabled={updatingUserId === user.id}
@@ -266,6 +355,66 @@ export function AssignRolesPage() {
           </p>
         )}
       </div>
+
+      {/* Category Management Modal */}
+      {categoryModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 transform transition-all">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
+              Manage Technician Categories
+            </h3>
+            <div className="mb-6 max-h-60 overflow-y-auto border rounded p-2">
+              {allCategories.length === 0 ? (
+                <p className="text-sm text-gray-500 text-center py-4">
+                  No categories available
+                </p>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  {allCategories.map((cat) => (
+                    <label
+                      key={cat.id}
+                      className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={categoryModal.selectedCategories.includes(
+                          cat.id
+                        )}
+                        onChange={() => toggleCategory(cat.id)}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className="text-sm text-gray-700">
+                        {cat.category}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() =>
+                  setCategoryModal({
+                    isOpen: false,
+                    userId: null,
+                    selectedCategories: [],
+                  })
+                }
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveCategories}
+                disabled={categoryModal.selectedCategories.length === 0}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Custom Confirmation Modal for User Deletion */}
       {deleteModal.isOpen && (

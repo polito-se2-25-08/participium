@@ -127,3 +127,49 @@ export async function deleteUser(userId: number, token: string) {
     }
   }
 }
+
+export async function getTechnicianCategories(userId: number, token: string) {
+  const response = await fetch(
+    URI + `/admin/technicians/${userId}/categories`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (response.ok) {
+    const result = await response.json();
+    return result.data; // Expecting number[]
+  } else {
+    throw new Error("Failed to fetch technician categories");
+  }
+}
+
+export async function updateTechnicianCategories(
+  userId: number,
+  categoryIds: number[],
+  token: string
+) {
+  const response = await fetch(
+    URI + `/admin/technicians/${userId}/categories`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ category_ids: categoryIds }),
+    }
+  );
+
+  if (response.ok) {
+    const result = await response.json();
+    return result.data;
+  } else {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to update categories");
+  }
+}
