@@ -8,4 +8,5 @@ export interface User {
 	telegramUsername: string;
 	profilePicture: string;
 	role: "CITIZEN" | "ADMIN" | "OFFICER" | "TECHNICIAN" | "EXTERNAL MAINTAINER";
+	isVerified: boolean;
 }

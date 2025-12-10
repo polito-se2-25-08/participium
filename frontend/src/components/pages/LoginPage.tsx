@@ -47,7 +47,14 @@ export function LoginPage() {
 			const token = state.data.token;
 			const user = state.data.user;
 			login(user, token);
-			navigate("/dashboard");
+			if(user.isVerified)
+			{
+				navigate("/dashboard");
+			}
+			else
+			{
+				navigate("/verify");
+			}
 		}
 		if (state.success === false) {
 		}

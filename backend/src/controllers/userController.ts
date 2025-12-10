@@ -41,6 +41,7 @@ export const loginUser = catchAsync(async (req: Request, res: Response) => {
 				profilePicture: user.profile_picture,
 				emailNotification: user.email_notification,
 				telegramUsername: user.telegram_username,
+				isVerified: user.isVerified,
 			},
 			token: token,
 		},
