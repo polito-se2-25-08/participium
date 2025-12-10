@@ -1,11 +1,11 @@
 export interface User {
-	id: number;
-	name: string;
-	surname: string;
-	username: string;
-	email: string;
-	emailNotification: boolean;
-	telegramUsername: string;
-	profilePicture: string;
-	role: "CITIZEN" | "ADMIN" | "OFFICER" | "TECHNICIAN" | "EXTERNAL MAINTAINER";
+  id: number;
+  name: string;
+  surname: string;
+  username: string;
+  email: string;
+  emailNotification: boolean;
+  telegramUsername: string;
+  profilePicture: string;
+  role: "CITIZEN" | "ADMIN" | "OFFICER" | "TECHNICIAN" | "EXTERNAL_MAINTAINER";
 }

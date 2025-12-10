@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { setupUser, setupTechnician } from "../../api/adminService";
+import {
+  setupUser,
+  setupTechnician,
+  setupExternalMaintainer,
+} from "../../api/adminService";
 import { categoryService } from "../../api/categoryService";
 import { externalCompanyService } from "../../api/externalcompanyService";
 import { useAuth } from "../providers/AuthContext";
@@ -151,8 +155,10 @@ export function AccountSetupPage() {
 
       if (formData.role === "TECHNICIAN") {
         generatedPassword = await setupTechnician(formData, token);
+      } else if (formData.role === "EXTERNAL_MAINTAINER") {
+        generatedPassword = await setupExternalMaintainer(formData, token);
       } else {
-        // OFFICER or EXTERNAL_MAINTAINER
+        // OFFICER
         generatedPassword = await setupUser(formData, token);
       }
 

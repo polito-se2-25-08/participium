@@ -8,6 +8,7 @@ import {
 import {
   setupUser,
   setupTechnician,
+  setupExternalMaintainer,
   updateTechnicianCategories,
   getTechnicianCategories,
   deleteUser,
@@ -50,6 +51,13 @@ router.post(
   "/register-technician",
   validate(setupTechnicianSchema),
   setupTechnician
+);
+
+// External Maintainer creation by admin
+router.post(
+  "/register-external-maintainer",
+  validate(setupSchema),
+  setupExternalMaintainer
 );
 
 // List all users with their roles

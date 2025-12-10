@@ -25,7 +25,7 @@ interface ReportReviewCardProps {
 
   // NEW FIELD
   externalAssigned?: boolean;
-  
+
   // NEW FIELD: Control comment section visibility
   allowComments?: boolean;
 }
@@ -46,7 +46,7 @@ export default function ReportReviewCard({
 }: ReportReviewCardProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showComments, setShowComments] = useState(false);
-  
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -61,8 +61,7 @@ export default function ReportReviewCard({
   const reportDate = (report as any).timestamp || (report as any).createdAt;
 
   // Determine number of action buttons
-  const actionCount =
-    2 + (onSuspend ? 1 : 0) + (onAssignExternal ? 1 : 0);
+  const actionCount = 2 + (onSuspend ? 1 : 0) + (onAssignExternal ? 1 : 0);
 
   const gridCols =
     actionCount === 4
@@ -187,12 +186,25 @@ export default function ReportReviewCard({
               onClick={() => setShowComments(!showComments)}
               className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                />
               </svg>
-              {showComments ? "Hide Internal Comments" : "Show Internal Comments"}
+              {showComments
+                ? "Hide Internal Comments"
+                : "Show Internal Comments"}
             </button>
-            
+
             {showComments && <CommentSection reportId={report.id} />}
           </div>
         )}

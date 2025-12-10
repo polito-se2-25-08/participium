@@ -23,7 +23,9 @@ import { NotificationToast } from "./components/NotificationToast";
 
 function AppContent() {
   const { user } = useAuth();
-  const { notifications, clearNotification } = useNotifications(user?.id || null);
+  const { notifications, clearNotification } = useNotifications(
+    user?.id || null
+  );
 
   return (
     <>
@@ -49,8 +51,15 @@ function AppContent() {
             </Route>
 
             {/* TECHNICIAN and EXTERNAL MAINTAINER routes */}
-            <Route element={<Acl allowedRoles={["TECHNICIAN", "EXTERNAL MAINTAINER"]} />}>
-              <Route path="/category-reports" element={<CategoryReportsPage />} />
+            <Route
+              element={
+                <Acl allowedRoles={["TECHNICIAN", "EXTERNAL_MAINTAINER"]} />
+              }
+            >
+              <Route
+                path="/category-reports"
+                element={<CategoryReportsPage />}
+              />
             </Route>
 
             <Route path="/profile" element={<ProfilePage />} />

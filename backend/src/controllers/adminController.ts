@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { adminService } from "../services/AdminService";
 import { getCategoriesForTechnician } from "../services/TechnicianService";
+import { externalCompanyService } from "../services/ExternalCompanyService";
 import { catchAsync } from "../utils/catchAsync";
 
 export const setupUser = catchAsync(async (req: Request, res: Response) => {
@@ -55,6 +56,41 @@ export const setupTechnician = catchAsync(
         username: user.username,
         password: user.password,
         category_ids,
+      },
+    });
+  }
+);
+
+export const setupExternalMaintainer = catchAsync(
+  async (req: Request, res: Response) => {
+    const { email, username, role, name, surname, external_company_id } =
+      req.body;
+
+    // 1. Create the user with EXTERNAL_MAINTAINER role
+    const user = await adminService.createUser({
+      email,
+      username,
+      role: "EXTERNAL_MAINTAINER",
+      name,
+      surname,
+    });
+
+    // 2. Assign the user to the external company
+    if (external_company_id) {
+      await externalCompanyService.assignExternalMaintainerCompany(
+        user.id,
+        Number(external_company_id)
+      );
+    }
+
+    res.status(201).json({
+      success: true,
+      data: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        password: user.password,
+        external_company_id,
       },
     });
   }

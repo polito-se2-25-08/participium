@@ -14,6 +14,7 @@ export async function setupUser(
   setupUser: any,
   token: string
 ): Promise<string> {
+  console.log("Setting up user with data:", setupUser);
   const response = await fetch(URI + "/admin/register", {
     method: "POST",
     headers: {
@@ -52,6 +53,31 @@ export async function setupTechnician(
     const error = await response.json();
     throw new Error(
       error.message || "Server is not reachable or Technician setup failed"
+    );
+  }
+}
+
+export async function setupExternalMaintainer(
+  userData: any,
+  token: string
+): Promise<string> {
+  const response = await fetch(URI + "/admin/register-external-maintainer", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(userData),
+  });
+
+  if (response.ok) {
+    const result = await response.json();
+    return result.data.password;
+  } else {
+    const error = await response.json();
+    throw new Error(
+      error.message ||
+        "Server is not reachable or External Maintainer setup failed"
     );
   }
 }
