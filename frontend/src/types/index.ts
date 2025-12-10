@@ -1,95 +1,97 @@
-
-export type UserRole =
-  | 'citizen'
-  | 'admin'
-  | 'officer'
-  | 'technician';
+export type UserRole = "citizen" | "admin" | "officer" | "technician";
 
 export type ReportCategory =
-  | 'water_supply'
-  | 'architectural_barriers'
-  | 'sewer_system'
-  | 'public_lighting'
-  | 'waste'
-  | 'road_signs_traffic_lights'
-  | 'roads_urban_furnishings'
-  | 'public_green_areas_playgrounds'
-  | 'other';
+	| "water_supply"
+	| "architectural_barriers"
+	| "sewer_system"
+	| "public_lighting"
+	| "waste"
+	| "road_signs_traffic_lights"
+	| "roads_urban_furnishings"
+	| "public_green_areas_playgrounds"
+	| "other";
 
 export type ReportStatus =
-  | 'PENDING_APPROVAL'
-  | 'ASSIGNED'
-  | 'IN_PROGRESS'
-  | 'SUSPENDED'
-  | 'REJECTED'
-  | 'RESOLVED';
+	| "PENDING_APPROVAL"
+	| "ASSIGNED"
+	| "IN_PROGRESS"
+	| "SUSPENDED"
+	| "REJECTED"
+	| "RESOLVED";
 
 export interface User {
-  id: number;
-  username: string;
-  email: string;
-  name: string;
-  surname: string;
-  profile_picture?: string;
-  //telegram_username?: string;
-  email_notification: boolean;
-  role: UserRole;
+	id: number;
+	username: string;
+	email: string;
+	name: string;
+	surname: string;
+	profile_picture?: string;
+	//telegram_username?: string;
+	email_notification: boolean;
+	role: UserRole;
 }
 
 export interface Location {
-  latitude: number;
-  longitude: number;
+	latitude: number;
+	longitude: number;
 }
 
 export interface Report {
-  id: number;
-  title: string;
-  description: string;
-  category: ReportCategory;
-  latitude: number;
-  longitude: number;
-  
-  photos: Report_Photo[];
-  anonymous: boolean;
-  user_id: number;
-  user?: {
-    name: string;
-    surname: string;
-  };
-  status: ReportStatus;
-  createdAt: Date;
-  updatedAt: Date;
-  rejection?: Rejection_Report;
-  assignedOffice?: string;
-  assignedExternalOfficeId?: number | null;
+	id: number;
+	title: string;
+	description: string;
+	category: ReportCategory;
+	latitude: number;
+	longitude: number;
+
+	photos: Report_Photo[];
+	anonymous: boolean;
+	user_id: number;
+	user?: {
+		name: string;
+		surname: string;
+	};
+	status: ReportStatus;
+	createdAt: Date;
+	updatedAt: Date;
+	rejection?: Rejection_Report;
+	assignedOffice?: string;
+	assignedExternalOfficeId?: number | null;
+	messages: {
+		id: number;
+		message: string;
+		created_at: string;
+		report_id: number;
+		sender_id: number;
+	}[];
 }
 
 export interface Category {
-  id: number;
-  category: ReportCategory;
+	id: number;
+	category: ReportCategory;
 }
 
 export interface Report_Photo {
-  id: number;
-  report_photo: string;
-  report_id: number;
+	id: number;
+	report_photo: string;
+	report_id: number;
 }
 
 export interface Rejection_Report {
-  id: number;
-  motivation: string;
+	id: number;
+	motivation: string;
 }
 
 export interface Comment {
-  id: number;
-  reportId: number;
-  userId: number;
-  user: {
-    name: string;
-    surname: string;
-    role: string;
-    profile_picture?: string;
-  };
-  content: string;
-  createdAt: string;
+	id: number;
+	reportId: number;
+	userId: number;
+	user: {
+		name: string;
+		surname: string;
+		role: string;
+		profile_picture?: string;
+	};
+	content: string;
+	createdAt: string;
 }

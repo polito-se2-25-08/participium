@@ -17,6 +17,7 @@ import { mapMessageDBToMessage } from "./controllers/mapper/MessageDBToMessage";
 import { userRepository } from "./repositories/userRepository";
 import is from "zod/v4/locales/is.js";
 import { createNotification } from "./services/NotificationService";
+import { MessageDTO } from "./dto/MessageDTO";
 import externalCompanyRoutes from "./routes/v1/externalCompanyRoutes";
 
 const app = express();
@@ -48,48 +49,55 @@ io.on("connection", (socket) => {
 		console.log(`User ${userId} registered with socket ${socket.id}`);
 	});
 
-	socket.on(
-		"send_report_message",
-		async (userId: number, message: string, reportId) => {
+	socket.on("send_report_message", async (messageDTO: MessageDTO) => {
+		try {
+			const userId = messageDTO.senderId;
+			const reportId = messageDTO.reportId;
+			const message = messageDTO.message;
+
 			const user = await userRepository.findById(userId);
+
+			console.log("User ID:", userId);
+			console.log("Message:", message);
+			console.log("Report ID:", reportId);
 
 			if (!user) {
 				throw new Error("User not found");
 			}
 
-			if (connectedUsers.has(userId)) {
-				const savedMessage = await MessageService.saveMessage(
-					message,
-					reportId,
-					userId
-				);
+			const savedMessage = await MessageService.saveMessage(
+				message,
+				reportId,
+				userId
+			);
 
-				const isTechnician = user.role === "TECHNICIAN";
+			const isTechnician = user.role === "TECHNICIAN";
 
-				//if the message is sent by a technician notify the user
-				if (isTechnician) {
-					const report = await getReportById(reportId);
-					const reportUserId = report.user_id;
-					const socketId = connectedUsers.get(reportUserId);
-					if (socketId) {
-						const mappedMessage =
-							mapMessageDBToMessage(savedMessage);
-						io.to(socketId).emit("report_message", mappedMessage);
-						console.log(
-							`Message sent to user ${userId} for report ${reportId}`
-						);
-					} else {
-						const notification = await createNotification({
-							user_id: reportUserId,
-							report_id: reportId,
-							type: "NEW_MESSAGE",
-							message: `New message on report #${reportId}`,
-						});
-					}
+			if (isTechnician) {
+				const report = await getReportById(reportId);
+				const reportUserId = report.user_id;
+				const socketId = connectedUsers.get(reportUserId);
+
+				const mappedMessage = mapMessageDBToMessage(savedMessage);
+
+				if (socketId) {
+					io.to(socketId).emit("new_report_message", mappedMessage);
+				} else {
+					await createNotification({
+						user_id: reportUserId,
+						report_id: reportId,
+						type: "NEW_MESSAGE",
+						message: `New message on report #${report.title}`,
+					});
 				}
 			}
+		} catch (err) {
+			socket.emit("error", {
+				type: "SEND_MESSAGE_ERROR",
+				message: "Failed to send message",
+			});
 		}
-	);
+	});
 
 	socket.on("disconnect", () => {
 		for (const [userId, socketId] of connectedUsers.entries()) {
