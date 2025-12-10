@@ -29,16 +29,16 @@ export const InitializeVerificationCode = async (
 
     if (error) {
         throw new AppError(
-            `Failed to create report: ${error.message}`,
+            `Failed to create verification code: ${error.message}`,
             500,
             "DB_INSERT_ERROR"
         );
     }
     if (!data) {
         throw new AppError(
-          `User with user_id ${userId} not found`,
-          404,
-          "USER_NOT_FOUND"
+          `Failed to create verification code for user_id ${userId}`,
+          500,
+          "VERIFICATION_CODE_CREATION_FAILED"
         );
     }
 
@@ -50,7 +50,7 @@ export const InitializeVerificationCode = async (
 
 export const getVerificationCode = async (
     userId: number,
-): Promise<VerificationCodeRow | null> => {
+): Promise<String | null> => {
     const { data, error } = await supabase
         .from("VerificationCode")
         .select("*")

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { catchAsync } from "../utils/catchAsync";
 import { userService } from "../services/userService";
 import { getVerificationCode, InitializeVerificationCode } from "../repositories/VerificationCodeRepository";
+import { userRepository } from "../repositories/userRepository";
 
 export const registerUser = catchAsync(async (req: Request, res: Response) => {
 	const { email, username, password, name, surname } = req.body;
@@ -119,9 +120,10 @@ export const verifyUser = catchAsync(async (req: Request, res: Response) => {
 		});
 		return;
 	}
-	const verificationData = await getVerificationCode(userId);
-  	if(verificationData !== null && code === verificationData.code)
+	const verificationCode = await getVerificationCode(userId);
+  	if(verificationCode !== null && code === verificationCode)
 	{
+		await userRepository.verifyUser(userId);
 		res.status(200).json({
 			success: true,
 			data: {
@@ -129,7 +131,7 @@ export const verifyUser = catchAsync(async (req: Request, res: Response) => {
 			},
 		});
 	}
-	else if(verificationData !== null && code !== verificationData.code)
+	else if(verificationCode !== null && code !== verificationCode)
 	{
 		res.status(200).json({
 			success: true,

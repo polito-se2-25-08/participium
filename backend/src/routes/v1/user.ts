@@ -30,8 +30,8 @@ router.post("/register", validate(registerSchema), registerUser);
 router.post("/login", validate(loginSchema), loginUser);
 router.get("/users", getAllUsers);
 router.patch("/users/:id", updateUser);
-router.get("/users/:id/verify", verifyUser);
-router.post("/users/:id/verify/create", createVerificationCode);
+router.get("/users/:id/verify", createVerificationCode);
+router.post("/users/:id/verify/check", verifyUser);
 
 router.get("/users/:id/reports", getReportsByUserId);
 
