@@ -88,11 +88,13 @@ export default function ReportReviewCard({
               <p className="text-sm text-gray-500">
                 Submitted by:{" "}
                 <span className="font-medium">
-                  {report.anonymous
-                    ? "Anonymous"
-                    : report.user?.name && report.user?.surname
-                    ? `${report.user.name} ${report.user.surname}`
-                    : (report as any).user_id || "Unknown User"}
+                  {report.user?.name &&
+                  report.user?.name !== "Anonymous" &&
+                  report.user?.surname
+                    ? `${report.user.name} ${report.user.surname} ${
+                        report.anonymous ? "(Anonymous)" : ""
+                      }`
+                    : "Anonymous"}
                 </span>
               </p>
 

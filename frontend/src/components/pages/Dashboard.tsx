@@ -82,7 +82,9 @@ export default function Dashboard() {
                 <SubTitle>{clickedReport.title}</SubTitle>
                 <div className="flex flex-col overflow-scroll max-h-[50vh] pl-5 pr-5 pb-4 w-full">
                   <SubTitle>Reporter</SubTitle>
-                  {!clickedReport.anonymous ? (
+                  {!clickedReport.anonymous ||
+                  (clickedReport.reporterUsername &&
+                    clickedReport.reporterUsername !== "anonymous") ? (
                     <div className="flex flex-row items-center justify-center gap-5">
                       {clickedReport.reporterProfilePicture && (
                         <img

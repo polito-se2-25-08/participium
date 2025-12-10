@@ -17,11 +17,11 @@ router.post(
 	ReportController.createReport
 );
 
-router.get("/reports", ReportController.getAllReports);
+router.get("/reports", protect, ReportController.getAllReports);
 
-router.get("/reports/active", ReportController.getActiveReports);
+router.get("/reports/active", protect, ReportController.getActiveReports);
 
-router.get("/reports/:id", ReportController.getReportById);
+router.get("/reports/:id", protect, ReportController.getReportById);
 
 router.patch(
 	"/reports/:id/status",

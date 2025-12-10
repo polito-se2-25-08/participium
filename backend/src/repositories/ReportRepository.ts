@@ -128,9 +128,30 @@ const remapReports = async (
 		);
 		const shouldHide = isAnonymous && !canSeeAnonymous;
 
+		const safeUser = shouldHide
+			? {
+					name: "Anonymous",
+					surname: "",
+					username: "anonymous",
+					profile_picture: "",
+			  }
+			: {
+					name: foundUser?.name,
+					surname: foundUser?.surname,
+					username: foundUser?.username,
+					profile_picture: foundUser?.profile_picture,
+			  };
+
 		return {
 			...report,
 			user_id: shouldHide ? "Anonymous" : foundUser?.username,
+			user: safeUser,
+			name: safeUser.name,
+			surname: safeUser.surname,
+			reporterName: safeUser.name,
+			reporterSurname: safeUser.surname,
+			reporterUsername: safeUser.username,
+			reporterProfilePicture: safeUser.profile_picture,
 		};
 	});
 
@@ -307,7 +328,7 @@ export const approveReport = async (id: number): Promise<Report> => {
 		);
 	}
 
-	const remappedData = data ? await remapReports([data]) : [];
+	const remappedData = data ? await remapReports([data], "OFFICER") : [];
 	return remappedData[0];
 };
 
@@ -357,7 +378,7 @@ export const rejectReport = async (
 		);
 	}
 
-	const remappedData = reportData ? await remapReports([reportData]) : [];
+	const remappedData = reportData ? await remapReports([reportData], "OFFICER") : [];
 	return remappedData[0];
 };
 
@@ -420,7 +441,7 @@ export const getReportsByTechnician = async (
 		return [];
 	}
 
-	const remappedData = await remapReports(data);
+	const remappedData = await remapReports(data, "TECHNICIAN");
 	return remappedData;
 };
 
