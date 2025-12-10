@@ -16,9 +16,7 @@ import TextInput from "../../input/variants/TextInput";
 import CheckInput from "../../input/variants/CheckInput";
 import PrimaryButton from "../../buttons/variants/primary/PrimaryButton";
 import Form from "../../form/Form";
-import {
-	updateUserAction,
-} from "../../../action/UserAction";
+import { updateUserAction } from "../../../action/UserAction";
 import { fileToBase64 } from "../../../utilis/utils";
 
 import SubTitle from "../../titles/SubTitle";
@@ -147,14 +145,6 @@ export default function CitizenProfilePage() {
 									alt="user profile picture"
 									onClick={handleClick}
 								/>
-								{isHovered && (
-									<div className="absolute inset-0 flex justify-center items-center pointer-events-none xl:mb-8.5 sm:mb-8 ">
-										<FontAwesomeIcon
-											icon={faUpload}
-											className="text-white text-5xl"
-										/>
-									</div>
-								)}
 
 								<input
 									type="file"

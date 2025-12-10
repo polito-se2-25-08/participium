@@ -17,4 +17,13 @@ export type UserReport = {
 		| null;
 	category: string;
 	photos: string[];
+	messages: Message[];
+};
+
+export type Message = {
+	id: number;
+	senderId: number;
+	reportId: number;
+	message: string;
+	createdAt: string;
 };

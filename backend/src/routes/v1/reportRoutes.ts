@@ -5,6 +5,7 @@ import * as NotificationController from "../../controllers/NotificationControlle
 import { protect, restrictTo } from "../../middleware/authMiddleware";
 import { validate } from "../../middleware/validateMiddleware";
 import { createReportSchema } from "../../validators/reportValidators";
+import { MessageController } from "../../controllers/MessageController";
 
 const router = express.Router();
 
@@ -29,13 +30,6 @@ router.patch(
 	ReportController.updateReportStatus
 );
 
-// Message routes (on specific report)
-router.post(
-	"/reports/:id/messages",
-	protect,
-	ReportMessageController.sendMessage
-);
-
 router.get(
 	"/reports/:id/messages",
 	protect,
@@ -54,5 +48,7 @@ router.patch(
 	protect,
 	NotificationController.markNotificationAsRead
 );
+
+router.post("/reports/:id/message", MessageController.saveMessage);
 
 export default router;
