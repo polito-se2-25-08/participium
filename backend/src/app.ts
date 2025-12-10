@@ -11,6 +11,14 @@ import reportRoutes from "./routes/v1/reportRoutes";
 import categoryRoutes from "./routes/v1/categoryRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 import bot from "./bot";
+import { MessageService } from "./services/MessageService";
+import { getReportById } from "./repositories/ReportRepository";
+import { mapMessageDBToMessage } from "./controllers/mapper/MessageDBToMessage";
+import { userRepository } from "./repositories/userRepository";
+import is from "zod/v4/locales/is.js";
+import { createNotification } from "./services/NotificationService";
+import { MessageDTO } from "./dto/MessageDTO";
+import externalCompanyRoutes from "./routes/v1/externalCompanyRoutes";
 
 const app = express();
 const host = "localhost";
@@ -24,35 +32,82 @@ bot.launch().then(() => console.log("Telegram bot started"));
 
 // Initialize Socket.IO
 const io = new Server(httpServer, {
-  cors: {
-    origin: "http://localhost:5173",
-    credentials: true,
-  },
+	cors: {
+		origin: "http://localhost:5173",
+		credentials: true,
+	},
 });
 
 // Store connected users: { userId: socketId }
 const connectedUsers = new Map<number, string>();
 
-// Socket.IO connection handling
 io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
+	console.log("Client connected:", socket.id);
 
-  // User registers their ID when they connect
-  socket.on("register", (userId: number) => {
-    connectedUsers.set(userId, socket.id);
-    console.log(`User ${userId} registered with socket ${socket.id}`);
-  });
+	socket.on("register", (userId: number) => {
+		connectedUsers.set(userId, socket.id);
+		console.log(`User ${userId} registered with socket ${socket.id}`);
+	});
 
-  socket.on("disconnect", () => {
-    // Remove user from connected users
-    for (const [userId, socketId] of connectedUsers.entries()) {
-      if (socketId === socket.id) {
-        connectedUsers.delete(userId);
-        console.log(`User ${userId} disconnected`);
-        break;
-      }
-    }
-  });
+	socket.on("send_report_message", async (messageDTO: MessageDTO) => {
+		try {
+			const userId = messageDTO.senderId;
+			const reportId = messageDTO.reportId;
+			const message = messageDTO.message;
+
+			const user = await userRepository.findById(userId);
+
+			console.log("User ID:", userId);
+			console.log("Message:", message);
+			console.log("Report ID:", reportId);
+
+			if (!user) {
+				throw new Error("User not found");
+			}
+
+			const savedMessage = await MessageService.saveMessage(
+				message,
+				reportId,
+				userId
+			);
+
+			const isTechnician = user.role === "TECHNICIAN";
+
+			if (isTechnician) {
+				const report = await getReportById(reportId);
+				const reportUserId = report.user_id;
+				const socketId = connectedUsers.get(reportUserId);
+
+				const mappedMessage = mapMessageDBToMessage(savedMessage);
+
+				if (socketId) {
+					io.to(socketId).emit("new_report_message", mappedMessage);
+				} else {
+					await createNotification({
+						user_id: reportUserId,
+						report_id: reportId,
+						type: "NEW_MESSAGE",
+						message: `New message on report #${report.title}`,
+					});
+				}
+			}
+		} catch (err) {
+			socket.emit("error", {
+				type: "SEND_MESSAGE_ERROR",
+				message: "Failed to send message",
+			});
+		}
+	});
+
+	socket.on("disconnect", () => {
+		for (const [userId, socketId] of connectedUsers.entries()) {
+			if (socketId === socket.id) {
+				connectedUsers.delete(userId);
+				console.log(`User ${userId} disconnected`);
+				break;
+			}
+		}
+	});
 });
 
 // Make io and connectedUsers accessible to routes
@@ -68,6 +123,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/health", (req, res) => res.send("OK"));
 
 // Routes
+app.use("/api/v1/external-company", externalCompanyRoutes);
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", reportRoutes);
 app.use("/api/v1", categoryRoutes);
@@ -75,13 +131,14 @@ app.use("/api/v1/technician", technicianRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1", officerRoutes);
 
+
 // Global error handler (MUST be last middleware)
 app.use(errorHandler);
 
 // Start server with Socket.IO
 httpServer.listen(port, () => {
-  console.log(`Express is listening at http://${host}:${port}`);
-  console.log(`Socket.IO is ready for connections`);
+	console.log(`Express is listening at http://${host}:${port}`);
+	console.log(`Socket.IO is ready for connections`);
 });
 
 export default app;

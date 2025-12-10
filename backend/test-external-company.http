@@ -1,0 +1,69 @@
+### External Company Flow Test (TECHNICIAN)
+### Adjust tokens / IDs after running each step.
+
+@baseUrl = http://localhost:3000/api
+
+### Technician Credentials
+@techUsername = pablo7
+@techPassword = Secret123!
+@techToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2NTMwMDk3OSwiZXhwIjoxNzY1MzA0NTc5fQ.yP9kFmwB8ks7WNih1cV8bBjdJ1KZL9lWChH0FFJ_phs
+
+### Example Category
+@categoryId = 4
+
+### Company ID placeholder
+@companyId = 1
+
+
+############################################################
+# 0. Technician Login → Retrieve JWT Token
+############################################################
+# @name loginTechnician
+POST {{baseUrl}}/v1/login
+Content-Type: application/json
+
+{
+  "username": "{{techUsername}}",
+  "password": "{{techPassword}}"
+}
+
+### Copy token → @techToken
+
+
+############################################################
+# 1. Fetch ALL External Companies
+############################################################
+GET {{baseUrl}}/v1/external-company
+Authorization: Bearer {{techToken}}
+
+### Error case: missing token
+GET {{baseUrl}}/v1/external-company
+
+
+############################################################
+# 2. Fetch a Company by ID
+############################################################
+GET {{baseUrl}}/v1/external-company/{{companyId}}
+Authorization: Bearer {{techToken}}
+
+### Error: invalid ID
+GET {{baseUrl}}/v1/external-company/abc
+Authorization: Bearer {{techToken}}
+
+### Error: not found
+GET {{baseUrl}}/v1/external-company/99999
+Authorization: Bearer {{techToken}}
+
+
+############################################################
+# 3. Fetch Companies by Category
+############################################################
+GET {{baseUrl}}/v1/external-company/category/{{categoryId}}
+Authorization: Bearer {{techToken}}
+
+### Error: invalid category ID
+GET {{baseUrl}}/v1/external-company/category/blabla
+Authorization: Bearer {{techToken}}
+
+### Error: missing token
+GET {{baseUrl}}/v1/external-company/category/{{categoryId}}

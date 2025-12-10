@@ -5,7 +5,7 @@ import type { DbRole } from "../utils/roleMapper";
 
 export const protect = (req: Request, _res: Response, next: NextFunction) => {
 	const authHeader = req.headers.authorization;
-	
+
 	// Check if authorization header exists
 	if (!authHeader) {
 		return next(new AppError("Not authorized, token missing", 401));
@@ -22,7 +22,7 @@ export const protect = (req: Request, _res: Response, next: NextFunction) => {
 	}
 
 	const token = authHeader.split(" ")[1];
-	
+
 	// Check if token exists after split
 	if (!token) {
 		return next(new AppError("Invalid or expired token", 401));

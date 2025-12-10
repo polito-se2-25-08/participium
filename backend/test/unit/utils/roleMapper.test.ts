@@ -64,10 +64,11 @@ describe('roleMapper', () => {
       expect(VALID_DB_ROLES).toContain('ADMIN');
       expect(VALID_DB_ROLES).toContain('OFFICER');
       expect(VALID_DB_ROLES).toContain('TECHNICIAN');
+      expect(VALID_DB_ROLES).toContain('EXTERNAL_MAINTAINER');
     });
 
-    it('should have exactly 4 roles', () => {
-      expect(VALID_DB_ROLES).toHaveLength(4);
+    it('should have exactly 5 roles', () => {
+      expect(VALID_DB_ROLES).toHaveLength(5);
     });
   });
 });

@@ -516,31 +516,37 @@ describe('ReportRepository', () => {
   describe('getActiveReports', () => {
     it('should return active reports with correct statuses', async () => {
       const mockReports = [
-        { id: 1, category_id: 1, user_id: 1, status: 'ASSIGNED' },
-        { id: 2, category_id: 2, user_id: 2, status: 'IN_PROGRESS' },
-        { id: 3, category_id: 1, user_id: 1, status: 'SUSPENDED' },
+        { 
+          id: 1, 
+          category_id: 1, 
+          user_id: 1, 
+          status: 'ASSIGNED',
+          category: { category: 'Roads' },
+          photos: [],
+          User: { name: 'John', surname: 'Doe', username: 'johndoe', profile_picture: 'pic.jpg' }
+        },
+        { 
+          id: 2, 
+          category_id: 2, 
+          user_id: 2, 
+          status: 'IN_PROGRESS',
+          category: { category: 'Water' },
+          photos: [],
+          User: { name: 'Jane', surname: 'Doe', username: 'janedoe', profile_picture: 'pic.jpg' }
+        },
+        { 
+          id: 3, 
+          category_id: 1, 
+          user_id: 1, 
+          status: 'SUSPENDED',
+          category: { category: 'Roads' },
+          photos: [],
+          User: { name: 'John', surname: 'Doe', username: 'johndoe', profile_picture: 'pic.jpg' }
+        },
       ];
 
       // Mock for getActiveReports query
       mockOrder.mockResolvedValueOnce({ data: mockReports, error: null });
-      
-      // Mock for remapReports - Category query
-      mockOrder.mockResolvedValueOnce({ 
-        data: [
-          { id: 1, category: 'Roads' },
-          { id: 2, category: 'Water' }
-        ], 
-        error: null 
-      });
-      
-      // Mock for remapReports - User query
-      mockOrder.mockResolvedValueOnce({ 
-        data: [
-          { id: 1, username: 'user1' },
-          { id: 2, username: 'user2' }
-        ], 
-        error: null 
-      });
 
       const result = await ReportRepository.getActiveReports();
 
@@ -552,7 +558,7 @@ describe('ReportRepository', () => {
     });
 
     it('should return empty array if no active reports', async () => {
-      mockOrder.mockResolvedValueOnce({ data: null, error: null });
+      mockOrder.mockResolvedValueOnce({ data: [], error: null });
 
       const result = await ReportRepository.getActiveReports();
 

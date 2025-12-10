@@ -18,6 +18,20 @@ export const REPORT_CATEGORIES = [
   { value: "other", label: "Other" },
 ];
 
+export const CATEGORY_NAME_TO_ID: Record<string, number> = {
+  "Water Supply – Drinking Water": 1,
+  "Architectural Barriers": 2,
+  "Sewer System": 3,
+  "Public Lighting": 4,
+  "Waste": 5,
+  "Road Signs and Traffic Lights": 6,
+  "Roads and Urban Furnishings": 7,
+  "Public Green Areas and Playgrounds": 8,
+  "Other": 9,
+};
+
+
+
 export const REPORT_STATUSES = [
   { value: "pending_approval", label: "Pending Approval" },
   { value: "assigned", label: "Assigned" },

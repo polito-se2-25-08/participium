@@ -74,6 +74,9 @@ describe('TechnicianService', () => {
       (TechnicianRepository.getTechnicianCategory as jest.Mock).mockRejectedValue(
         new Error('Technician not found')
       );
+      (TechnicianRepository.getExternalMaintainerCategory as jest.Mock).mockRejectedValue(
+        new Error('Technician not found')
+      );
 
       await expect(
         TechnicianService.getReportsForTechnician(999)

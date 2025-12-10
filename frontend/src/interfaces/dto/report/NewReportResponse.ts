@@ -14,6 +14,7 @@ export interface ReportMapI {
 	id: number;
 	title: string;
 	description: string;
+	assignedExternalOfficeId?: number | null;
 	latitude: number;
 	longitude: number;
 	coordinates: [number, number];

@@ -1,4 +1,5 @@
 import type { NewReportResponse } from "../interfaces/dto/report/NewReportResponse";
+import type { Message } from "../interfaces/dto/report/UserReport";
 import type { ApiResponse } from "../interfaces/dto/Response";
 
 const API_ENDPOINT =
@@ -67,3 +68,20 @@ function filesToBase64(files: File[]): Promise<string[]> {
 	);
 	return Promise.all(promises);
 }
+
+export const postMessage = async (msg: Message) => {
+	try {
+		const token = localStorage.getItem("token");
+		const response = await fetch(
+			`${API_ENDPOINT}/reports/${msg.reportId}/message`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					...(token && { Authorization: `Bearer ${token}` }),
+				},
+				body: JSON.stringify(msg),
+			}
+		);
+	} catch (e) {}
+};
