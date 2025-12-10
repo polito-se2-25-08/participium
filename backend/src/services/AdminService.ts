@@ -132,4 +132,11 @@ export const adminService = {
 
     return { user_id: userId, category_ids: validIds };
   },
+
+  async deleteUser(userId: number) {
+    const user = await userRepository.findById(userId);
+    if (!user) throw new AppError("User not found", 404);
+
+    await userRepository.deleteUser(userId);
+  },
 };

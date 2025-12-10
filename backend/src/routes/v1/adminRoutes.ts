@@ -10,6 +10,7 @@ import {
   setupTechnician,
   updateTechnicianCategories,
   getTechnicianCategories,
+  deleteUser,
 } from "../../controllers/adminController";
 import {
   getAllUsers,
@@ -65,5 +66,8 @@ router.put("/technicians/:id/categories", updateTechnicianCategories);
 
 // Get technician categories
 router.get("/technicians/:id/categories", getTechnicianCategories);
+
+// Delete a user by ID
+router.delete("/users/:id", deleteUser);
 
 export default router;

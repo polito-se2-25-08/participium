@@ -85,3 +85,9 @@ export const getTechnicianCategories = catchAsync(
     res.status(200).json({ success: true, data: categoryIds });
   }
 );
+
+export const deleteUser = catchAsync(async (req: Request, res: Response) => {
+  const userId = Number(req.params.id);
+  await adminService.deleteUser(userId);
+  res.status(204).json({ success: true, data: null });
+});
