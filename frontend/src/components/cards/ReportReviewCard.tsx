@@ -2,7 +2,11 @@ import { useState } from "react";
 import type { Report } from "../../types";
 import DangerButton from "../buttons/variants/danger/DangerButton";
 import ImageZoomModal from "../modals/ImageZoomModal";
-import CommentSection from "../comments/CommentSection";
+import InternalCommentSection from "../comments/InternalCommentSection";
+import MessageSection from "../comments/MessageSection";
+import TextInput from "../input/variants/TextInput";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 interface ReportReviewCardProps {
   report: Report;
@@ -27,7 +31,11 @@ interface ReportReviewCardProps {
   externalAssigned?: boolean;
   
   // NEW FIELD: Control comment section visibility
-  allowComments?: boolean;
+  allowInternalComments?: boolean;
+  
+  //Control message section visibility
+  allowMessages?: boolean;
+  onSendMessage?: (reportId: number, message: string) => void;
 }
 
 export default function ReportReviewCard({
@@ -42,10 +50,20 @@ export default function ReportReviewCard({
   suspendLabel = "Suspend Report",
   assignLabel = "Assign External Office",
   externalAssigned = false,
-  allowComments = true,
+  allowInternalComments = true,
+  allowMessages = false,
+  onSendMessage,
 }: ReportReviewCardProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showComments, setShowComments] = useState(false);
+  const [showMessages, setShowMessages] = useState(false);
+  const [textMessage, setTextMessage] = useState("");
+  
+  const handleSendMessage = () => {
+    if (textMessage.trim() === "" || !onSendMessage) return;
+    onSendMessage(report.id, textMessage);
+    setTextMessage("");
+  };
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -183,7 +201,7 @@ export default function ReportReviewCard({
           </DangerButton>
         </div>
 
-        {allowComments && (
+        {allowInternalComments && (
           <div className="mt-4 pt-2 border-t border-gray-100">
             <button
               onClick={() => setShowComments(!showComments)}
@@ -195,7 +213,46 @@ export default function ReportReviewCard({
               {showComments ? "Hide Internal Comments" : "Show Internal Comments"}
             </button>
             
-            {showComments && <CommentSection reportId={report.id} />}
+            {showComments && <InternalCommentSection reportId={report.id} />}
+          </div>
+        )}
+
+        {allowMessages && (
+          <div className="mt-4 pt-2 border-t border-gray-100">
+            <button
+              onClick={() => setShowMessages(!showMessages)}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+              {showMessages ? "Hide Messages" : "Show Messages"}
+            </button>
+            
+            {showMessages && (
+              <div className="flex flex-col bg-gray-50 rounded-lg border border-gray-200 p-4 mt-4">
+                <MessageSection messages={report.messages || []} />
+
+                {onSendMessage && (
+                  <div className="flex flex-row gap-4 mt-2">
+                    <TextInput
+                      placeholder="Write a message here..."
+                      id={`update-input-${report.id}`}
+                      name={`update-input-${report.id}`}
+                      hasLabel={false}
+                      value={textMessage}
+                      onChange={(e) => setTextMessage(e.target.value)}
+                    />
+                    <button
+                      onClick={handleSendMessage}
+                      className="border rounded-full p-2 flex items-center justify-center hover:cursor-pointer bg-white hover:bg-gray-100"
+                    >
+                      <FontAwesomeIcon icon={faPaperPlane} className="text-blue-600" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

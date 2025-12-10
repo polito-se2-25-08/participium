@@ -62,6 +62,13 @@ export interface Report {
   rejection?: Rejection_Report;
   assignedOffice?: string;
   assignedExternalOfficeId?: number | null;
+  messages?: {
+    id: number;
+    message: string;
+    created_at: string;
+    report_id: number;
+    sender_id: number;
+  }[];
 }
 
 export interface Category {

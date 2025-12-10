@@ -418,7 +418,8 @@ export const getReportsByTechnician = async (
 			`
       *,
       photos:Report_Photo(*),
-      user:User(name, surname)
+      user:User(name, surname),
+      messages:Report_Message(*)
     `
 		)
 		.eq("category_id", category_id)
@@ -458,6 +459,9 @@ export const getReportsByUserId = async (
         ),
         photos:Report_Photo (
             report_photo
+        ),
+        messages:Report_Message (
+            *
         )
     	`
 		)

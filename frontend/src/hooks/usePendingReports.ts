@@ -42,5 +42,19 @@ export function usePendingReports() {
     );
   };
 
-  return { reports, loading, error, refetch: fetchPendingReports };
+  const addNewMessage = (reportId: number, message: any) => {
+    setReports((prevReports) =>
+      prevReports.map((report) => {
+        if (report.id === reportId) {
+          return {
+            ...report,
+            messages: [...(report.messages || []), message],
+          };
+        }
+        return report;
+      })
+    );
+  };
+
+  return { reports, loading, error, refetch: fetchPendingReports, addNewMessage };
 }

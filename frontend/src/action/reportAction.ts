@@ -1,5 +1,6 @@
 import type { NewReportResponse } from "../interfaces/dto/report/NewReportResponse";
 import type { ApiResponse } from "../interfaces/dto/Response";
+import { messageService } from "../api/MessageService";
 
 const API_ENDPOINT =
 	import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000/api";
@@ -67,3 +68,7 @@ function filesToBase64(files: File[]): Promise<string[]> {
 	);
 	return Promise.all(promises);
 }
+
+export const postMessage = async (reportId: number, message: string) => {
+	return await messageService.sendMessage(reportId, message);
+};

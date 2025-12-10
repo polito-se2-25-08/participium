@@ -9,9 +9,12 @@ import { useCategoryReports } from "../../hooks/useCategoryReports";
 import { reportService } from "../../api/reportService";
 import { externalCompanyService } from "../../api/externalcompanyService";
 import { CATEGORY_NAME_TO_ID } from "../../constants/index.ts";
+import { useUser } from "../providers/AuthContext";
+import { postMessage } from "../../action/reportAction";
 
 export default function CategoryReportsPage() {
-  const { reports, loading, error, refetch } = useCategoryReports();
+  const { reports, loading, error, refetch, addNewMessage } = useCategoryReports();
+  const { user } = useUser();
   const [processingReportId, setProcessingReportId] = useState<number | null>(null);
 
   // Modal handling state
@@ -63,6 +66,22 @@ export default function CategoryReportsPage() {
     } finally {
       setProcessingReportId(null);
     }
+  };
+
+  const handleSendMessage = async (reportId: number, message: string) => {
+    if (!user) return;
+
+    const newMessage = {
+      id: 0,
+      sender_id: user.id,
+      report_id: reportId,
+      message: message,
+      created_at: new Date().toISOString(),
+    };
+
+    addNewMessage(reportId, newMessage);
+
+    await postMessage(reportId, message);
   };
 
   // =============================
@@ -143,7 +162,9 @@ export default function CategoryReportsPage() {
                 approveLabel="Start Report"
                 rejectLabel="Resolve Report"
                 suspendLabel="Suspend Report"
-                allowComments={true}
+                allowInternalComments={true}
+                allowMessages={true}
+                onSendMessage={handleSendMessage}
               />
             );
           }
@@ -162,7 +183,9 @@ export default function CategoryReportsPage() {
                 report.status === "SUSPENDED" ? "Resume Report" : "Suspend Report"
               }
               rejectLabel="Resolve Report"
-              allowComments={true}
+              allowInternalComments={true}
+              allowMessages={true}
+              onSendMessage={handleSendMessage}
             />
           );
         })}

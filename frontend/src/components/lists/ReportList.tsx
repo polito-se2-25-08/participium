@@ -8,7 +8,9 @@ interface ReportListProps {
   onReject: (reportId: number) => void;
   approveLabel?: string;
   rejectLabel?: string;
-  allowComments?: boolean;
+  allowInternalComments?: boolean;
+  allowMessages?: boolean;
+  onSendMessage?: (reportId: number, message: string) => void;
 }
 
 export default function ReportList({
@@ -18,7 +20,9 @@ export default function ReportList({
   onReject,
   approveLabel,
   rejectLabel,
-  allowComments = true,
+  allowInternalComments = true,
+  allowMessages = false,
+  onSendMessage,
 }: ReportListProps) {
   if (reports.length === 0) {
     return (
@@ -43,7 +47,9 @@ export default function ReportList({
           isProcessing={processingReportId === report.id}
           approveLabel={approveLabel}
           rejectLabel={rejectLabel}
-          allowComments={allowComments}
+          allowInternalComments={allowInternalComments}
+          allowMessages={allowMessages}
+          onSendMessage={onSendMessage}
         />
       ))}
     </div>

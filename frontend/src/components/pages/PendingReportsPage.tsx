@@ -48,7 +48,8 @@ export default function PendingReportsPage() {
         processingReportId={processingReportId}
         onApprove={handleApprove}
         onReject={handleRejectClick}
-        allowComments={false}
+        allowInternalComments={false}
+        allowMessages={false}
       />
 
       <RejectionModal

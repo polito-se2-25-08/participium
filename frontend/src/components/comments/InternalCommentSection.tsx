@@ -9,7 +9,7 @@ interface CommentSectionProps {
   reportId: number;
 }
 
-export default function CommentSection({ reportId }: CommentSectionProps) {
+export default function InternalCommentSection({ reportId }: CommentSectionProps) {
   const { user } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);

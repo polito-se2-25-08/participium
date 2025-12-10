@@ -7,6 +7,7 @@ interface UseCategoryReportsReturn {
   loading: boolean;
   error: string | null;
   refetch: () => void;
+  addNewMessage: (reportId: number, message: any) => void;
 }
 
 export function useCategoryReports(): UseCategoryReportsReturn {
@@ -47,5 +48,19 @@ export function useCategoryReports(): UseCategoryReportsReturn {
     fetchReports();
   }, [fetchReports]);
 
-  return { reports, loading, error, refetch: fetchReports };
+  const addNewMessage = (reportId: number, message: any) => {
+    setReports((prevReports) =>
+      prevReports.map((report) => {
+        if (report.id === reportId) {
+          return {
+            ...report,
+            messages: [...(report.messages || []), message],
+          };
+        }
+        return report;
+      })
+    );
+  };
+
+  return { reports, loading, error, refetch: fetchReports, addNewMessage };
 }
