@@ -18,7 +18,6 @@ import {
 	faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "../../input/variants/TextInput";
-import { postMessage } from "../../../action/reportAction";
 
 type ReportState = {
 	isExpanded: boolean;
@@ -57,7 +56,7 @@ export default function UserReports() {
 			createdAt: new Date().toISOString(),
 		};
 
-		await postMessage(newMessage);
+		await postMessage(reportId, messageText);
 
 		setUserReports((prev) => {
 			const updatedReports = prev.map((report) => {
@@ -222,10 +221,28 @@ export default function UserReports() {
 													<span className="border-b-2 my-2"></span>
 
                           <div className="flex flex-col">
-                            <div className="max-h-40 overflow-y-scroll p-2 rounded-lg mb-2">
-                              <p className="opacity-50 text-center">
-                                No updates yet
-                              </p>
+                            <div className="max-h-40 overflow-y-scroll p-2 rounded-lg mb-2 space-y-2">
+                              {report.messages && report.messages.length > 0 ? (
+                                report.messages.map((msg) => (
+                                  <div
+                                    key={msg.id}
+                                    className={`p-2 rounded-lg text-sm ${
+                                      msg.senderId === user.id
+                                        ? "bg-blue-100 ml-auto text-right"
+                                        : "bg-gray-100 mr-auto text-left"
+                                    } max-w-[80%]`}
+                                  >
+                                    <p>{msg.message}</p>
+                                    <span className="text-xs opacity-50">
+                                      {new Date(msg.createdAt).toLocaleString()}
+                                    </span>
+                                  </div>
+                                ))
+                              ) : (
+                                <p className="opacity-50 text-center">
+                                  No updates yet
+                                </p>
+                              )}
                             </div>
 
                             <div className="flex flex-row gap-4">
@@ -240,7 +257,10 @@ export default function UserReports() {
                                   handleMessageChange(report.id, e.target.value)
                                 }
                               />
-                              <button className="border rounded-full p-2 flex items-center justify-center hover:cursor-pointer">
+                              <button
+                                onClick={() => handleSendMessage(report.id)}
+                                className="border rounded-full p-2 flex items-center justify-center hover:cursor-pointer"
+                              >
                                 <FontAwesomeIcon icon={faPaperPlane} />
                               </button>
                             </div>

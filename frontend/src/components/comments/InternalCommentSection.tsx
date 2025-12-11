@@ -1,11 +1,16 @@
+import { useState, useEffect } from "react";
 import { useUser } from "../providers/AuthContext";
+import { commentService } from "../../api/commentService";
+import CommentList from "./CommentList";
+import CommentForm from "./CommentForm";
+import type { Comment } from "../../types";
 
 interface CommentSectionProps {
   reportId: number;
 }
 
-export default function CommentSection({ reportId }: CommentSectionProps) {
-  const { user } = useAuth();
+export default function InternalCommentSection({ reportId }: CommentSectionProps) {
+  const { user } = useUser();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

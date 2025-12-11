@@ -1,4 +1,4 @@
-import { usePendingReports } from "../../hooks/usePendingReports";
+import type { Report } from "../../types";
 import ReportReviewCard from "../cards/ReportReviewCard";
 
 interface ReportListProps {
@@ -8,7 +8,8 @@ interface ReportListProps {
   onReject: (reportId: number) => void;
   approveLabel?: string;
   rejectLabel?: string;
-  allowComments?: boolean;
+  allowInternalComments?: boolean;
+  allowMessages?: boolean;
 }
 
 export default function ReportList({
@@ -18,9 +19,9 @@ export default function ReportList({
   onReject,
   approveLabel,
   rejectLabel,
-  allowComments = true,
+  allowInternalComments = true,
+  allowMessages = false,
 }: ReportListProps) {
-	const { reports } = usePendingReports();
 	if (reports.length === 0) {
 		return (
 			<p className="text-center text-gray-500 py-8">
@@ -45,7 +46,8 @@ export default function ReportList({
           isProcessing={processingReportId === report.id}
           approveLabel={approveLabel}
           rejectLabel={rejectLabel}
-          allowComments={allowComments}
+          allowInternalComments={allowInternalComments}
+          allowMessages={allowMessages}
         />
       ))}
     </div>

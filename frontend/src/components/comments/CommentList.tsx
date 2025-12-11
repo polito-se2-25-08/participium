@@ -1,6 +1,8 @@
 import type { Comment } from "../../types";
 
-interface CommentListProps {}
+interface CommentListProps {
+  comments: Comment[];
+}
 
 export default function CommentList({ comments }: CommentListProps) {
 	if (comments.length === 0) {

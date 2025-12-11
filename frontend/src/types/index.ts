@@ -57,40 +57,13 @@ export interface Report {
 	rejection?: Rejection_Report;
 	assignedOffice?: string;
 	assignedExternalOfficeId?: number | null;
-	messages: {
+	messages?: {
 		id: number;
 		message: string;
 		created_at: string;
 		report_id: number;
 		sender_id: number;
 	}[];
-  id: number;
-  title: string;
-  description: string;
-  category: ReportCategory;
-  latitude: number;
-  longitude: number;
-  
-  photos: Report_Photo[];
-  anonymous: boolean;
-  user_id: number;
-  user?: {
-    name: string;
-    surname: string;
-  };
-  status: ReportStatus;
-  createdAt: Date;
-  updatedAt: Date;
-  rejection?: Rejection_Report;
-  assignedOffice?: string;
-  assignedExternalOfficeId?: number | null;
-  messages?: {
-    id: number;
-    message: string;
-    created_at: string;
-    report_id: number;
-    sender_id: number;
-  }[];
 }
 
 export interface Category {

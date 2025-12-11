@@ -1,5 +1,5 @@
-import React, { useActionState, useEffect } from "react";
-import { data, useNavigate } from "react-router-dom";
+import { useActionState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ContentContainer from "../containers/ContentContainer";
 import TextInput from "../input/variants/TextInput";
 import { verifyAction, startVerificationAction } from "../../action/UserAction";

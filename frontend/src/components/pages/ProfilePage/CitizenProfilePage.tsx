@@ -10,8 +10,6 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "../../input/variants/TextInput";
 import CheckInput from "../../input/variants/CheckInput";
 import PrimaryButton from "../../buttons/variants/primary/PrimaryButton";
@@ -26,7 +24,6 @@ export default function CitizenProfilePage() {
 	const { logout } = useAuth();
 	const { user, updateUser } = useUser();
 
-	const [isHovered, setIsHovered] = useState(false);
 	const [telegramUsername, setTelegramUsername] = useState(
 		user.telegramUsername ?? ""
 	);
@@ -132,10 +129,7 @@ export default function CitizenProfilePage() {
 				<div className="flex flex-col h-full justify-between">
 					<div>
 						<div className="flex justify-center">
-							<div
-								onMouseEnter={() => setIsHovered(true)}
-								onMouseLeave={() => setIsHovered(false)}
-							>
+							<div>
 								<img
 									className="w-50 h-50 rounded-full hover:scale-105 hover:shadow-lg brightness-100 hover:brightness-80 transition-all transition-filter duration-300 cursor-pointer"
 									src={

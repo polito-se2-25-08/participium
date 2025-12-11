@@ -1,5 +1,4 @@
 import type { NewReportResponse } from "../interfaces/dto/report/NewReportResponse";
-import type { Message } from "../interfaces/dto/report/UserReport";
 import type { ApiResponse } from "../interfaces/dto/Response";
 import { messageService } from "../api/MessageService";
 
@@ -69,3 +68,7 @@ function filesToBase64(files: File[]): Promise<string[]> {
 	);
 	return Promise.all(promises);
 }
+
+export const postMessage = async (reportId: number, message: string) => {
+	return await messageService.sendMessage(reportId, message);
+};

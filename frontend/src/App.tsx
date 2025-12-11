@@ -22,9 +22,6 @@ import { useNotifications } from "./hooks/useNotifications";
 import { NotificationToast } from "./components/NotificationToast";
 import { VerificationPage } from "./components/pages/VerificationPage";
 
-// ✅ Import provider
-import { PendingReportsProvider } from "./hooks/usePendingReports";
-
 function AppContent() {
   const { user } = useAuth();
   const { notifications, clearNotification } = useNotifications(
@@ -54,11 +51,7 @@ function AppContent() {
             <Route element={<Acl allowedRoles={["OFFICER"]} />}>
               <Route
                 path="/pending-reports"
-                element={
-                  <PendingReportsProvider>
-                    <PendingReportsPage />
-                  </PendingReportsProvider>
-                }
+                element={<PendingReportsPage />}
               />
             </Route>
 
@@ -72,11 +65,7 @@ function AppContent() {
             >
               <Route
                 path="/category-reports"
-                element={
-                  <PendingReportsProvider>
-                    <CategoryReportsPage />
-                  </PendingReportsProvider>
-                }
+                element={<CategoryReportsPage />}
               />
             </Route>
 
