@@ -90,4 +90,82 @@ describe('TechnicianController', () => {
       expect(TechnicianService.getReportsForTechnician).not.toHaveBeenCalled();
     });
   });
+
+  describe('assignExternalOffice', () => {
+    it('should assign external office successfully', async () => {
+      mockRequest.params = { id: '1' };
+      mockRequest.body = { assignedExternalOfficeId: 5 };
+      (mockRequest as any).user = { id: 5, role: 'TECHNICIAN' };
+
+      (TechnicianService.assignExternalOffice as jest.Mock).mockResolvedValue(undefined);
+
+      await TechnicianController.assignExternalOffice(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(TechnicianService.assignExternalOffice).toHaveBeenCalledWith(1, 5);
+      expect(responseStatus).toHaveBeenCalledWith(200);
+      expect(responseJson).toHaveBeenCalledWith({
+        success: true,
+        message: 'Report assigned to external office',
+      });
+    });
+
+    it('should remove external assignment successfully', async () => {
+      mockRequest.params = { id: '1' };
+      mockRequest.body = { assignedExternalOfficeId: null };
+      (mockRequest as any).user = { id: 5, role: 'TECHNICIAN' };
+
+      (TechnicianService.assignExternalOffice as jest.Mock).mockResolvedValue(undefined);
+
+      await TechnicianController.assignExternalOffice(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(TechnicianService.assignExternalOffice).toHaveBeenCalledWith(1, null);
+      expect(responseStatus).toHaveBeenCalledWith(200);
+      expect(responseJson).toHaveBeenCalledWith({
+        success: true,
+        message: 'External assignment removed',
+      });
+    });
+
+    it('should call next with error if report ID is invalid', async () => {
+      mockRequest.params = { id: 'invalid' };
+      mockRequest.body = { assignedExternalOfficeId: 5 };
+
+      await TechnicianController.assignExternalOffice(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(mockNext).toHaveBeenCalledWith(expect.objectContaining({
+        message: 'Invalid report ID',
+        statusCode: 400,
+      }));
+    });
+
+    it('should call next with error if user is not a technician', async () => {
+      mockRequest.params = { id: '1' };
+      mockRequest.body = { assignedExternalOfficeId: 5 };
+      (mockRequest as any).user = { id: 5, role: 'OFFICER' };
+
+      await TechnicianController.assignExternalOffice(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(mockNext).toHaveBeenCalledWith(expect.objectContaining({
+        message: 'Only technicians can assign reports externally',
+        statusCode: 403,
+      }));
+    });
+
+    it('should call next with error if service fails', async () => {
+      mockRequest.params = { id: '1' };
+      mockRequest.body = { assignedExternalOfficeId: 5 };
+      (mockRequest as any).user = { id: 5, role: 'TECHNICIAN' };
+
+      (TechnicianService.assignExternalOffice as jest.Mock).mockRejectedValue(new Error('Service error'));
+
+      await TechnicianController.assignExternalOffice(mockRequest as Request, mockResponse as Response, mockNext);
+
+      // Wait for async operations to complete
+      await new Promise(resolve => setImmediate(resolve));
+
+      expect(mockNext).toHaveBeenCalledWith(expect.objectContaining({
+        message: 'Service error',
+      }));
+    });
+  });
 });

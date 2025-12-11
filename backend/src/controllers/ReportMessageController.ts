@@ -52,7 +52,7 @@ export const sendMessage = async (req: Request, res: Response) => {
 		// Determine recipient (if sender is report owner, recipient is technician, and vice versa)
 		// For now, we'll assume the recipient is the report owner if sender is different
 		const recipientId =
-			report.user_id === senderId ? report.user_id : senderId;
+			report.user_id === senderId ? senderId : report.user_id;
 
 		const savedMessage = await ReportMessageService.createMessage(
 			{
