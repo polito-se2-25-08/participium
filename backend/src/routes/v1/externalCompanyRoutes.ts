@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { protect, restrictTo } from "../../middleware/authMiddleware";
 import {
 getAllExternalCompanies,
 getExternalCompanyById,

@@ -3,6 +3,7 @@ import AppError from "../utils/AppError";
 import { TablesInsert } from "../utils/DatabaseSchema";
 import { userRepository } from "../repositories/userRepository";
 import { upsertTechnicianCategory } from "../repositories/TechnicianRepository";
+import crypto from "node:crypto";
 
 export const adminService = {
   async createUser(data: {
@@ -17,30 +18,31 @@ export const adminService = {
 
     //generate pass, instead of having the admin set it for each account
     const generateRandomPassword = () => {
-      const length = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
+      const length = crypto.randomInt(8, 13);
       const charset =
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       const specialChars = "!@#$%^&*()_+[]{}|;:,.<>?";
       let password = "";
 
       // Ensure at least one lowercase, one uppercase, one number, and one special character
-      password += "abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 26)];
-      password += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * 26)];
-      password += "0123456789"[Math.floor(Math.random() * 10)];
-      password += specialChars[Math.floor(Math.random() * specialChars.length)];
+      password += "abcdefghijklmnopqrstuvwxyz"[crypto.randomInt(0, 26)];
+      password += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[crypto.randomInt(0, 26)];
+      password += "0123456789"[crypto.randomInt(0, 10)];
+      password += specialChars[crypto.randomInt(0, specialChars.length)];
 
       // Fill the rest of the password length with random characters
       for (let i = password.length; i < length; i++) {
         const chars = charset + specialChars;
-        password += chars[Math.floor(Math.random() * chars.length)];
+        password += chars[crypto.randomInt(0, chars.length)];
       }
 
-      // Shuffle the password to ensure randomness
-      password = password
-        .split("")
-        .sort(() => Math.random() - 0.5)
-        .join("");
-      return password;
+      // Shuffle the password to ensure randomness (Fisher-Yates shuffle)
+      const passwordArray = password.split("");
+      for (let i = passwordArray.length - 1; i > 0; i--) {
+        const j = crypto.randomInt(0, i + 1);
+        [passwordArray[i], passwordArray[j]] = [passwordArray[j], passwordArray[i]];
+      }
+      return passwordArray.join("");
     };
 
     const password = generateRandomPassword();
@@ -85,19 +87,12 @@ export const adminService = {
     }
     if (
       typeof categoryId !== "number" ||
-      isNaN(categoryId) ||
+      Number.isNaN(categoryId) ||
       categoryId <= 0 ||
       categoryId > 9
     ) {
       throw new AppError("Invalid Category ID", 400);
     }
-
-    /*     
-    const { data: category, error: catErr } = await supabase
-      .from("Category")
-      .select("id")
-      .eq("id", categoryId)
-      .maybeSingle();
     if (catErr) throw new AppError(`Failed to load category: ${catErr.message}`, 500);
     if (!category) throw new AppError("Category not found", 404);
  */

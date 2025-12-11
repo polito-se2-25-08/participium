@@ -465,7 +465,8 @@ export const getReportsByUserId = async (
         ),
         photos:Report_Photo (
             report_photo
-        )
+        ),
+		messages:Report_Message(*)
     	`
 		)
 		.eq("user_id", userId)

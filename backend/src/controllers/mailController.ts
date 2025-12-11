@@ -2,7 +2,9 @@ export async function sendEmail(to: string | string[], subject: string, text: st
   const nodemailer = require("nodemailer");
   const recipients = Array.isArray(to) ? to : [to];
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASSWORD,

@@ -3,11 +3,10 @@ import {
 	hashPassword,
 	verifyPassword,
 } from "../utils/encryption";
-import { UpdateUserRow, userRepository } from "../repositories/userRepository";
+import { userRepository } from "../repositories/userRepository";
 import AppError from "../utils/AppError";
 import { TablesInsert } from "../utils/DatabaseSchema";
 import { signToken } from "../utils/jwt";
-import { User } from "@supabase/supabase-js";
 import { toSnakeCase } from "../utils/ToSnakeCase";
 
 export const userService = {

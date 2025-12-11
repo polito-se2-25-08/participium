@@ -1,4 +1,5 @@
 import { MessageDTO } from "../../dto/MessageDTO";
+import { MessageDB } from "./MessageDB";
 
 export type UserReport = {
 	id: number;
@@ -20,6 +21,7 @@ export type UserReport = {
 		| null;
 	category: { category: string };
 	photos: { report_photo: string }[];
+	messages: MessageDB[];
 };
 
 export type UserReportDTO = {
@@ -41,4 +43,5 @@ export type UserReportDTO = {
 		| null;
 	category: string;
 	photos: string[];
+	messages: MessageDTO[];
 };

@@ -1,6 +1,5 @@
 import { supabase } from "../utils/Supabase";
-import type { Database, Tables, TablesInsert } from "../utils/DatabaseSchema";
-import { verify } from "crypto";
+import type { Tables, TablesInsert } from "../utils/DatabaseSchema";
 
 export type UserRow = Tables<"User">;
 export type UpdateUserRow = Partial<UserRow>;

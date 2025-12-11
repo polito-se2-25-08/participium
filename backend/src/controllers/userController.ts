@@ -63,9 +63,9 @@ export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
  * Admin-only endpoint
  */
 export const getUserById = catchAsync(async (req: Request, res: Response) => {
-	const userId = parseInt(req.params.id, 10);
+	const userId = Number.parseInt(req.params.id, 10);
 
-	if (isNaN(userId)) {
+	if (Number.isNaN(userId)) {
 		res.status(400).json({
 			success: false,
 			message: "Invalid user ID",
@@ -82,9 +82,9 @@ export const getUserById = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const updateUser = catchAsync(async (req: Request, res: Response) => {
-	const userId = parseInt(req.params.id);
+	const userId = Number.parseInt(req.params.id);
 
-	if (isNaN(userId)) {
+	if (Number.isNaN(userId)) {
 		res.status(400).json({
 			success: false,
 			data: {
@@ -111,10 +111,10 @@ export const updateUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const verifyUser = catchAsync(async (req: Request, res: Response) => {
-	const userId = parseInt(req.params.id);
+	const userId = Number.parseInt(req.params.id);
 	const code = req.body.code as string;
 
-	if (isNaN(userId) || !code) {
+	if (Number.isNaN(userId) || !code) {
 		res.status(400).json({
 			success: false,
 			data: {
@@ -164,9 +164,9 @@ export const verifyUser = catchAsync(async (req: Request, res: Response) => {
 const verificationLocks = new Map<number, Promise<void>>();
 
 export const createVerificationCode = catchAsync(async (req: Request, res: Response) => {
-	const userId = parseInt(req.params.id);
+	const userId = Number.parseInt(req.params.id);
 
-	if (isNaN(userId)) {
+	if (Number.isNaN(userId)) {
 		res.status(400).json({
 			success: false,
 			message: "Invalid user ID",

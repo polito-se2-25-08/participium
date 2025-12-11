@@ -12,7 +12,6 @@ import {
 	verifyUser,
 } from "../../controllers/userController";
 import { getReportsByUserId } from "../../controllers/ReportController";
-import { create } from "axios";
 
 const router = Router();
 

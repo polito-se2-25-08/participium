@@ -1,9 +1,7 @@
 import { UserReportDTO } from "../controllers/interface/UserReports";
-import { mapMessageDBToMessage } from "../controllers/mapper/MessageDBToMessage";
 import { mapReportsToReportsDTO } from "../controllers/mapper/ReportMapper";
 import { ActiveReportDTO } from "../dto/ActiveReport";
 import { Report, ReportInsert } from "../models/Report";
-import { MessageRepository } from "../repositories/MessageRepository";
 import * as ReportRepository from "../repositories/ReportRepository";
 import * as NotificationService from "./NotificationService";
 

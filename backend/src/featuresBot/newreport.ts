@@ -1,4 +1,4 @@
-import { Telegraf, Markup } from "telegraf";
+import { Telegraf } from "telegraf";
 import axios from "axios";
 
 const REPORT_CATEGORIES = [

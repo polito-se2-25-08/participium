@@ -1,7 +1,8 @@
 import { supabase } from "../utils/Supabase";
-import type { Database, Tables, TablesInsert } from "../utils/DatabaseSchema";
+import type { Tables, TablesInsert } from "../utils/DatabaseSchema";
 import AppError from "../utils/AppError";
 import { userService } from "../services/userService";
+import crypto from "node:crypto";
 export type VerificationCodeRow = Tables<"VerificationCode">;
 export type CreateVerificationCodeRow = TablesInsert<"VerificationCode">;
 import { sendEmail } from "../controllers/mailController";
@@ -46,7 +47,7 @@ export const InitializeVerificationCode = async (
         .delete()
         .eq("userId", userId);
 
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const code = crypto.randomInt(100000, 1000000).toString();
 
     const date = new Date();
     date.setMinutes(date.getMinutes() + 30);

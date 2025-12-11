@@ -14,7 +14,7 @@ export default function checkReports(bot: Telegraf) {
           }
 
           const userId = (ctx as any).session.id;
-          if (!userId || isNaN(userId)) {
+          if (!userId || Number.isNaN(userId)) {
             return ctx.reply("❌ Invalid user session. Please login again with /login.");
           }
 
@@ -46,7 +46,7 @@ export default function checkReports(bot: Telegraf) {
 
           // Get the report id as argument (eg. /reportstatus 123)
           const args = ctx.message.text.split(' ').slice(1); // Remove command name
-          const reportId = parseInt(args[0]);
+          const reportId = Number.parseInt(args[0]);
 
           if (!reportId || isNaN(reportId)) {
             return ctx.reply("❌ Please provide a valid report ID. Usage: /reportstatus <report_id>");

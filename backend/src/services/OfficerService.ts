@@ -1,4 +1,3 @@
-import e from "express";
 import { Report } from "../models/Report";
 import * as ReportRepository from "../repositories/ReportRepository";
 

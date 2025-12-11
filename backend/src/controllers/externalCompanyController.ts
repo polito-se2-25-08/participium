@@ -11,10 +11,10 @@ res.status(200).json({ success: true, results: companies.length, data: companies
 
 
 export const getExternalCompanyById = catchAsync(async (req: Request, res: Response) => {
-const id = parseInt(req.params.id);
+const id = Number.parseInt(req.params.id);
 
 
-if (isNaN(id)) {
+if (Number.isNaN(id)) {
 throw new AppError("Invalid company ID", 400, "INVALID_ID");
 }
 
@@ -25,10 +25,10 @@ res.status(200).json({ success: true, data: company });
 
 
 export const getExternalCompaniesByCategory = catchAsync(async (req: Request, res: Response) => {
-const categoryId = parseInt(req.params.categoryId);
+const categoryId = Number.parseInt(req.params.categoryId);
 
 
-if (isNaN(categoryId)) {
+if (Number.isNaN(categoryId)) {
 throw new AppError("Invalid category ID", 400, "INVALID_ID");
 }
 

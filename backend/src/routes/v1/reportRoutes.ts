@@ -6,7 +6,6 @@ import * as NotificationController from "../../controllers/NotificationControlle
 import { protect, restrictTo } from "../../middleware/authMiddleware";
 import { validate } from "../../middleware/validateMiddleware";
 import { createReportSchema } from "../../validators/reportValidators";
-import { MessageController } from "../../controllers/MessageController";
 
 const router = express.Router();
 
