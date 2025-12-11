@@ -93,9 +93,7 @@ export const adminService = {
     ) {
       throw new AppError("Invalid Category ID", 400);
     }
-    if (catErr) throw new AppError(`Failed to load category: ${catErr.message}`, 500);
-    if (!category) throw new AppError("Category not found", 404);
- */
+
     // Upsert mapping
     await upsertTechnicianCategory(userId, categoryId);
 

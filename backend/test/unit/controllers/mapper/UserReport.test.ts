@@ -30,6 +30,7 @@ describe('mapUserReportToUserReportDTO', () => {
       status: 'OPEN',
       category: 'Category',
       photos: ['photo1'],
+      messages: [],
     });
   });
 });
