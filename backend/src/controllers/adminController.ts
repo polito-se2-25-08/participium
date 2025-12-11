@@ -25,7 +25,7 @@ export const setupUser = catchAsync(async (req: Request, res: Response) => {
 
 export const setupTechnician = catchAsync(
   async (req: Request, res: Response) => {
-    const { email, username, role, name, surname, category_id } = req.body;
+    const { email, username, name, surname, category_id } = req.body;
 
     // 1. Create the user with TECHNICIAN role
     const user = await adminService.createUser({

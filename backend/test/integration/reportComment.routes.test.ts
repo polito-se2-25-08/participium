@@ -80,12 +80,12 @@ describe('Report Comment Routes Integration Tests', () => {
         res.status(201).json({ success: true, data: {} });
       });
 
-      await request(app)
+      const response = await request(app)
         .post('/api/v1/reports/1/comments')
         .set('Authorization', 'Bearer officer-token')
-        .send({ content: 'Test comment' })
-        .expect(201);
+        .send({ content: 'Test comment' });
 
+      expect(response.status).toBe(201);
       expect(ReportCommentController.addComment).toHaveBeenCalled();
     });
 

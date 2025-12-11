@@ -46,7 +46,7 @@ export const restrictTo = (...allowedRoles: DbRole[]) => {
 	return (req: Request, _res: Response, next: NextFunction) => {
 		const user = (req as any).user;
 
-		if (!user || !user.role) {
+		if (!user?.role) {
 			return next(new AppError("User information not found", 401));
 		}
 

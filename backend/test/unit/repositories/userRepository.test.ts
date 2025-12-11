@@ -193,4 +193,26 @@ describe('userRepository', () => {
       await expect(userRepository.updateUser(1, { name: 'Test' })).rejects.toThrow('Update failed');
     });
   });
+
+  describe('verifyUser', () => {
+    it('should verify user', async () => {
+      const verifiedUser = { id: 1, username: 'user1', isVerified: true };
+
+      mockSingle.mockResolvedValue({ data: verifiedUser, error: null });
+
+      const result = await userRepository.verifyUser(1);
+
+      expect(mockFrom).toHaveBeenCalledWith('User');
+      expect(mockUpdate).toHaveBeenCalledWith({ isVerified: true });
+      expect(mockEq).toHaveBeenCalledWith('id', 1);
+      expect(result).toEqual(verifiedUser);
+    });
+
+    it('should throw error on database error', async () => {
+      const dbError = new Error('Verification failed');
+      mockSingle.mockResolvedValue({ data: null, error: dbError });
+
+      await expect(userRepository.verifyUser(1)).rejects.toThrow('Verification failed');
+    });
+  });
 });

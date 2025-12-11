@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import { createServer } from "http";
 import { initSocket } from "./socket";
 import officerRoutes from "./routes/v1/officer";
@@ -14,6 +15,8 @@ import bot from "./bot";
 import externalCompanyRoutes from "./routes/v1/externalCompanyRoutes";
 
 const app = express();
+app.disable("x-powered-by");
+app.use(helmet());
 const host = "localhost";
 const port = 3000;
 

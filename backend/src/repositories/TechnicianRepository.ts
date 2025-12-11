@@ -55,7 +55,7 @@ export const getExternalMaintainerCategory = async (
     );
   }
 
-  if (!data || !data.External_Company) {
+  if (!data?.External_Company) {
     throw new AppError(
       `External maintainer with user_id ${user_id} not found`,
       404,

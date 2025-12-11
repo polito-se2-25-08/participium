@@ -32,8 +32,8 @@ const MAX_PHOTOS = 3;
 export default function registerNewReportFeature(bot: Telegraf) {
   // START NEW REPORT
     bot.command("newreport", async (ctx) => {
-    ctx.session.reportState = "ASK_TITLE";
-    ctx.session.report = {
+    (ctx as any).session.reportState = "ASK_TITLE";
+    (ctx as any).session.report = {
         photos: [],
     };
 
@@ -44,12 +44,12 @@ export default function registerNewReportFeature(bot: Telegraf) {
   // CATEGORY SELECT (callback query)
   bot.on("callback_query", async (ctx) => {
     try {
-      const data = ctx.callbackQuery?.data;
+      const data = (ctx as any).callbackQuery?.data;
       if (!data || !data.startsWith("cat_")) return;
 
       const category = data.replace("cat_", "");
-      ctx.session.report.category = category;
-      ctx.session.reportState = "ASK_ANONYMOUS";
+      (ctx as any).session.report.category = category;
+      (ctx as any).session.reportState = "ASK_ANONYMOUS";
 
       await ctx.answerCbQuery();
       await ctx.editMessageText(`📂 Category selected: ${category}`);
@@ -67,30 +67,30 @@ export default function registerNewReportFeature(bot: Telegraf) {
 
       if (text.startsWith("/")) return next();
 
-      const state = ctx.session.reportState;
+      const state = (ctx as any).session.reportState;
       if (!state) return next();
 
       switch (state) {
         case "ASK_TITLE":
-          ctx.session.report.title = text;
-          ctx.session.reportState = "ASK_DESCRIPTION";
+          (ctx as any).session.report.title = text;
+          (ctx as any).session.reportState = "ASK_DESCRIPTION";
           return ctx.reply("✏️ Enter the report description (minimum 10 characters):");
 
         case "ASK_DESCRIPTION":
-          ctx.session.report.description = text;
-          ctx.session.reportState = "ASK_CATEGORY";
+          (ctx as any).session.report.description = text;
+          (ctx as any).session.reportState = "ASK_CATEGORY";
           return ctx.reply("📂 Choose a category:", {
             reply_markup: buildCategoryKeyboard(),
           });
 
         case "ASK_ANONYMOUS":
-          ctx.session.report.anonymous = text.toLowerCase().startsWith("y");
-          ctx.session.reportState = "ASK_PHOTOS";
+          (ctx as any).session.report.anonymous = text.toLowerCase().startsWith("y");
+          (ctx as any).session.reportState = "ASK_PHOTOS";
           return ctx.reply("📸 Send photos (minimum 1):");
 
         case "ASK_PHOTOS":
           if (text.toLowerCase() === "done") {
-            ctx.session.reportState = "ASK_LOCATION";
+            (ctx as any).session.reportState = "ASK_LOCATION";
 
             await ctx.reply("📍 Send your location:", {
               reply_markup: {
@@ -118,13 +118,13 @@ export default function registerNewReportFeature(bot: Telegraf) {
   // PHOTO HANDLER
   bot.on("photo", async (ctx) => {
     try {
-      if (ctx.session.reportState !== "ASK_PHOTOS") return;
+      if ((ctx as any).session.reportState !== "ASK_PHOTOS") return;
 
-      const photos = ctx.session.report.photos;
+      const photos = (ctx as any).session.report.photos;
       if (photos.length >= MAX_PHOTOS)
         return ctx.reply("⚠️ Max 3 photos reached. Type 'done'.");
 
-      const fileId = ctx.message.photo.pop().file_id;
+      const fileId = (ctx as any).message.photo.pop().file_id;
       photos.push(fileId);
 
       if (photos.length >= MAX_PHOTOS) {
@@ -142,13 +142,13 @@ export default function registerNewReportFeature(bot: Telegraf) {
 
   // LOCATION HANDLER
   bot.on("location", async (ctx) => {
-    if (ctx.session.reportState !== "ASK_LOCATION") return;
+    if ((ctx as any).session.reportState !== "ASK_LOCATION") return;
 
     try {
       const { latitude, longitude } = ctx.message.location;
 
-      ctx.session.report.latitude = latitude;
-      ctx.session.report.longitude = longitude;
+      (ctx as any).session.report.latitude = latitude;
+      (ctx as any).session.report.longitude = longitude;
 
       // Reverse geocode
       let addr = null;
@@ -166,12 +166,12 @@ export default function registerNewReportFeature(bot: Telegraf) {
         addr = "Unknown Address";
       }
 
-      ctx.session.report.address = addr;
+      (ctx as any).session.report.address = addr;
 
       // Submit report
-      await axios.post("http://localhost:3000/api/v1/reports", ctx.session.report, {
+      await axios.post("http://localhost:3000/api/v1/reports", (ctx as any).session.report, {
         headers: {
-          Authorization: `Bearer ${ctx.session.token}`,
+          Authorization: `Bearer ${(ctx as any).session.token}`,
         },
       });
 
@@ -183,8 +183,8 @@ export default function registerNewReportFeature(bot: Telegraf) {
     }
 
     // Reset session
-    ctx.session.reportState = null;
-    ctx.session.report = null;
+    (ctx as any).session.reportState = null;
+    (ctx as any).session.report = null;
   });
 
   // GLOBAL ERROR CATCHER
