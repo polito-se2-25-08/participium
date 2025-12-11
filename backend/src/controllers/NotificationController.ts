@@ -37,7 +37,7 @@ export const markNotificationAsRead = async (req: Request, res: Response) => {
     const { id } = req.params;
     const numericId = Number(id);
 
-    if (isNaN(numericId)) {
+    if (Number.isNaN(numericId)) {
       const response: ApiResponse<string> = {
         success: false,
         data: "Invalid notification ID",

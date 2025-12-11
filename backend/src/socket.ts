@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { Server as HttpServer } from "http";
+import { Server as HttpServer } from "node:http";
 import { MessageDTO } from "./dto/MessageDTO";
 import { userRepository } from "./repositories/userRepository";
 import { MessageService } from "./services/MessageService";
@@ -69,6 +69,7 @@ export const initSocket = (httpServer: HttpServer) => {
           }
         }
       } catch (err) {
+        console.error("Socket error:", err);
         socket.emit("error", {
           type: "SEND_MESSAGE_ERROR",
           message: "Failed to send message",

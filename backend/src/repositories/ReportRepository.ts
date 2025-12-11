@@ -2,12 +2,10 @@ import { Report } from "../models/Report";
 import { RejectionReportInsert } from "../models/RejectionReport";
 import { supabase } from "../utils/Supabase";
 import AppError from "../utils/AppError";
-import { getAllCategories } from "../controllers/CategoryController";
 import { ActiveReportDTO } from "../dto/ActiveReport";
 import { mapActiveReportsToDTO } from "../controllers/mapper/ActiveReportToDTO";
 import { ActiveReport } from "../controllers/interface/ActiveReport";
 import { UserReport } from "../controllers/interface/UserReports";
-import { mapReportsToReportsDTO } from "../controllers/mapper/ReportMapper";
 
 export const createReport = async (
 	reportData: Partial<Report> & { photos: string[] }

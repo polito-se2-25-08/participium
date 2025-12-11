@@ -9,7 +9,7 @@ export const addComment = async (req: Request, res: Response) => {
     const { content } = req.body;
     const numericId = Number(id);
 
-    if (isNaN(numericId)) {
+    if (Number.isNaN(numericId)) {
       const response: ApiResponse<string> = {
         success: false,
         data: "Invalid report ID",
@@ -79,7 +79,7 @@ export const getComments = async (req: Request, res: Response) => {
     const { id } = req.params; // report_id
     const numericId = Number(id);
 
-    if (isNaN(numericId)) {
+    if (Number.isNaN(numericId)) {
       const response: ApiResponse<string> = {
         success: false,
         data: "Invalid report ID",
@@ -96,7 +96,7 @@ export const getComments = async (req: Request, res: Response) => {
       user: {
         name: comment.sender?.name || "Unknown",
         surname: comment.sender?.surname || "User",
-        role: comment.sender?.role || "OFFICER",
+        role: comment.sender?.role || "TECHNICIAN",
         profile_picture: comment.sender?.profile_picture || undefined,
       },
       content: comment.message,

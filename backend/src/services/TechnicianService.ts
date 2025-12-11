@@ -1,5 +1,5 @@
 import { Report } from "../models/Report";
-import { getReportsByCategoryAndStatus, getReportsByTechnician, getReportById} from "../repositories/ReportRepository";
+import { getReportsByTechnician, getReportById} from "../repositories/ReportRepository";
 import { getTechnicianCategory, getExternalMaintainerCategory, updateReportExternalAssignment } from "../repositories/TechnicianRepository";
 import AppError from "../utils/AppError";
 

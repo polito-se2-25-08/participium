@@ -107,4 +107,73 @@ describe('TechnicianService', () => {
       );
     });
   });
+
+  describe('canTechnicianUpdateReport', () => {
+    it('should return true if technician category matches report category', async () => {
+      (TechnicianRepository.getTechnicianCategory as jest.Mock).mockResolvedValue(1);
+      (ReportRepository.getReportById as jest.Mock).mockResolvedValue({ id: 1, category_id: 1 });
+
+      const result = await TechnicianService.canTechnicianUpdateReport(5, 1);
+
+      expect(result).toBe(true);
+    });
+
+    it('should return false if technician category does not match report category', async () => {
+      (TechnicianRepository.getTechnicianCategory as jest.Mock).mockResolvedValue(1);
+      (ReportRepository.getReportById as jest.Mock).mockResolvedValue({ id: 1, category_id: 2 });
+
+      const result = await TechnicianService.canTechnicianUpdateReport(5, 1);
+
+      expect(result).toBe(false);
+    });
+
+    it('should return false if error occurs', async () => {
+      (TechnicianRepository.getTechnicianCategory as jest.Mock).mockRejectedValue(new Error('DB Error'));
+
+      const result = await TechnicianService.canTechnicianUpdateReport(5, 1);
+
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('ensureReportNotExternallyAssigned', () => {
+    it('should throw error if report not found', async () => {
+      (ReportRepository.getReportById as jest.Mock).mockResolvedValue(null);
+
+      await expect(TechnicianService.ensureReportNotExternallyAssigned(1))
+        .rejects.toThrow('Report not found');
+    });
+
+    it('should throw error if report is externally assigned', async () => {
+      (ReportRepository.getReportById as jest.Mock).mockResolvedValue({ id: 1, assignedExternalOfficeId: 5 });
+
+      await expect(TechnicianService.ensureReportNotExternallyAssigned(1))
+        .rejects.toThrow('This report is handled by an external office');
+    });
+
+    it('should not throw error if report is not externally assigned', async () => {
+      (ReportRepository.getReportById as jest.Mock).mockResolvedValue({ id: 1, assignedExternalOfficeId: null });
+
+      await expect(TechnicianService.ensureReportNotExternallyAssigned(1))
+        .resolves.not.toThrow();
+    });
+  });
+
+  describe('assignExternalOffice', () => {
+    it('should throw error if report not found', async () => {
+      (ReportRepository.getReportById as jest.Mock).mockResolvedValue(null);
+
+      await expect(TechnicianService.assignExternalOffice(1, 5))
+        .rejects.toThrow('Report not found');
+    });
+
+    it('should call updateReportExternalAssignment if report exists', async () => {
+      (ReportRepository.getReportById as jest.Mock).mockResolvedValue({ id: 1 });
+      (TechnicianRepository.updateReportExternalAssignment as jest.Mock).mockResolvedValue(undefined);
+
+      await TechnicianService.assignExternalOffice(1, 5);
+
+      expect(TechnicianRepository.updateReportExternalAssignment).toHaveBeenCalledWith(1, 5);
+    });
+  });
 });

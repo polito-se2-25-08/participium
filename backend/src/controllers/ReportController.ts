@@ -82,7 +82,7 @@ export const getReportById = async (req: Request, res: Response) => {
 		const { id } = req.params;
 		const numericId = Number(id);
 
-		if (isNaN(numericId)) {
+		if (Number.isNaN(numericId)) {
 			const response: ApiResponse<null> = {
 				success: false,
 				data: null,
@@ -135,17 +135,19 @@ export const getFilteredReports = async (req: Request, res: Response) => {
 		const { userId, category, status, reportsFrom, reportsUntil } =
 			req.query;
 
-		const categoryArray = category
-			? Array.isArray(category)
+		let categoryArray: string[] = [];
+		if (category) {
+			categoryArray = Array.isArray(category)
 				? (category as string[])
-				: [category as string]
-			: [];
+				: [category as string];
+		}
 
-		const statusArray = status
-			? Array.isArray(status)
+		let statusArray: string[] = [];
+		if (status) {
+			statusArray = Array.isArray(status)
 				? (status as string[])
-				: [status as string]
-			: [];
+				: [status as string];
+		}
 
 		const authenticatedUser = (req as any).user;
 		const userRole = authenticatedUser?.role || "CITIZEN";
@@ -179,7 +181,7 @@ export const approveReport = async (req: Request, res: Response) => {
 		const { id } = req.params;
 		const numericId = Number(id);
 
-		if (isNaN(numericId)) {
+		if (Number.isNaN(numericId)) {
 			const response: ApiResponse<string> = {
 				success: false,
 				data: "Invalid report ID",
@@ -209,7 +211,7 @@ export const rejectReport = async (req: Request, res: Response) => {
 		const { motivation } = req.body;
 		const numericId = Number(id);
 
-		if (isNaN(numericId)) {
+		if (Number.isNaN(numericId)) {
 			const response: ApiResponse<string> = {
 				success: false,
 				data: "Invalid report ID",
@@ -262,7 +264,7 @@ export const updateReportStatus = async (req: Request, res: Response) => {
 		const { status } = req.body;
 
 		const numericId = Number(id);
-		if (isNaN(numericId)) {
+		if (Number.isNaN(numericId)) {
 			return res.status(400).json({
 				success: false,
 				data: "Invalid report ID",

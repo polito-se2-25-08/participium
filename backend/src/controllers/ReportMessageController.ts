@@ -10,7 +10,7 @@ export const sendMessage = async (req: Request, res: Response) => {
 		const { message, senderId } = req.body;
 		const numericId = Number(id);
 
-		if (isNaN(numericId)) {
+		if (Number.isNaN(numericId)) {
 			const response: ApiResponse<string> = {
 				success: false,
 				data: "Invalid report ID",
@@ -83,7 +83,7 @@ export const getMessages = async (req: Request, res: Response) => {
 		const { id } = req.params; // report_id
 		const numericId = Number(id);
 
-		if (isNaN(numericId)) {
+		if (Number.isNaN(numericId)) {
 			const response: ApiResponse<string> = {
 				success: false,
 				data: "Invalid report ID",

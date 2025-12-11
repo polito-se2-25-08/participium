@@ -68,7 +68,7 @@ export const approveReport = async (req: Request, res: Response) => {
 		const { id } = req.params;
 		const numericId = Number(id);
 
-		if (isNaN(numericId)) {
+		if (Number.isNaN(numericId)) {
 			return res.status(400).json({
 				success: false,
 				data: "Invalid report ID"
@@ -94,7 +94,7 @@ export const rejectReport = async (req: Request, res: Response) => {
 		const { id } = req.params;
 		const numericId = Number(id);
 
-		if (isNaN(numericId)) {
+		if (Number.isNaN(numericId)) {
 			return res.status(400).json({
 				success: false,
 				data: "Invalid report ID"

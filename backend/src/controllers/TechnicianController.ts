@@ -35,7 +35,7 @@ export const assignExternalOffice = catchAsync(
     const reportId = Number(req.params.id);
     const { assignedExternalOfficeId } = req.body;
 
-    if (isNaN(reportId)) {
+    if (Number.isNaN(reportId)) {
       throw new AppError("Invalid report ID", 400, "INVALID_ID");
     }
    
