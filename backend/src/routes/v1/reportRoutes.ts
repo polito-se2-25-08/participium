@@ -63,6 +63,10 @@ router.patch(
 	NotificationController.markNotificationAsRead
 );
 
-router.post("/reports/:id/message", MessageController.saveMessage);
+router.post(
+	"/reports/:id/messages",
+	protect,
+	ReportMessageController.sendMessage
+);
 
 export default router;

@@ -5,11 +5,13 @@ import * as NotificationService from '../../../src/services/NotificationService'
 jest.mock('../../../src/repositories/ReportMessageRepository');
 jest.mock('../../../src/services/NotificationService');
 jest.mock('../../../src/bot'); // Mock bot to avoid loading it and its dependencies
-jest.mock('../../../src/app', () => ({
-  io: {
-    to: jest.fn().mockReturnThis(),
-    emit: jest.fn(),
-  },
+const mockIO = {
+  to: jest.fn().mockReturnThis(),
+  emit: jest.fn(),
+};
+
+jest.mock('../../../src/socket', () => ({
+  getIO: jest.fn(() => mockIO),
   connectedUsers: new Map(),
 }));
 
@@ -19,9 +21,9 @@ describe('ReportMessageService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    const app = require('../../../src/app');
-    connectedUsers = app.connectedUsers;
-    io = app.io;
+    const socket = require('../../../src/socket');
+    connectedUsers = socket.connectedUsers;
+    io = mockIO;
     connectedUsers.clear();
   });
 
@@ -81,7 +83,7 @@ describe('ReportMessageService', () => {
       (NotificationService.createNotification as jest.Mock).mockResolvedValue(mockNotification);
 
       // Simulate user being online
-      connectedUsers.set('2', 'socket-123');
+      connectedUsers.set(2, 'socket-123');
 
       await ReportMessageService.createMessage(messageData, 2);
 

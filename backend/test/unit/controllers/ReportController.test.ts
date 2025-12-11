@@ -9,11 +9,13 @@ jest.mock('../../../src/services/ReportService');
 jest.mock('../../../src/services/TechnicianService');
 jest.mock('../../../src/utils/categoryMapper');
 jest.mock('../../../src/bot'); // Mock bot
-jest.mock('../../../src/app', () => ({
-  io: {
-    to: jest.fn().mockReturnThis(),
-    emit: jest.fn(),
-  },
+const mockIO = {
+  to: jest.fn().mockReturnThis(),
+  emit: jest.fn(),
+};
+
+jest.mock('../../../src/socket', () => ({
+  getIO: jest.fn(() => mockIO),
   connectedUsers: new Map(),
 }));
 jest.mock('../../../src/utils/Supabase', () => ({
@@ -519,7 +521,8 @@ describe('ReportController', () => {
 
     it('should send WebSocket notification when user is connected', async () => {
       const { supabase } = require('../../../src/utils/Supabase');
-      const { io, connectedUsers } = require('../../../src/app');
+      const { getIO, connectedUsers } = require('../../../src/socket');
+      const io = getIO();
       const mockReport = { id: 1, status: 'IN_PROGRESS' };
 
       mockRequest.params = { id: '1' };
@@ -557,7 +560,7 @@ describe('ReportController', () => {
 
     it('should log when user is not connected', async () => {
       const { supabase } = require('../../../src/utils/Supabase');
-      const { connectedUsers } = require('../../../src/app');
+      const { connectedUsers } = require('../../../src/socket');
       const mockReport = { id: 1, status: 'IN_PROGRESS' };
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 

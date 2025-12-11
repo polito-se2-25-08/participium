@@ -4,7 +4,7 @@ import * as TechnicianService from "../services/TechnicianService";
 import { ApiResponse, CreateReportDTO } from "../dto/ReportDTO";
 import { Report } from "../models/Report";
 import { getCategoryId } from "../utils/categoryMapper";
-import { io, connectedUsers } from "../app";
+import { getIO, connectedUsers } from "../socket";
 import { supabase } from "../utils/Supabase";
 
 import { ActiveReportDTO } from "../dto/ActiveReport";
@@ -335,7 +335,7 @@ export const updateReportStatus = async (req: Request, res: Response) => {
 		const socketId = connectedUsers.get(userId);
 
 		if (socketId) {
-			io.to(socketId).emit("notification", {
+			getIO().to(socketId).emit("notification", {
 				message: `Your report "${reportTitle}" status has been updated to: ${status}`,
 				reportId: numericId,
 				reportTitle, // <--- new field

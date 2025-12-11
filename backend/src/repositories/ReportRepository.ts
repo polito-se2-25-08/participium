@@ -30,7 +30,7 @@ export const createReport = async (
 
 	// Insert photos into Report_Photo table
 	if (photos.length > 0) {
-		const photoInserts = photos.map((photo) => ({
+		const photoInserts = photos.map((photo: string) => ({
 			report_id: data.id,
 			report_photo: photo,
 		}));

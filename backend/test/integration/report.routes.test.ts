@@ -7,6 +7,18 @@ import * as ReportMessageController from '../../src/controllers/ReportMessageCon
 import * as NotificationController from '../../src/controllers/NotificationController';
 import { supabase } from '../../src/utils/Supabase';
 
+jest.mock('../../src/middleware/authMiddleware', () => ({
+  protect: jest.fn((req, res, next) => {
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+      req.user = { id: 1, role: 'CITIZEN' };
+      next();
+    } else {
+      res.status(401).json({ success: false, data: 'Authentication required' });
+    }
+  }),
+  restrictTo: jest.fn(() => (req: any, res: any, next: any) => next()),
+}));
+
 // Mock dependencies
 jest.mock('../../src/controllers/ReportController');
 jest.mock('../../src/controllers/ReportMessageController');
@@ -156,7 +168,7 @@ describe('Report Routes Integration Tests', () => {
         });
       });
 
-      const response = await request(app).get('/api/v1/reports');
+      const response = await request(app).get('/api/v1/reports').set('Authorization', 'Bearer token');
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
@@ -177,7 +189,7 @@ describe('Report Routes Integration Tests', () => {
         });
       });
 
-      const response = await request(app).get('/api/v1/reports/active');
+      const response = await request(app).get('/api/v1/reports/active').set('Authorization', 'Bearer token');
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
@@ -200,7 +212,7 @@ describe('Report Routes Integration Tests', () => {
         });
       });
 
-      const response = await request(app).get('/api/v1/reports/1');
+      const response = await request(app).get('/api/v1/reports/1').set('Authorization', 'Bearer token');
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);

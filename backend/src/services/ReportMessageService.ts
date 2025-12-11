@@ -1,7 +1,7 @@
 import { ReportMessage, ReportMessageInsert } from "../models/ReportMessage";
 import * as ReportMessageRepository from "../repositories/ReportMessageRepository";
 import * as NotificationService from "./NotificationService";
-import { io, connectedUsers } from "../app";
+import { getIO, connectedUsers } from "../socket";
 
 export const createMessage = async (
   messageData: ReportMessageInsert,
@@ -21,7 +21,7 @@ export const createMessage = async (
   // Try to send via WebSocket if user is online
   const socketId = connectedUsers.get(recipientId);
   if (socketId) {
-    io.to(socketId).emit("notification", {
+    getIO().to(socketId).emit("notification", {
       id: notification.id,
       message: notification.message,
       reportId: messageData.report_id,

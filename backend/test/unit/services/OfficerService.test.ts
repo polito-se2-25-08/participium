@@ -73,7 +73,7 @@ describe('OfficerService', () => {
 
       const result = await OfficerService.getReportById(1);
 
-      expect(ReportRepository.getReportById).toHaveBeenCalledWith(1);
+      expect(ReportRepository.getReportById).toHaveBeenCalledWith(1, "OFFICER");
       expect(result).toEqual(mockReport);
     });
 

@@ -14,7 +14,7 @@ export async function sendEmail(to: string | string[], subject: string, text: st
       subject,
       text,
     };
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, (error: Error | null, info: any) => {
 	if (error) {
 		return console.log('Error occured:', error);
 	}
