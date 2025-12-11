@@ -12,9 +12,9 @@ sections:
 
 ### Macro statistics
 
-- Number of stories committed vs done :
-- Total points committed vs done :
-- Nr of hours planned vs spent (as a team) :
+- Number of stories committed vs. done 3/11
+- Total points committed vs. done 22/54
+- Nr of hours planned vs. spent (as a team) 99/93
 
 **Remember**  a story is done ONLY if it fits the Definition of Done:
  
@@ -27,16 +27,33 @@ sections:
 
 ### Detailed statistics
 
-| Story  | # Tasks | Points | Hours est. | Hours actual |
-|--------|---------|--------|------------|--------------|
-| _#0_   |         |    -   |            |              |
-| n      |         |        |            |              |
-   
+| Story | # Tasks | Points | Hours est. | Hours actual |
+| ----- | ------- | ------ | ---------- | ------------ |
+| _#0_  | 7       | -      | 3d7h30m    | 4d5h         |
+| _#24_ | 5       | 5      | 4h45m      | 4h45m        |
+| _#25_ | 4       | 1      | 3h30m      | 4h30m        |
+| _#26_ | 6       | 5      | 1d         | 1d           |
+| _#27_ | 5       | 8      | 7h30m      | 6h30m        |
+| _#10_ | 6       | 3      | 7h30m      | 6h15m        |
+| _#11_ | 8       | 5      | 1d2h15m    | 1d2h35m      |
+| _#12_ | 5       | 8      | 6h         | 6h           |
+| _#13_ | 3       | 5      | 3h         | 2h5m         |
+| _#14_ | 5       | 3      | 5h         | 0m           |
+| _#15_ | 3       | 2      | 4h         | 3h15m        |
+| _#16_ | 5       | 8      | 1d         | 4h10m        |
 
 > place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
 
 - Hours per task (average, standard deviation)
+  Number of tasks : 62
+  | | Avg | StDev |
+  | -------------- | ------ | ------ |
+  | **Estimation** | 1.59 h | 1.94 h |
+  | **Actual** | 1.50 h | 2.08 h |
 - Total task estimation error ratio: sum of total hours estimation / sum of total hours spent -1
+  - sum of total hours estimation : 99
+  - sum of total hours spent : 93
+  - _Total task estimation error ratio : 99/93 -1 = 0.064
 
   
 ## QUALITY MEASURES 
