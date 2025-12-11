@@ -13,13 +13,6 @@ export const mapReportToReportDTO = (report: UserReport): UserReportDTO => {
 		status: report.status,
 		category: report.category.category,
 		photos: report.photos.map((photo) => photo.report_photo),
-		messages: report.messages.map((message) => ({
-			id: message.id,
-			message: message.message,
-			createdAt: message.created_at,
-			senderId: message.sender_id,
-			reportId: message.report_id,
-		})),
 	};
 };
 

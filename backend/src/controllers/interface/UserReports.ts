@@ -1,3 +1,5 @@
+import { MessageDTO } from "../../dto/MessageDTO";
+
 export type UserReport = {
 	id: number;
 	title: string;
@@ -18,13 +20,6 @@ export type UserReport = {
 		| null;
 	category: { category: string };
 	photos: { report_photo: string }[];
-	messages: {
-		id: number;
-		message: string;
-		created_at: string;
-		sender_id: number;
-		report_id: number;
-	}[];
 };
 
 export type UserReportDTO = {
@@ -46,11 +41,4 @@ export type UserReportDTO = {
 		| null;
 	category: string;
 	photos: string[];
-	messages: {
-		id: number;
-		message: string;
-		createdAt: string;
-		senderId: number;
-		reportId: number;
-	}[];
 };

@@ -20,10 +20,16 @@ import Acl from "./components/providers/Acl";
 import Redirect from "./components/providers/Redirect";
 import { useNotifications } from "./hooks/useNotifications";
 import { NotificationToast } from "./components/NotificationToast";
+import { VerificationPage } from "./components/pages/VerificationPage";
+
+// ✅ Import provider
+import { PendingReportsProvider } from "./hooks/usePendingReports";
 
 function AppContent() {
   const { user } = useAuth();
-  const { notifications, clearNotification } = useNotifications(user?.id || null);
+  const { notifications, clearNotification } = useNotifications(
+    user?.id || null
+  );
 
   return (
     <>
@@ -31,6 +37,7 @@ function AppContent() {
         <Route element={<Layout />}>
           <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify" element={<VerificationPage />} />
 
           <Route element={<ProtectedRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -45,12 +52,32 @@ function AppContent() {
             </Route>
 
             <Route element={<Acl allowedRoles={["OFFICER"]} />}>
-              <Route path="/pending-reports" element={<PendingReportsPage />} />
+              <Route
+                path="/pending-reports"
+                element={
+                  <PendingReportsProvider>
+                    <PendingReportsPage />
+                  </PendingReportsProvider>
+                }
+              />
             </Route>
 
             {/* TECHNICIAN and EXTERNAL MAINTAINER routes */}
-            <Route element={<Acl allowedRoles={["TECHNICIAN", "EXTERNAL MAINTAINER"]} />}>
-              <Route path="/category-reports" element={<CategoryReportsPage />} />
+            <Route
+              element={
+                <Acl
+                  allowedRoles={["TECHNICIAN", "EXTERNAL MAINTAINER"]}
+                />
+              }
+            >
+              <Route
+                path="/category-reports"
+                element={
+                  <PendingReportsProvider>
+                    <CategoryReportsPage />
+                  </PendingReportsProvider>
+                }
+              />
             </Route>
 
             <Route path="/profile" element={<ProfilePage />} />

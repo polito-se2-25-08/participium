@@ -28,6 +28,7 @@ export default function registerLoginFeature(bot: Telegraf) {
         });
 
         ctx.session.token = res.data.data.token;
+        ctx.session.id = res.data.data.user.id;
         ctx.session.loginState = null;
 
         return ctx.reply(`✅ Login successful!`);

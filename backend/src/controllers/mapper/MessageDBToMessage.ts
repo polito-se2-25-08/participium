@@ -7,7 +7,7 @@ export const mapMessageDBToMessage = (messageDB: MessageDB): MessageDTO => {
 		senderId: messageDB.sender_id,
 		reportId: messageDB.report_id,
 		message: messageDB.message,
-		created_at: messageDB.created_at,
+		createdAt: messageDB.created_at,
 	};
 };
 

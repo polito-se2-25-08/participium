@@ -3,5 +3,5 @@ export type MessageDTO = {
 	senderId: number;
 	reportId: number;
 	message: string;
-	created_at: string;
+	createdAt: string;
 };

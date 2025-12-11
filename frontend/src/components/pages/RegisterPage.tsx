@@ -73,7 +73,7 @@ export function RegisterPage() {
 			return;
 		}
 		if (state.success === true) {
-			navigate("/");
+			navigate("/verify");
 		}
 		if (state.success === false) {
 			console.error("Registration failed:", state.data);

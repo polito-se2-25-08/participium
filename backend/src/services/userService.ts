@@ -34,7 +34,7 @@ export const userService = {
 			surname: data.surname,
 			role: "CITIZEN",
 			profile_picture: null,
-			email_notification: null,
+			email_notification: true,
 			telegram_username: data.telegram_username ?? null,
 		};
 

@@ -58,10 +58,18 @@ export const getAllReports = async (
 		.from("Report")
 		.select(
 			`
-      *,
-      photos:Report_Photo(*),
-      user:User(name, surname)
-    `
+      		*,
+      		photos:Report_Photo(
+				*
+			),
+      		user:User(
+				name, 
+				surname
+			),
+	  		messages:Report_Message(
+				*
+			)
+    	`
 		)
 		.order("timestamp", { ascending: true });
 
@@ -459,9 +467,6 @@ export const getReportsByUserId = async (
         ),
         photos:Report_Photo (
             report_photo
-        ),
-        messages:Report_Message (
-            *
         )
     	`
 		)
