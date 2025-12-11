@@ -49,9 +49,6 @@ sections:
 - Integration testing: 
   - Total hours estimated 3h
   - Total hours spent 2h
-- Integration testing:
-- Total hours estimated 2h
-  - Total hours spent 3h
 - E2E testing:
   - Total hours estimated 9h30m
   - Total hours spent 6h35m
@@ -59,9 +56,9 @@ sections:
   - Total hours estimated 2h
   - Total hours spent 3h
 - Technical Debt management:
-   - Strategy adopted
-  - Total hours estimated estimated at sprint planning
-  - Total hours spent
+  - Strategy adopted Prioritized Remediation Strategy
+  - Total hours estimated estimated at sprint planning 1h
+  - Total hours spent 4h
   
 
 
