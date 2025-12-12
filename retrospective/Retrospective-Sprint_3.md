@@ -12,9 +12,9 @@ sections:
 
 ### Macro statistics
 
-- Number of stories committed vs. done 3/11
-- Total points committed vs. done 22/54
-- Nr of hours planned vs. spent (as a team) 99/93
+- Number of stories committed vs. done : 11 stories committed vs 3 stories done
+- Total points committed vs. done : 54 story points committed vs 22 story points done
+- Nr of hours planned vs. spent (as a team) : 99 hours planned vs 93 hours spent
 
 **Remember**  a story is done ONLY if it fits the Definition of Done:
  
@@ -59,21 +59,21 @@ sections:
 ## QUALITY MEASURES 
 
 - Unit Testing:
-  - Total hours estimated 11h15m
+  - Total hours estimated 1d3h15m
   - Total hours spent 7h40m
   - Nr of automated unit test cases 388
   - Coverage (if available) 84.6%
 - Integration testing: 
   - Total hours estimated 3h
-  - Total hours spent 2h
+  - Total hours spent 1h45m
 - E2E testing:
-  - Total hours estimated 9h30m
+  - Total hours estimated 1d1h30m
   - Total hours spent 6h35m
 - Code review: 
   - Total hours estimated 2h
   - Total hours spent 3h
 - Technical Debt management:
-  - Strategy adopted Prioritized Remediation Strategy
+  - Strategy adopted: Prioritized Remediation Strategy
   - Total hours estimated estimated at sprint planning 1h
   - Total hours spent 4h
   
@@ -89,18 +89,17 @@ sections:
   - Our planning should consider more the technical debt sphere not only for its importance in the production process, but also because underestimating it meant adding more tasks that weren't done because of it. 
 
 - Which improvement goals set in the previous retrospective were you able to achieve? 
-  - We managed to add more tasks even if we overdid it and managed to do more testing
+  - We achieved the goal of splitting more the tasks, but by doing it we committed so much stories instead of focusing on code review and refactoring. We also partially achieved the goal of committing less hours to not excess the hourly budget. Even if we estimated 3 more hours than our budged we spent 3 hour less than it
   
 - Which ones you were not able to achieve? Why?
-  - Even if technically we achieved both we failed to have a balance between coding quantity and quality due to our
+  - We couldn't achieve estimating less hours than our budget because we had to put one more story since we needed more hours. Unfortunately by doing it our estimated budget got exceeded
 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
+
   > Propose one or two 
-  - Manage more shorter meetings to collaborate better
+
+  - Manage more short meetings to collaborate better
   - Prioritize code quality
-
-
-
 
 - One thing you are proud of as a Team!!
   - Despite having merging issues we were able to code features for eight stories. Even if they are not considerable done they require a not so exessive work.
