@@ -1,26 +1,26 @@
-import type { Report } from "../../types";
+import type { ReportDTO } from "../../interfaces/dto/report/ReportDTO";
 import ReportReviewCard from "../cards/ReportReviewCard";
 
 interface ReportListProps {
-  reports: Report[];
-  processingReportId: number | null;
-  onApprove: (reportId: number) => void;
-  onReject: (reportId: number) => void;
-  approveLabel?: string;
-  rejectLabel?: string;
-  allowInternalComments?: boolean;
-  allowMessages?: boolean;
+	reports: ReportDTO[];
+	processingReportId: number | null;
+	onApprove: (reportId: number) => void;
+	onReject: (reportId: number) => void;
+	approveLabel?: string;
+	rejectLabel?: string;
+	allowInternalComments?: boolean;
+	allowMessages?: boolean;
 }
 
 export default function ReportList({
-  reports,
-  processingReportId,
-  onApprove,
-  onReject,
-  approveLabel,
-  rejectLabel,
-  allowInternalComments = true,
-  allowMessages = false,
+	reports,
+	processingReportId,
+	onApprove,
+	onReject,
+	approveLabel,
+	rejectLabel,
+	allowInternalComments = true,
+	allowMessages = false,
 }: ReportListProps) {
 	if (reports.length === 0) {
 		return (
@@ -37,19 +37,19 @@ export default function ReportList({
 				queue
 			</p>
 
-      {reports.map((report) => (
-        <ReportReviewCard
-          key={report.id}
-          report={report}
-          onApprove={onApprove}
-          onReject={onReject}
-          isProcessing={processingReportId === report.id}
-          approveLabel={approveLabel}
-          rejectLabel={rejectLabel}
-          allowInternalComments={allowInternalComments}
-          allowMessages={allowMessages}
-        />
-      ))}
-    </div>
-  );
+			{reports.map((report) => (
+				<ReportReviewCard
+					key={report.id}
+					report={report}
+					onApprove={onApprove}
+					onReject={onReject}
+					isProcessing={processingReportId === report.id}
+					approveLabel={approveLabel}
+					rejectLabel={rejectLabel}
+					allowInternalComments={allowInternalComments}
+					allowMessages={allowMessages}
+				/>
+			))}
+		</div>
+	);
 }

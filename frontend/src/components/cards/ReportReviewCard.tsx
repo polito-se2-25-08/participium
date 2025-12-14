@@ -7,9 +7,10 @@ import MessageSection from "../comments/MessageSection";
 import TextInput from "../input/variants/TextInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import type { ReportDTO } from "../../interfaces/dto/report/ReportDTO";
 
 interface ReportReviewCardProps {
-	report: Report;
+	report: ReportDTO;
 	onApprove: (reportId: number) => void;
 	onReject: (reportId: number) => void;
 	onSuspend?: (reportId: number) => void;
@@ -88,7 +89,7 @@ export default function ReportReviewCard({
 							<p className="text-sm text-gray-500">
 								Category:{" "}
 								<span className="font-medium">
-									{report.category}
+									{report.category.category}
 								</span>
 							</p>
 
@@ -135,14 +136,12 @@ export default function ReportReviewCard({
 								<div className="flex gap-2 flex-wrap justify-end">
 									{report.photos.map((photo, index) => (
 										<img
-											key={photo.id}
-											src={photo.report_photo}
+											key={index}
+											src={photo}
 											alt={`Report photo ${index + 1}`}
 											className="w-24 h-24 object-cover rounded border border-gray-300 cursor-pointer hover:opacity-80 transition-opacity"
 											onClick={() =>
-												setSelectedImage(
-													photo.report_photo
-												)
+												setSelectedImage(photo)
 											}
 										/>
 									))}
@@ -255,7 +254,7 @@ export default function ReportReviewCard({
 						{showMessages && (
 							<div className="flex flex-col bg-gray-50 rounded-lg border border-gray-200 p-4 mt-4">
 								<MessageSection
-									messages={report.messages || []}
+									messages={report.internalMessages || []}
 								/>
 
 								{onSendMessage && (

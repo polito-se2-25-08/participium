@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import * as ReportService from "../services/ReportService";
 import * as TechnicianService from "../services/TechnicianService";
-import { ApiResponse, CreateReportDTO } from "../dto/ReportDTO";
+import { ApiResponse, CreateReportDTO, ReportDTO } from "../dto/ReportDTO";
 import { Report } from "../models/Report";
 import { getCategoryId } from "../utils/categoryMapper";
 import { getIO, connectedUsers } from "../socket";
@@ -61,8 +61,8 @@ export const getAllReports = async (req: Request, res: Response) => {
 		const authenticatedUser = (req as any).user;
 		const userRole = authenticatedUser?.role || "CITIZEN";
 
-		const reports = await ReportService.getAllReports(userRole);
-		const response: ApiResponse<Report[]> = {
+		const reports = await ReportService.getAllReports();
+		const response: ApiResponse<ReportDTO[]> = {
 			success: true,
 			data: reports,
 		};
@@ -279,11 +279,18 @@ export const updateReportStatus = async (req: Request, res: Response) => {
 		}
 
 		// Validate status value
-		const validStatuses = ["ASSIGNED", "IN_PROGRESS", "SUSPENDED", "RESOLVED"];
+		const validStatuses = [
+			"ASSIGNED",
+			"IN_PROGRESS",
+			"SUSPENDED",
+			"RESOLVED",
+		];
 		if (!validStatuses.includes(status)) {
 			return res.status(400).json({
 				success: false,
-				data: `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+				data: `Invalid status. Must be one of: ${validStatuses.join(
+					", "
+				)}`,
 			});
 		}
 
@@ -337,13 +344,15 @@ export const updateReportStatus = async (req: Request, res: Response) => {
 		const socketId = connectedUsers.get(userId);
 
 		if (socketId) {
-			getIO().to(socketId).emit("notification", {
-				message: `Your report "${reportTitle}" status has been updated to: ${status}`,
-				reportId: numericId,
-				reportTitle, // <--- new field
-				status,
-				timestamp: new Date().toISOString(),
-			});
+			getIO()
+				.to(socketId)
+				.emit("notification", {
+					message: `Your report "${reportTitle}" status has been updated to: ${status}`,
+					reportId: numericId,
+					reportTitle, // <--- new field
+					status,
+					timestamp: new Date().toISOString(),
+				});
 
 			console.log(
 				`Notification sent to user ${userId} for report ${numericId}`
@@ -377,4 +386,20 @@ export const getReportsByUserId = async (req: Request, res: Response) => {
 		success: true,
 		data: reports,
 	});
+};
+
+export const getPendingReports = async (req: Request, res: Response) => {
+	try {
+		const pendingReports = await ReportService.getPendingReports();
+		return res.status(200).json({
+			success: true,
+			data: pendingReports,
+		});
+	} catch (err: any) {
+		console.error("Error fetching pending reports:", err);
+		return res.status(500).json({
+			success: false,
+			data: err.message || "Unknown error occurred",
+		});
+	}
 };

@@ -19,6 +19,8 @@ router.post(
 
 router.get("/reports", protect, ReportController.getAllReports);
 
+router.get("/reports/pending", protect, ReportController.getPendingReports);
+
 router.get("/reports/active", protect, ReportController.getActiveReports);
 
 router.get("/reports/:id", protect, ReportController.getReportById);

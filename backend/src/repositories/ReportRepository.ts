@@ -6,6 +6,7 @@ import { ActiveReportDTO } from "../dto/ActiveReport";
 import { mapActiveReportsToDTO } from "../controllers/mapper/ActiveReportToDTO";
 import { ActiveReport } from "../controllers/interface/ActiveReport";
 import { UserReport } from "../controllers/interface/UserReports";
+import { ReportDB } from "../controllers/interface/ReportDB";
 
 export const createReport = async (
 	reportData: Partial<Report> & { photos: string[] }
@@ -49,9 +50,7 @@ export const createReport = async (
 	return data;
 };
 
-export const getAllReports = async (
-	userRole: string = "CITIZEN"
-): Promise<Report[]> => {
+export const getAllReports = async (): Promise<ReportDB[]> => {
 	const { data, error } = await supabase
 		.from("Report")
 		.select(
@@ -61,15 +60,22 @@ export const getAllReports = async (
 				*
 			),
       		user:User(
-				name, 
-				surname
+				*
 			),
-	  		messages:Report_Message(
+	  	    report_message:Report_Message(
+				*
+			),
+			category:Category(
+				*
+			),
+			report_comment:Report_Comment(
 				*
 			)
     	`
 		)
 		.order("timestamp", { ascending: true });
+
+	console.dir(data, { depth: null });
 
 	if (error) {
 		throw new AppError(
@@ -79,9 +85,9 @@ export const getAllReports = async (
 		);
 	}
 
-	const remappedData = data ? await remapReports(data, userRole) : [];
+	const reportsDB = data as ReportDB[];
 
-	return remappedData;
+	return reportsDB;
 };
 
 const remapReports = async (
@@ -490,4 +496,45 @@ export const getReportsByUserId = async (
 	}
 
 	return userReports;
+};
+
+export const getPendingReports = async (): Promise<ReportDB[]> => {
+	const { data, error } = await supabase
+		.from("Report")
+		.select(
+			`
+      		*,
+      		photos:Report_Photo(
+				*
+			),
+      		user:User(
+				*
+			),
+	  	    report_message:Report_Message(
+				*
+			),
+			category:Category(
+				*
+			),
+			report_comment:Report_Comment(
+				*
+			)
+    	`
+		)
+		.eq("status", "PENDING_APPROVAL")
+		.order("timestamp", { ascending: false });
+
+	if (error) {
+		throw new AppError(
+			`Failed to fetch pending reports: ${error.message}`,
+			500,
+			"DB_FETCH_ERROR"
+		);
+	}
+
+	if (!data) {
+		return [];
+	}
+
+	return data;
 };

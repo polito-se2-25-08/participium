@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as ReportMessageService from "../services/ReportMessageService";
-import { ApiResponse } from "../dto/ReportDTO";
+import * as ReportService from "../services/ReportService";
+import { ApiResponse, ReportDTO } from "../dto/ReportDTO";
 import { ReportMessage } from "../models/ReportMessage";
 import { supabase } from "../utils/Supabase";
 
@@ -101,6 +102,24 @@ export const getMessages = async (req: Request, res: Response) => {
 		return res.status(200).json(response);
 	} catch (err: any) {
 		console.error("Error fetching messages:", err);
+		const response: ApiResponse<string> = {
+			success: false,
+			data: err.message || "Unknown error occurred",
+		};
+		return res.status(500).json(response);
+	}
+};
+
+export const getPendingReports = async (req: Request, res: Response) => {
+	try {
+		const pendingReports = await ReportService.getPendingReports();
+		const response: ApiResponse<ReportDTO[]> = {
+			success: true,
+			data: pendingReports,
+		};
+		return res.status(200).json(response);
+	} catch (err: any) {
+		console.error("Error fetching pending reports:", err);
 		const response: ApiResponse<string> = {
 			success: false,
 			data: err.message || "Unknown error occurred",
