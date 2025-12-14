@@ -79,32 +79,32 @@ export default function Dashboard() {
 					setClickedReportId={setClickedReportId}
 				/>
 
-        {isReportOpen && (
-          <ReportMapInfoContainer>
-            {clickedReport && (
-              <div className="flex flex-col pt-4 mb-3">
-                <SubTitle>{clickedReport.title}</SubTitle>
-                <div className="flex flex-col overflow-scroll max-h-[50vh] pl-5 pr-5 pb-4 w-full">
-                  <SubTitle>Reporter</SubTitle>
-                  {!clickedReport.anonymous ? (
-                    <div className="flex flex-row items-center justify-center gap-5">
-                      {clickedReport.reporterProfilePicture && (
-                        <img
-                          className="h-35 w-35 rounded-2xl"
-                          src={
-                            `data:image/png;base64,` +
-                            clickedReport.reporterProfilePicture
-                          }
-                          alt="Reporter profile picture"
-                        />
-                      )}
-                      <span className="text-center text-2xl font-semibold">
-                        {clickedReport.reporterUsername}
-                      </span>
-                    </div>
-                  ) : (
-                    <span>This report is anonymous</span>
-                  )}
+				{isReportOpen && (
+					<ReportMapInfoContainer>
+						{clickedReport && (
+							<div className="flex flex-col pt-4 mb-3">
+								<SubTitle>{clickedReport.title}</SubTitle>
+								<div className="flex flex-col overflow-scroll max-h-[50vh] pl-5 pr-5 pb-4 w-full">
+									<SubTitle>Reporter</SubTitle>
+									{!clickedReport.anonymous ? (
+										<div className="flex flex-row items-center justify-center gap-5">
+											{clickedReport.reporterProfilePicture && (
+												<img
+													className="h-35 w-35 rounded-2xl"
+													src={
+														`data:image/png;base64,` +
+														clickedReport.reporterProfilePicture
+													}
+													alt="Reporter profile picture"
+												/>
+											)}
+											<span className="text-center text-2xl font-semibold">
+												{clickedReport.reporterUsername}
+											</span>
+										</div>
+									) : (
+										<span>This report is anonymous</span>
+									)}
 
 									<span className="border-b-2 mb-2 mt-2"></span>
 

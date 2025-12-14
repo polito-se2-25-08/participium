@@ -9,53 +9,53 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 interface ReportReviewCardProps {
-  report: Report;
-  onApprove: (reportId: number) => void;
-  onReject: (reportId: number) => void;
-  onSuspend?: (reportId: number) => void;
-  onAssignExternal?: (reportId: number) => void;
-  isProcessing?: boolean;
-  approveLabel?: string;
-  rejectLabel?: string;
-  suspendLabel?: string;
-  assignLabel?: string;
-  externalAssigned?: boolean;
-  allowInternalComments?: boolean;
-  allowMessages?: boolean;
-  onSendMessage?: (reportId: number, message: string) => void;
+	report: Report;
+	onApprove: (reportId: number) => void;
+	onReject: (reportId: number) => void;
+	onSuspend?: (reportId: number) => void;
+	onAssignExternal?: (reportId: number) => void;
+	isProcessing?: boolean;
+	approveLabel?: string;
+	rejectLabel?: string;
+	suspendLabel?: string;
+	assignLabel?: string;
+	externalAssigned?: boolean;
+	allowInternalComments?: boolean;
+	allowMessages?: boolean;
+	onSendMessage?: (reportId: number, message: string) => void;
 }
 
 export default function ReportReviewCard({
-  report,
-  onApprove,
-  onReject,
-  onSuspend,
-  onAssignExternal,
-  isProcessing = false,
-  approveLabel = "Approve Report",
-  rejectLabel = "Reject Report",
-  suspendLabel = "Suspend Report",
-  assignLabel = "Assign External Office",
-  externalAssigned = false,
-  allowInternalComments = true,
-  allowMessages = false,
-  onSendMessage,
+	report,
+	onApprove,
+	onReject,
+	onSuspend,
+	onAssignExternal,
+	isProcessing = false,
+	approveLabel = "Approve Report",
+	rejectLabel = "Reject Report",
+	suspendLabel = "Suspend Report",
+	assignLabel = "Assign External Office",
+	externalAssigned = false,
+	allowInternalComments = true,
+	allowMessages = false,
+	onSendMessage,
 }: ReportReviewCardProps) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [showComments, setShowComments] = useState(false);
-  const [showMessages, setShowMessages] = useState(false);
-  const [textMessage, setTextMessage] = useState("");
-  
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+	const [selectedImage, setSelectedImage] = useState<string | null>(null);
+	const [showComments, setShowComments] = useState(false);
+	const [showMessages, setShowMessages] = useState(false);
+	const [textMessage, setTextMessage] = useState("");
+
+	const formatDate = (dateString: string) => {
+		const date = new Date(dateString);
+		return date.toLocaleDateString("en-US", {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+		});
+	};
 
 	const reportDate = (report as any).timestamp || (report as any).createdAt;
 
@@ -69,11 +69,11 @@ export default function ReportReviewCard({
 			? "grid-cols-3"
 			: "grid-cols-2";
 
-  const handleSendMessage = () => {
-    if (textMessage.trim() === "" || !onSendMessage) return;
-    onSendMessage(report.id, textMessage);
-    setTextMessage("");
-  };
+	const handleSendMessage = () => {
+		if (textMessage.trim() === "" || !onSendMessage) return;
+		onSendMessage(report.id, textMessage);
+		setTextMessage("");
+	};
 
 	return (
 		<>
@@ -92,16 +92,20 @@ export default function ReportReviewCard({
 								</span>
 							</p>
 
-              <p className="text-sm text-gray-500">
-                Submitted by:{" "}
-                <span className="font-medium">
-                  {report.user?.name && report.user?.name !== "Anonymous"
-                    ? `${report.user.name} ${report.user.surname}${
-                        report.anonymous ? " (Anonymous)" : ""
-                      }`
-                    : "Anonymous"}
-                </span>
-              </p>
+							<p className="text-sm text-gray-500">
+								Submitted by:{" "}
+								<span className="font-medium">
+									{report.user?.name
+										? `${report.user.name} ${
+												report.user.surname
+										  } ${
+												report.anonymous
+													? "(Anonymous)"
+													: ""
+										  }`
+										: ""}
+								</span>
+							</p>
 
 							<p className="text-sm text-gray-500">
 								Date:{" "}
@@ -194,61 +198,94 @@ export default function ReportReviewCard({
 					</DangerButton>
 				</div>
 
-        {allowInternalComments && (
-          <div className="mt-4 pt-2 border-t border-gray-100">
-            <button
-              onClick={() => setShowComments(!showComments)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-              </svg>
-              {showComments ? "Hide Internal Comments" : "Show Internal Comments"}
-            </button>
-            
-            {showComments && <InternalCommentSection reportId={report.id} />}
-          </div>
-        )}
+				{allowInternalComments && (
+					<div className="mt-4 pt-2 border-t border-gray-100">
+						<button
+							onClick={() => setShowComments(!showComments)}
+							className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-4 w-4"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+								/>
+							</svg>
+							{showComments
+								? "Hide Internal Comments"
+								: "Show Internal Comments"}
+						</button>
 
-        {allowMessages && (
-          <div className="mt-4 pt-2 border-t border-gray-100">
-            <button
-              onClick={() => setShowMessages(!showMessages)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-              </svg>
-              {showMessages ? "Hide Messages" : "Show Messages"}
-            </button>
-            
-            {showMessages && (
-              <div className="flex flex-col bg-gray-50 rounded-lg border border-gray-200 p-4 mt-4">
-                <MessageSection messages={report.messages || []} />
+						{showComments && (
+							<InternalCommentSection reportId={report.id} />
+						)}
+					</div>
+				)}
 
-                {onSendMessage && (
-                  <div className="flex flex-row gap-4 mt-2">
-                    <TextInput
-                      placeholder="Write a message here..."
-                      id={`update-input-${report.id}`}
-                      name={`update-input-${report.id}`}
-                      hasLabel={false}
-                      value={textMessage}
-                      onChange={(e) => setTextMessage(e.target.value)}
-                    />
-                    <button
-                      onClick={handleSendMessage}
-                      className="border rounded-full p-2 flex items-center justify-center hover:cursor-pointer bg-white hover:bg-gray-100"
-                    >
-                      <FontAwesomeIcon icon={faPaperPlane} className="text-blue-600" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+				{allowMessages && (
+					<div className="mt-4 pt-2 border-t border-gray-100">
+						<button
+							onClick={() => setShowMessages(!showMessages)}
+							className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-4 w-4"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+								/>
+							</svg>
+							{showMessages ? "Hide Messages" : "Show Messages"}
+						</button>
+
+						{showMessages && (
+							<div className="flex flex-col bg-gray-50 rounded-lg border border-gray-200 p-4 mt-4">
+								<MessageSection
+									messages={report.messages || []}
+								/>
+
+								{onSendMessage && (
+									<div className="flex flex-row gap-4 mt-2">
+										<TextInput
+											placeholder="Write a message here..."
+											id={`update-input-${report.id}`}
+											name={`update-input-${report.id}`}
+											hasLabel={false}
+											value={textMessage}
+											onChange={(e) =>
+												setTextMessage(e.target.value)
+											}
+										/>
+										<button
+											onClick={handleSendMessage}
+											className="border rounded-full p-2 flex items-center justify-center hover:cursor-pointer bg-white hover:bg-gray-100"
+										>
+											<FontAwesomeIcon
+												icon={faPaperPlane}
+												className="text-blue-600"
+											/>
+										</button>
+									</div>
+								)}
+							</div>
+						)}
+					</div>
+				)}
+			</div>
 
 			<ImageZoomModal
 				isOpen={selectedImage !== null}

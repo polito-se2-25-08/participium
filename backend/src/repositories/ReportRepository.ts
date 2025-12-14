@@ -384,7 +384,9 @@ export const rejectReport = async (
 		);
 	}
 
-	const remappedData = reportData ? await remapReports([reportData], "OFFICER") : [];
+	const remappedData = reportData
+		? await remapReports([reportData], "OFFICER")
+		: [];
 	return remappedData[0];
 };
 
