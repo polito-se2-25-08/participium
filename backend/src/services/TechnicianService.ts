@@ -1,19 +1,40 @@
+import { todo } from "node:test";
 import { Report } from "../models/Report";
-import { getReportsByTechnician, getReportById} from "../repositories/ReportRepository";
-import { getTechnicianCategory, getExternalMaintainerCategory, updateReportExternalAssignment } from "../repositories/TechnicianRepository";
+import {
+  getReportsByCategoryAndStatus,
+  getReportsByTechnician,
+  getReportById,
+} from "../repositories/ReportRepository";
+import {
+  getTechnicianCategory,
+  getTechnicianCategories,
+  getExternalMaintainerCategory,
+  updateReportExternalAssignment,
+} from "../repositories/TechnicianRepository";
 import AppError from "../utils/AppError";
-
 
 // Function to get the category for a technician or external maintainer
 export const getMaintainerCategory = async (
+  // TODO make it so it works with getTechnicianCategories !! needs to handle multiple category_ids
   user_id: number
-): Promise<number> => {
-  // First try to get the category from Technician_Category table
+): Promise<number[]> => {
+  // First try to get the categories from Technician_Category table
   try {
-    return await getTechnicianCategory(user_id);
+    const categories = await getTechnicianCategories(user_id);
+    if (categories && categories.length > 0) {
+      return categories;
+    }
+    // If empty array returned (though usually throws if not found depending on repo implementation), try external
+    throw new Error("No technician categories found");
   } catch (error) {
     // If not found in Technician_Category, try External_Company via User_Company
-    return await getExternalMaintainerCategory(user_id);
+    // Assuming external maintainer still has one category for now, wrap in array
+    try {
+      const externalCategory = await getExternalMaintainerCategory(user_id);
+      return [externalCategory];
+    } catch (extError) {
+      return [];
+    }
   }
 };
 
@@ -23,14 +44,22 @@ export const getReportsForTechnician = async (
   statusFilter?: Report["status"]
 ): Promise<Report[]> => {
   // Fetch technician category
-  const category_id = await getMaintainerCategory(technician_id);
-  
-  const status = (["ASSIGNED", "IN_PROGRESS", "SUSPENDED"] as Report["status"][]);
-  
+  console.log("Fetching categories for technician:", technician_id);
+  const category_ids = await getMaintainerCategory(technician_id); // TODO
+  console.log("Technician categories:", category_ids);
+
+  const status = ["ASSIGNED", "IN_PROGRESS", "SUSPENDED"] as Report["status"][];
+
   // Fetch reports for that category
-  const reports = await getReportsByTechnician(category_id, status);
-  
+  const reports = await getReportsByTechnician(category_ids, status); // TODO
+
   return reports;
+};
+
+export const getCategoriesForTechnician = async (
+  technician_id: number
+): Promise<number[]> => {
+  return await getTechnicianCategories(technician_id);
 };
 
 // Function to check if a technician/external maintainer is authorized to update a specific report
@@ -39,14 +68,14 @@ export const canTechnicianUpdateReport = async (
   report_id: number
 ): Promise<boolean> => {
   try {
-    // Get the maintainer's category (works for both technicians and external maintainers)
-    const maintainerCategoryId = await getMaintainerCategory(technician_id);
-    
+    // Get the maintainer's categories (works for both technicians and external maintainers)
+    const maintainerCategoryIds = await getMaintainerCategory(technician_id); // TODO
+
     // Get the report's category
     const report = await getReportById(report_id);
-    
-    // Check if the report's category matches the maintainer's category
-    return report.category_id === maintainerCategoryId;
+
+    // Check if the report's category is included in the maintainer's categories
+    return maintainerCategoryIds.includes(report.category_id); // TODO
   } catch (error) {
     return false;
   }

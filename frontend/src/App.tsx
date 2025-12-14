@@ -49,18 +49,13 @@ function AppContent() {
             </Route>
 
             <Route element={<Acl allowedRoles={["OFFICER"]} />}>
-              <Route
-                path="/pending-reports"
-                element={<PendingReportsPage />}
-              />
+              <Route path="/pending-reports" element={<PendingReportsPage />} />
             </Route>
 
             {/* TECHNICIAN and EXTERNAL MAINTAINER routes */}
             <Route
               element={
-                <Acl
-                  allowedRoles={["TECHNICIAN", "EXTERNAL MAINTAINER"]}
-                />
+                <Acl allowedRoles={["TECHNICIAN", "EXTERNAL_MAINTAINER"]} />
               }
             >
               <Route
