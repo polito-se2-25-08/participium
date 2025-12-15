@@ -32,6 +32,7 @@ export default function ReportReviewCard({
 	onReject,
 	onSuspend,
 	onAssignExternal,
+
 	isProcessing = false,
 	approveLabel = "Approve Report",
 	rejectLabel = "Reject Report",
@@ -257,7 +258,7 @@ export default function ReportReviewCard({
 						{showMessages && (
 							<div className="flex flex-col bg-gray-50 rounded-lg border border-gray-200 p-4 mt-4">
 								<MessageSection
-									messages={report.publicMessages || []}
+									messages={report.publicMessages}
 								/>
 
 								{onSendMessage && (

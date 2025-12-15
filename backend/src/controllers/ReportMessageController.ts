@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import * as ReportMessageService from "../services/ReportMessageService";
 import * as ReportService from "../services/ReportService";
 import { ApiResponse, ReportDTO } from "../dto/ReportDTO";
-import { ReportMessage } from "../models/ReportMessage";
+import { ReportMessage, ReportMessageDTO } from "../models/ReportMessage";
 
 export const sendPublicMessage = async (req: Request, res: Response) => {
 	try {
@@ -24,7 +24,7 @@ export const sendPublicMessage = async (req: Request, res: Response) => {
 			message
 		);
 
-		const response: ApiResponse<ReportMessage> = {
+		const response: ApiResponse<ReportMessageDTO> = {
 			success: true,
 			data: savedMessage,
 		};

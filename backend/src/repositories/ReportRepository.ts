@@ -444,7 +444,8 @@ export const getReportsByTechnician = async (
 				name,
 				surname,
 				username,
-				profile_picture
+				profile_picture,
+				role
 			)
 			),
 			category:Category(

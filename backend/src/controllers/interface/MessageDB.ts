@@ -11,5 +11,6 @@ export type MessageDB = {
 		surname: string;
 		username: string;
 		profile_picture: string | null;
+		role: string;
 	};
 };

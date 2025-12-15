@@ -11,9 +11,10 @@ import { externalCompanyService } from "../../api/externalcompanyService";
 import { CATEGORY_NAME_TO_ID } from "../../constants/index.ts";
 import { useUser } from "../providers/AuthContext";
 import type { ReportDTO } from "../../interfaces/dto/report/ReportDTO.ts";
+import { postPublicMessage } from "../../action/reportAction.ts";
 
 export default function CategoryReportsPage() {
-	const { refetch, addNewMessage } = useCategoryReports();
+	const { refetch } = useCategoryReports();
 	const { user } = useUser();
 	const [processingReportId, setProcessingReportId] = useState<number | null>(
 		null
@@ -106,18 +107,51 @@ export default function CategoryReportsPage() {
 
 	const handleSendMessage = async (reportId: number, message: string) => {
 		if (!user) return;
-
 		const newMessage = {
 			id: 0,
 			sender_id: user.id,
 			report_id: reportId,
 			message: message,
 			created_at: new Date().toISOString(),
+			is_public: true,
+			sender: {
+				id: user.id,
+				name: user.name,
+				surname: user.surname,
+				username: user.username,
+				profile_picture: user.profilePicture,
+			},
 		};
 
-		addNewMessage(reportId, newMessage);
+		setReports((prevReports) =>
+			prevReports.map((report) =>
+				report.id === reportId
+					? {
+							...report,
+							publicMessages: [
+								...(report.publicMessages || []),
+								{
+									id: newMessage.id,
+									reportId: newMessage.report_id,
+									senderId: newMessage.sender_id,
+									message: newMessage.message,
+									createdAt: newMessage.created_at,
+									sender: {
+										id: newMessage.sender.id,
+										name: newMessage.sender.name,
+										surname: newMessage.sender.surname,
+										username: newMessage.sender.username,
+										profilePicture:
+											newMessage.sender.profile_picture,
+									},
+								},
+							],
+					  }
+					: report
+			)
+		);
 
-		//await postMessage(reportId, message, user.id);
+		const response = await postPublicMessage(reportId, message, user.id);
 	};
 
 	// =============================

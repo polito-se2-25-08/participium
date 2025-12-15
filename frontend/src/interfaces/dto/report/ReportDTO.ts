@@ -45,6 +45,7 @@ export interface ReportDTO {
 			surname: string;
 			username: string;
 			profilePicture: string | null;
+			role: string;
 		};
 	}[];
 	user: {

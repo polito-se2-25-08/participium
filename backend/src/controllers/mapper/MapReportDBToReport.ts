@@ -36,6 +36,7 @@ export const mapReportDBToReportDTO = (report: ReportDB): ReportDTO => {
 					surname: message.sender.surname,
 					username: message.sender.username,
 					profilePicture: message.sender.profile_picture,
+					role: message.sender.role,
 				},
 			})),
 
@@ -53,6 +54,7 @@ export const mapReportDBToReportDTO = (report: ReportDB): ReportDTO => {
 					surname: message.sender.surname,
 					username: message.sender.username,
 					profilePicture: message.sender.profile_picture,
+					role: message.sender.role,
 				},
 			})),
 

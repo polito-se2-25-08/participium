@@ -94,5 +94,6 @@ export interface Comment {
 		surname: string;
 		username: string;
 		profilePicture: string | null;
+		role: string;
 	};
 }

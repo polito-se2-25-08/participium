@@ -15,7 +15,7 @@ export default function InternalCommentSection({
 	internalMessages,
 }: CommentSectionProps) {
 	const { user } = useUser();
-	const [comments, setComments] = useState<Comment[]>([]);
+	const [comments, setComments] = useState<Comment[]>(internalMessages);
 
 	const [submitting, setSubmitting] = useState(false);
 
@@ -23,22 +23,30 @@ export default function InternalCommentSection({
 		try {
 			setSubmitting(true);
 
-			const currentUser = user
-				? {
-						id: user.id,
-						name: user.name,
-						surname: user.surname,
-						role: user.role,
-				  }
-				: undefined;
+			const newMessage: Comment = {
+				id: 0,
+				senderId: user.id,
+				reportId: reportId,
+				message: content,
+				createdAt: new Date().toISOString(),
+				sender: {
+					id: user.id,
+					name: user.name,
+					surname: user.surname,
+					username: user.username,
+					profilePicture: user.profilePicture,
+					role: user.role,
+				},
+			};
 
-			const result = await commentService.addComment(
+			setComments((prev) => [...prev, newMessage]);
+
+			const result = await commentService.sendInternalMessage(
 				reportId,
 				content,
-				currentUser
+				user.id
 			);
 			if (result.success && result.data) {
-				setComments((prev) => [...prev, result.data!]);
 			} else {
 				// Handle error (maybe show a toast)
 				console.error("Failed to add comment");
