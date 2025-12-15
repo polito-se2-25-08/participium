@@ -39,6 +39,7 @@ export const mapReportDBToReportDTO = (report: ReportDB): ReportDTO => {
 				createdAt: message.created_at,
 			};
 		}),
+		assignedExternalOfficeId: report.assignedExternalOfficeId,
 	};
 };
 

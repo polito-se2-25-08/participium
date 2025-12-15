@@ -40,4 +40,5 @@ export interface ReportDTO {
 		username: string;
 		profilePicture: string | null;
 	};
+	assignedExternalOfficeId: number | null;
 }

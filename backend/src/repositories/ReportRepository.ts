@@ -422,20 +422,31 @@ export const getReportsByCategoryAndStatus = async (
   return data;
 };
 
-/* 
 export const getReportsByTechnician = async (
 	category_id: number,
 	status?: Report["status"] | Report["status"][]
-): Promise<Report[]> => {
+): Promise<ReportDB[]> => {
 	let query = supabase
 		.from("Report")
 		.select(
 			`
-      *,
-      photos:Report_Photo(*),
-      user:User(name, surname),
-      messages:Report_Message(*)
-    `
+			*,
+      		photos:Report_Photo(
+				*
+			),
+      		user:User(
+				*
+			),
+	  	    report_message:Report_Message(
+				*
+			),
+			category:Category(
+				*
+			),
+			report_comment:Report_Comment(
+				*
+			)
+		`
 		)
 		.eq("category_id", category_id)
 		.neq("status", "REJECTED")
@@ -457,10 +468,11 @@ export const getReportsByTechnician = async (
 		return [];
 	}
 
-	const remappedData = await remapReports(data);
-	return remappedData;
+	const technicianReports = data as ReportDB[];
+
+	return technicianReports;
 };
- */
+
 
 export const getReportsByTechnician = async (
   category_ids: number[], // Changed from category_id: number
@@ -557,21 +569,23 @@ export const getPendingReports = async (): Promise<ReportDB[]> => {
 				*
 			)
     	`
-    )
-    .eq("status", "PENDING_APPROVAL")
-    .order("timestamp", { ascending: false });
+		)
+		.eq("status", "PENDING_APPROVAL")
+		.order("timestamp", { ascending: false });
 
-  if (error) {
-    throw new AppError(
-      `Failed to fetch pending reports: ${error.message}`,
-      500,
-      "DB_FETCH_ERROR"
-    );
-  }
+	if (error) {
+		throw new AppError(
+			`Failed to fetch pending reports: ${error.message}`,
+			500,
+			"DB_FETCH_ERROR"
+		);
+	}
 
-  if (!data) {
-    return [];
-  }
+	const pendingReports = data as ReportDB[];
 
-  return data;
+	if (!data) {
+		return [];
+	}
+
+	return pendingReports;
 };

@@ -135,7 +135,7 @@ export const reportService = {
 		}
 	},
 
-	async getTechnicianReports(): Promise<ApiResponse<Report[]>> {
+	async getTechnicianReports(): Promise<ApiResponse<ReportDTO[]>> {
 		try {
 			const token = localStorage.getItem("token");
 
@@ -147,7 +147,7 @@ export const reportService = {
 				},
 			});
 
-			const result: ApiResponse<Report[]> = await response.json();
+			const result: ApiResponse<ReportDTO[]> = await response.json();
 			return result;
 		} catch (error) {
 			console.error("Error fetching technician reports:", error);
