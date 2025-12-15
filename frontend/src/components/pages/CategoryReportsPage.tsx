@@ -29,6 +29,7 @@ export default function CategoryReportsPage() {
 		const init = async () => {
 			setIsLoading(true);
 			const response = await reportService.getTechnicianReports();
+			console.log(response);
 
 			if (response.success) {
 				console.log("Fetched reports:", response.data);

@@ -1,41 +1,45 @@
 import { todo } from "node:test";
 import { Report } from "../models/Report";
 import {
-  getReportsByCategoryAndStatus,
-  getReportsByTechnician,
-  getReportById,
+	getReportsByCategoryAndStatus,
+	getReportsByTechnician,
+	getReportById,
 } from "../repositories/ReportRepository";
 import {
-  getTechnicianCategory,
-  getTechnicianCategories,
-  getExternalMaintainerCategory,
-  updateReportExternalAssignment,
+	getTechnicianCategory,
+	getTechnicianCategories,
+	getExternalMaintainerCategory,
+	updateReportExternalAssignment,
 } from "../repositories/TechnicianRepository";
 import AppError from "../utils/AppError";
+import { ReportDTO } from "../dto/ReportDTO";
+import { mapReportsDBToReports } from "../controllers/mapper/MapReportDBToReport";
 
 // Function to get the category for a technician or external maintainer
 export const getMaintainerCategory = async (
-  // TODO make it so it works with getTechnicianCategories !! needs to handle multiple category_ids
-  user_id: number
+	// TODO make it so it works with getTechnicianCategories !! needs to handle multiple category_ids
+	user_id: number
 ): Promise<number[]> => {
-  // First try to get the categories from Technician_Category table
-  try {
-    const categories = await getTechnicianCategories(user_id);
-    if (categories && categories.length > 0) {
-      return categories;
-    }
-    // If empty array returned (though usually throws if not found depending on repo implementation), try external
-    throw new Error("No technician categories found");
-  } catch (error) {
-    // If not found in Technician_Category, try External_Company via User_Company
-    // Assuming external maintainer still has one category for now, wrap in array
-    try {
-      const externalCategory = await getExternalMaintainerCategory(user_id);
-      return [externalCategory];
-    } catch (extError) {
-      return [];
-    }
-  }
+	// First try to get the categories from Technician_Category table
+	try {
+		const categories = await getTechnicianCategories(user_id);
+		if (categories && categories.length > 0) {
+			return categories;
+		}
+		// If empty array returned (though usually throws if not found depending on repo implementation), try external
+		throw new Error("No technician categories found");
+	} catch (error) {
+		// If not found in Technician_Category, try External_Company via User_Company
+		// Assuming external maintainer still has one category for now, wrap in array
+		try {
+			const externalCategory = await getExternalMaintainerCategory(
+				user_id
+			);
+			return [externalCategory];
+		} catch (extError) {
+			return [];
+		}
+	}
 };
 
 // Function to get reports for a technician based on their category
@@ -61,9 +65,9 @@ export const getReportsForTechnician = async (
 };
 
 export const getCategoriesForTechnician = async (
-  technician_id: number
+	technician_id: number
 ): Promise<number[]> => {
-  return await getTechnicianCategories(technician_id);
+	return await getTechnicianCategories(technician_id);
 };
 
 // Function to check if a technician/external maintainer is authorized to update a specific report
