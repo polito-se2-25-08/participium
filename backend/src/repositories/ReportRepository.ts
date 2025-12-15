@@ -425,16 +425,28 @@ export const getReportsByCategoryAndStatus = async (
 export const getReportsByTechnician = async (
 	category_id: number,
 	status?: Report["status"] | Report["status"][]
-): Promise<Report[]> => {
+): Promise<ReportDB[]> => {
 	let query = supabase
 		.from("Report")
 		.select(
 			`
-      *,
-      photos:Report_Photo(*),
-      user:User(name, surname),
-      messages:Report_Message(*)
-    `
+			*,
+      		photos:Report_Photo(
+				*
+			),
+      		user:User(
+				*
+			),
+	  	    report_message:Report_Message(
+				*
+			),
+			category:Category(
+				*
+			),
+			report_comment:Report_Comment(
+				*
+			)
+		`
 		)
 		.eq("category_id", category_id)
 		.neq("status", "REJECTED")
@@ -456,8 +468,9 @@ export const getReportsByTechnician = async (
 		return [];
 	}
 
-	const remappedData = await remapReports(data, "TECHNICIAN");
-	return remappedData;
+	const technicianReports = data as ReportDB[];
+
+	return technicianReports;
 };
 
 export const getReportsByUserId = async (
@@ -532,9 +545,11 @@ export const getPendingReports = async (): Promise<ReportDB[]> => {
 		);
 	}
 
+	const pendingReports = data as ReportDB[];
+
 	if (!data) {
 		return [];
 	}
 
-	return data;
+	return pendingReports;
 };
