@@ -59,6 +59,13 @@ export interface ReportDTO {
 		senderId: number;
 		message: string;
 		createdAt: string;
+		sender: {
+			id: number;
+			name: string;
+			surname: string;
+			username: string;
+			profilePicture: string | null;
+		};
 	}[];
 	internalMessages: {
 		id: number;
@@ -66,6 +73,13 @@ export interface ReportDTO {
 		senderId: number;
 		message: string;
 		createdAt: string;
+		sender: {
+			id: number;
+			name: string;
+			surname: string;
+			username: string;
+			profilePicture: string | null;
+		};
 	}[];
 	user: {
 		id: number;

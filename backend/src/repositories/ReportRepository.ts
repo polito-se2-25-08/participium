@@ -431,19 +431,23 @@ export const getReportsByTechnician = async (
 		.select(
 			`
 			*,
-      photos:Report_Photo(
+      		photos:Report_Photo(
 				*
 			),
-      user:User(
+      		user:User(
 				*
 			),
-	  	report_message:Report_Message(
-				*
+	  		report_message:Report_Message(
+				*,
+				sender:User!Report_Message_sender_id_fkey (
+				id,
+				name,
+				surname,
+				username,
+				profile_picture
+			)
 			),
 			category:Category(
-				*
-			),
-			report_comment:Report_Comment(
 				*
 			)
 		`
@@ -455,6 +459,8 @@ export const getReportsByTechnician = async (
 	const { data, error } = await query.order("timestamp", {
 		ascending: false,
 	});
+
+	console.dir(data, { depth: null });
 
 	if (error) {
 		throw new AppError(
@@ -473,7 +479,7 @@ export const getReportsByTechnician = async (
 	return technicianReports;
 };
 
-export const getReportsByUserId = async (
+export const getReportsByCitizenId = async (
 	userId: number
 ): Promise<UserReport[]> => {
 	const { data, error } = await supabase
@@ -491,6 +497,7 @@ export const getReportsByUserId = async (
     	`
 		)
 		.eq("user_id", userId)
+		.eq("Report_Message.is_public", true)
 		.in("status", ["ASSIGNED", "IN_PROGRESS", "SUSPENDED"])
 		.order("timestamp", { ascending: false });
 

@@ -10,7 +10,6 @@ import { reportService } from "../../api/reportService";
 import { externalCompanyService } from "../../api/externalcompanyService";
 import { CATEGORY_NAME_TO_ID } from "../../constants/index.ts";
 import { useUser } from "../providers/AuthContext";
-import { postMessage } from "../../action/reportAction";
 import type { ReportDTO } from "../../interfaces/dto/report/ReportDTO.ts";
 
 export default function CategoryReportsPage() {
@@ -118,7 +117,7 @@ export default function CategoryReportsPage() {
 
 		addNewMessage(reportId, newMessage);
 
-		await postMessage(reportId, message);
+		//await postMessage(reportId, message, user.id);
 	};
 
 	// =============================

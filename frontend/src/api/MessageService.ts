@@ -4,39 +4,36 @@ const API_BASE = import.meta.env.VITE_API_ENDPOINT;
 
 export interface ReportMessage {
 	id: number;
-	report_id: number;
-	sender_id: number;
+	reportId: number;
+	senderId: number;
 	message: string;
-	created_at: string;
-	sender?: {
-		id: number;
-		name: string;
-		surname: string;
-		username: string;
-	};
+	createdAt: string;
+	isPublic: boolean;
 }
 
 export const messageService = {
-	async sendMessage(
+	async sendPublicMessage(
 		reportId: number,
-		message: string
+		message: string,
+		senderId: number
 	): Promise<ApiResponse<ReportMessage>> {
 		try {
 			const token = localStorage.getItem("token");
 
 			const response = await fetch(
-				`${API_BASE}/reports/${reportId}/messages`,
+				`${API_BASE}/reports/${reportId}/public-messages`,
 				{
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
 						...(token && { Authorization: `Bearer ${token}` }),
 					},
-					body: JSON.stringify({ message }),
+					body: JSON.stringify({ message, senderId }),
 				}
 			);
 
 			const result: ApiResponse<ReportMessage> = await response.json();
+			console.log(result);
 			return result;
 		} catch (error) {
 			console.error("Error sending message:", error);

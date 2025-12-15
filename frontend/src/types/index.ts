@@ -85,13 +85,14 @@ export interface Rejection_Report {
 export interface Comment {
 	id: number;
 	reportId: number;
-	userId: number;
-	user: {
+	senderId: number;
+	message: string;
+	createdAt: string;
+	sender: {
+		id: number;
 		name: string;
 		surname: string;
-		role: string;
-		profile_picture?: string;
+		username: string;
+		profilePicture: string | null;
 	};
-	content: string;
-	createdAt: string;
 }

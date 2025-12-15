@@ -20,7 +20,6 @@ export interface ReportDB {
 		| null;
 	assignedExternalOfficeId: number | null;
 	report_message: MessageDB[];
-	report_comment: MessageDB[];
 	photos: PhotosDB[];
 	user: UserDB;
 	category: CategoryDB;

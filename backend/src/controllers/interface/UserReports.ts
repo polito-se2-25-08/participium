@@ -43,5 +43,5 @@ export type UserReportDTO = {
 		| null;
 	category: string;
 	photos: string[];
-	messages: MessageDTO[];
+	publicMessages: MessageDTO[];
 };

@@ -376,11 +376,11 @@ export const updateReportStatus = async (req: Request, res: Response) => {
 	}
 };
 
-export const getReportsByUserId = async (req: Request, res: Response) => {
+export const getReportsByCitizenId = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const numericId = Number(id);
 
-	const reports = await ReportService.getReportsByUserId(numericId);
+	const reports = await ReportService.getReportsByCitizenId(numericId);
 
 	return res.status(200).json({
 		success: true,

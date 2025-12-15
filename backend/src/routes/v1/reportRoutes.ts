@@ -65,9 +65,15 @@ router.patch(
 );
 
 router.post(
-	"/reports/:id/messages",
+	"/reports/:id/public-messages",
 	protect,
-	ReportMessageController.sendMessage
+	ReportMessageController.sendPublicMessage
+);
+
+router.post(
+	"/reports/:id/internal-messages",
+	protect,
+	ReportMessageController.sendInternalMessage
 );
 
 export default router;

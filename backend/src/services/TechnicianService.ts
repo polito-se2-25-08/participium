@@ -6,7 +6,6 @@ import {
 	getReportById,
 } from "../repositories/ReportRepository";
 import {
-	getTechnicianCategory,
 	getTechnicianCategories,
 	getExternalMaintainerCategory,
 	updateReportExternalAssignment,

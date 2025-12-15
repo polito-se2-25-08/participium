@@ -1,45 +1,103 @@
-import { ReportMessage, ReportMessageInsert } from "../models/ReportMessage";
+import {
+	ReportMessage,
+	ReportMessageDTO,
+	ReportMessageInsert,
+} from "../models/ReportMessage";
 import * as ReportMessageRepository from "../repositories/ReportMessageRepository";
 import * as NotificationService from "./NotificationService";
-import { getIO, connectedUsers } from "../socket";
+import * as ReportRepository from "../repositories/ReportRepository";
 
-export const createMessage = async (
-	messageData: ReportMessageInsert,
-	recipientId: number
-): Promise<ReportMessage> => {
-	// Save message to DB
-	const message = await ReportMessageRepository.createMessage(messageData);
+export const createPublicMessage = async (
+	reportId: number,
+	senderId: number,
+	message: string
+): Promise<ReportMessageDTO> => {
+	const trimmedMessage = message.trim();
 
-	// Create notification for recipient
-	const notification = await NotificationService.createNotification({
-		user_id: recipientId,
-		report_id: messageData.report_id,
-		type: "NEW_MESSAGE",
-		message: `New message on report #${messageData.report_id}`,
-	});
-
-	// Try to send via WebSocket if user is online
-	const socketId = connectedUsers.get(recipientId);
-	if (socketId) {
-		getIO().to(socketId).emit("notification", {
-			id: notification.id,
-			message: notification.message,
-			reportId: messageData.report_id,
-			type: "NEW_MESSAGE",
-			timestamp: notification.created_at,
-		});
-		console.log(`Notification sent to user ${recipientId} for new message`);
-	} else {
-		console.log(
-			`User ${recipientId} is not connected, notification saved to DB`
-		);
+	if (trimmedMessage === "") {
+		throw new Error("Message cannot be empty");
 	}
 
-	return message;
+	const report = await ReportRepository.getReportById(reportId);
+
+	if (!report) {
+		throw new Error("Report not found");
+	}
+
+	const savedMessage = await ReportMessageRepository.createPublicMessage(
+		reportId,
+		senderId,
+		trimmedMessage
+	);
+
+	const savedMessageCamelCase = {
+		id: savedMessage.id,
+		reportId: savedMessage.report_id,
+		senderId: savedMessage.sender_id,
+		message: savedMessage.message,
+		createdAt: savedMessage.created_at,
+		isPublic: savedMessage.is_public,
+	};
+
+	if (!savedMessage) {
+		throw new Error("Failed to save message");
+	}
+
+	/*
+	const notification = await NotificationService.createNotification(
+		 senderId,
+		 reportId,
+		 "NEW_MESSAGE",
+		`New message on report #${report_id}`,
+	);
+
+	*/
+
+	return savedMessageCamelCase;
 };
 
 export const getMessagesByReportId = async (
 	reportId: number
 ): Promise<ReportMessage[]> => {
 	return await ReportMessageRepository.getMessagesByReportId(reportId);
+};
+
+export const createInternalMessage = async (
+	reportId: number,
+	senderId: number,
+	message: string
+): Promise<ReportMessage> => {
+	const trimmedMessage = message.trim();
+
+	if (trimmedMessage === "") {
+		throw new Error("Message cannot be empty");
+	}
+
+	const report = await ReportRepository.getReportById(reportId);
+
+	if (!report) {
+		throw new Error("Report not found");
+	}
+
+	const savedMessage = await ReportMessageRepository.createInternalMessage(
+		reportId,
+		senderId,
+		trimmedMessage
+	);
+
+	if (!savedMessage) {
+		throw new Error("Failed to save message");
+	}
+
+	/*
+	const notification = await NotificationService.createNotification(
+		 senderId,
+		 reportId,
+		 "NEW_MESSAGE",
+		`New message on report #${report_id}`,
+	);
+
+	*/
+
+	return savedMessage;
 };

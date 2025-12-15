@@ -80,10 +80,10 @@ export const updateReportStatus = async (
 	return report;
 };
 
-export const getReportsByUserId = async (
+export const getReportsByCitizenId = async (
 	userId: number
 ): Promise<UserReportDTO[]> => {
-	const reports = await ReportRepository.getReportsByUserId(userId);
+	const reports = await ReportRepository.getReportsByCitizenId(userId);
 
 	const mappedReports = mapReportsToReportsDTO(reports);
 

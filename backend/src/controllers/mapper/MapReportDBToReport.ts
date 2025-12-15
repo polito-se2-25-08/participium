@@ -21,24 +21,41 @@ export const mapReportDBToReportDTO = (report: ReportDB): ReportDTO => {
 			profilePicture: report.user.profile_picture,
 		},
 		photos: report.photos.map((photo) => photo.report_photo),
-		internalMessages: report.report_comment.map((message) => {
-			return {
+
+		internalMessages: report.report_message
+			.filter((message) => !message.is_public)
+			.map((message) => ({
 				id: message.id,
 				reportId: message.report_id,
 				senderId: message.sender_id,
 				message: message.message,
 				createdAt: message.created_at,
-			};
-		}),
-		publicMessages: report.report_message.map((message) => {
-			return {
+				sender: {
+					id: message.sender.id,
+					name: message.sender.name,
+					surname: message.sender.surname,
+					username: message.sender.username,
+					profilePicture: message.sender.profile_picture,
+				},
+			})),
+
+		publicMessages: report.report_message
+			.filter((message) => message.is_public)
+			.map((message) => ({
 				id: message.id,
 				reportId: message.report_id,
 				senderId: message.sender_id,
 				message: message.message,
 				createdAt: message.created_at,
-			};
-		}),
+				sender: {
+					id: message.sender.id,
+					name: message.sender.name,
+					surname: message.sender.surname,
+					username: message.sender.username,
+					profilePicture: message.sender.profile_picture,
+				},
+			})),
+
 		assignedExternalOfficeId: report.assignedExternalOfficeId,
 	};
 };

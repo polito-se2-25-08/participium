@@ -11,7 +11,7 @@ import {
 	updateUser,
 	verifyUser,
 } from "../../controllers/userController";
-import { getReportsByUserId } from "../../controllers/ReportController";
+import { getReportsByCitizenId } from "../../controllers/ReportController";
 
 const router = Router();
 
@@ -22,7 +22,7 @@ router.patch("/users/:id", updateUser);
 router.post("/users/:id/verify", createVerificationCode);
 router.post("/users/:id/verify/check", verifyUser);
 
-router.get("/users/:id/reports", getReportsByUserId);
+router.get("/users/:id/reports", getReportsByCitizenId);
 
 router.get("/profile", protect, (req, res) => {
 	res.json({ message: "Authorized!", user: (req as any).user });

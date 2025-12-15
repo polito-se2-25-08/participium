@@ -5,7 +5,7 @@ import type {
 	UserReport,
 } from "../../../interfaces/dto/report/UserReport";
 import { fetchUserReportsById } from "../../../action/UserAction";
-import { postMessage } from "../../../action/reportAction";
+
 import { useUser } from "../../providers/AuthContext";
 import { formatTimestamp } from "../../../utilis/utils";
 
@@ -18,6 +18,7 @@ import {
 	faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "../../input/variants/TextInput";
+import { postPublicMessage } from "../../../action/reportAction";
 
 type ReportState = {
 	isExpanded: boolean;
@@ -48,22 +49,21 @@ export default function UserReports() {
 
 		if (!messageText) return;
 
-		const newMessage: Message = {
+		const newMessage = {
 			id: 0,
 			senderId: user.id,
 			reportId: reportId,
 			message: messageText,
+			isPublic: true,
 			createdAt: new Date().toISOString(),
 		};
-
-		await postMessage(reportId, messageText);
 
 		setUserReports((prev) => {
 			const updatedReports = prev.map((report) => {
 				if (report.id === reportId) {
 					return {
 						...report,
-						messages: [...report.messages, newMessage],
+						publicMessages: [...report.publicMessages, newMessage],
 					};
 				}
 				return report;
@@ -78,23 +78,32 @@ export default function UserReports() {
 				newMessage: "",
 			},
 		}));
+
+		const returnedMessage = await postPublicMessage(
+			reportId,
+			messageText,
+			user.id
+		);
+
+		if (!returnedMessage.success) return;
 	};
 
-  const handleToggleExpand = (reportId: number) => {
-    setReportStates((prev) => ({
-      ...prev,
-      [reportId]: {
-        ...prev[reportId],
-        isExpanded: !prev[reportId].isExpanded,
-      },
-    }));
-  };
+	const handleToggleExpand = (reportId: number) => {
+		setReportStates((prev) => ({
+			...prev,
+			[reportId]: {
+				...prev[reportId],
+				isExpanded: !prev[reportId].isExpanded,
+			},
+		}));
+	};
 
 	useEffect(() => {
 		const init = async () => {
 			setReportFetched(false);
 			setIsLoading(true);
 			const reponse = await fetchUserReportsById(user.id);
+			console.log(reponse);
 			if (reponse.success) {
 				setUserReports(reponse.data);
 			}
@@ -220,61 +229,89 @@ export default function UserReports() {
 													<SubTitle>Updates</SubTitle>
 													<span className="border-b-2 my-2"></span>
 
-                          <div className="flex flex-col">
-                            <div className="max-h-40 overflow-y-scroll p-2 rounded-lg mb-2 space-y-2">
-                              {report.messages && report.messages.length > 0 ? (
-                                report.messages.map((msg) => (
-                                  <div
-                                    key={msg.id}
-                                    className={`p-2 rounded-lg text-sm ${
-                                      msg.senderId === user.id
-                                        ? "bg-blue-100 ml-auto text-right"
-                                        : "bg-gray-100 mr-auto text-left"
-                                    } max-w-[80%]`}
-                                  >
-                                    <p>{msg.message}</p>
-                                    <span className="text-xs opacity-50">
-                                      {new Date(msg.createdAt).toLocaleString()}
-                                    </span>
-                                  </div>
-                                ))
-                              ) : (
-                                <p className="opacity-50 text-center">
-                                  No updates yet
-                                </p>
-                              )}
-                            </div>
+													<div className="flex flex-col">
+														<div className="max-h-40 overflow-y-scroll p-2 rounded-lg mb-2 space-y-2">
+															{report.publicMessages &&
+															report
+																.publicMessages
+																.length > 0 ? (
+																report.publicMessages.map(
+																	(msg) => (
+																		<div
+																			key={
+																				msg.id
+																			}
+																			className={`p-2 rounded-lg text-sm ${
+																				msg.senderId ===
+																				user.id
+																					? "bg-blue-100 ml-auto text-right"
+																					: "bg-gray-100 mr-auto text-left"
+																			} max-w-[80%]`}
+																		>
+																			<p>
+																				{
+																					msg.message
+																				}
+																			</p>
+																			<span className="text-xs opacity-50">
+																				{new Date(
+																					msg.createdAt
+																				).toLocaleString()}
+																			</span>
+																		</div>
+																	)
+																)
+															) : (
+																<p className="opacity-50 text-center">
+																	No updates
+																	yet
+																</p>
+															)}
+														</div>
 
-                            <div className="flex flex-row gap-4">
-                              <TextInput
-							  
-                                placeholder="Write a message here..."
-                                id={`update-input-${report.id}`}
-                                name={`update-input-${report.id}`}
-                                hasLabel={false}
-                                value={state.newMessage}
-                                onChange={(e) =>
-                                  handleMessageChange(report.id, e.target.value)
-                                }
-                              />
-                              <button
-                                onClick={() => handleSendMessage(report.id)}
-                                className="border rounded-full p-2 flex items-center justify-center hover:cursor-pointer"
-                              >
-                                <FontAwesomeIcon icon={faPaperPlane} />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+														<div className="flex flex-row gap-4">
+															<TextInput
+																placeholder="Write a message here..."
+																id={`update-input-${report.id}`}
+																name={`update-input-${report.id}`}
+																hasLabel={false}
+																value={
+																	state.newMessage
+																}
+																onChange={(e) =>
+																	handleMessageChange(
+																		report.id,
+																		e.target
+																			.value
+																	)
+																}
+															/>
+															<button
+																onClick={() =>
+																	handleSendMessage(
+																		report.id
+																	)
+																}
+																className="border rounded-full p-2 flex items-center justify-center hover:cursor-pointer"
+															>
+																<FontAwesomeIcon
+																	icon={
+																		faPaperPlane
+																	}
+																/>
+															</button>
+														</div>
+													</div>
+												</div>
+											)}
+										</div>
+									)}
+								</div>
+							);
+						})}
+					</div>
+				)}
+			</div>
+		</div>
+	);
 }
