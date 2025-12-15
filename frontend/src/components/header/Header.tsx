@@ -26,7 +26,7 @@ export default function Header() {
           {user?.role !== "ADMIN" &&
             user?.role !== "OFFICER" &&
             user?.role !== "TECHNICIAN" &&
-            user?.role !== "EXTERNAL MAINTAINER" && (
+            user?.role !== "EXTERNAL_MAINTAINER" && (
               <Link
                 to="/report"
                 className={isActive("/report") ? "text-blue-500" : ""}
@@ -43,7 +43,8 @@ export default function Header() {
               Review Queue
             </Link>
           )}
-          {(user?.role === "TECHNICIAN" || user?.role === "EXTERNAL MAINTAINER") && (
+          {(user?.role === "TECHNICIAN" ||
+            user?.role === "EXTERNAL_MAINTAINER") && (
             <Link
               to="/category-reports"
               className={isActive("/category-reports") ? "text-blue-500" : ""}

@@ -11,19 +11,19 @@ export const getAllCategories = async (req: Request, res: Response) => {
 
     if (error) {
       return res.status(500).json({
-        status: false,
+        success: false,
         message: "Error fetching categories",
         error: error,
       });
     }
 
     return res.status(200).json({
-      status: true,
+      success: true,
       data: data,
     });
   } catch (error: any) {
     return res.status(500).json({
-      status: false,
+      success: false,
       message: "Unexpected error occurred",
       error: error.message,
     });

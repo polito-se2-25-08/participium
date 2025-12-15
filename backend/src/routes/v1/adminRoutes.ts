@@ -1,10 +1,17 @@
 import express from "express";
 import { validate } from "../../middleware/validateMiddleware";
-import { setupSchema, assignRoleSchema } from "../../validators/userValidators";
+import {
+  setupSchema,
+  assignRoleSchema,
+  setupTechnicianSchema,
+} from "../../validators/userValidators";
 import {
   setupUser,
   setupTechnician,
-  setTechnicianCategory,
+  setupExternalMaintainer,
+  updateTechnicianCategories,
+  getTechnicianCategories,
+  deleteUser,
 } from "../../controllers/adminController";
 import {
   getAllUsers,
@@ -24,7 +31,18 @@ router.use(restrictTo("ADMIN"));
 router.post("/register", validate(setupSchema), setupUser);
 
 // Technician creation by admin (new functionality)
-router.post("/register-technician", validate(setupSchema), setupTechnician);
+router.post(
+  "/register-technician",
+  validate(setupTechnicianSchema),
+  setupTechnician
+);
+
+// External Maintainer creation by admin
+router.post(
+  "/register-external-maintainer",
+  validate(setupSchema),
+  setupExternalMaintainer
+);
 
 // List all users with their roles
 router.get("/users", getAllUsers);
@@ -35,6 +53,13 @@ router.get("/users/:id", getUserById);
 // Assign or update a user's role
 router.put("/users/:id/role", validate(assignRoleSchema), updateUser);
 
-// Assign or update a technician category
-router.put("/technicians/:id/category", setTechnicianCategory);
+// Update technician categories (replaces existing ones)
+router.put("/technicians/:id/categories", updateTechnicianCategories);
+
+// Get technician categories
+router.get("/technicians/:id/categories", getTechnicianCategories);
+
+// Delete a user by ID
+router.delete("/users/:id", deleteUser);
+
 export default router;
