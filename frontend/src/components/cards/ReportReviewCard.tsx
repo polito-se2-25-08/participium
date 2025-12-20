@@ -15,6 +15,8 @@ interface ReportReviewCardProps {
 	onReject: (reportId: number) => void;
 	onSuspend?: (reportId: number) => void;
 	onAssignExternal?: (reportId: number) => void;
+	hideRejectWhenSuspended?: boolean;
+	hideAssignExternalWhenSuspended?: boolean;
 	isProcessing?: boolean;
 	approveLabel?: string;
 	rejectLabel?: string;
@@ -32,6 +34,8 @@ export default function ReportReviewCard({
 	onReject,
 	onSuspend,
 	onAssignExternal,
+	hideRejectWhenSuspended = false,
+	hideAssignExternalWhenSuspended = false,
 
 	isProcessing = false,
 	approveLabel = "Approve Report",
@@ -60,9 +64,19 @@ export default function ReportReviewCard({
 	};
 
 	const reportDate = (report as any).timestamp || (report as any).createdAt;
+	const isSuspended = report.status === "SUSPENDED";
+
+	const showAssignExternal =
+		Boolean(onAssignExternal) &&
+		!(hideAssignExternalWhenSuspended && isSuspended);
+	const showReject = !(hideRejectWhenSuspended && isSuspended);
 
 	// Determine number of action buttons
-	const actionCount = 2 + (onSuspend ? 1 : 0) + (onAssignExternal ? 1 : 0);
+	const actionCount =
+		1 +
+		(showReject ? 1 : 0) +
+		(onSuspend ? 1 : 0) +
+		(showAssignExternal ? 1 : 0);
 
 	const gridCols =
 		actionCount === 4
@@ -82,19 +96,19 @@ export default function ReportReviewCard({
 			<div className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
 				<div className="flex justify-between items-start mb-4">
 					<div className="flex-1">
-						<h3 className="text-xl font-semibold text-gray-800 mb-2">
+						<h3 className="text-2xl font-semibold text-gray-800 mb-2">
 							{report.title}
 						</h3>
 
 						<div className="space-y-1">
-							<p className="text-sm text-gray-500">
+							<p className="text-base text-gray-600">
 								Category:{" "}
 								<span className="font-medium">
 									{report.category.category}
 								</span>
 							</p>
 
-							<p className="text-sm text-gray-500">
+							<p className="text-base text-gray-600">
 								Submitted by:{" "}
 								<span className="font-medium">
 									{report.user?.name
@@ -109,7 +123,7 @@ export default function ReportReviewCard({
 								</span>
 							</p>
 
-							<p className="text-sm text-gray-500">
+							<p className="text-base text-gray-600">
 								Date:{" "}
 								<span className="font-medium">
 									{formatDate(reportDate)}
@@ -120,13 +134,13 @@ export default function ReportReviewCard({
 
 					<div className="flex flex-col items-end gap-3 min-w-[180px]">
 						{/* STATUS BADGE */}
-						<span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
+						<span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-base font-medium rounded-full">
 							{report.status}
 						</span>
 
 						{/* NEW: EXTERNAL COMPANY BADGE */}
 						{externalAssigned && (
-							<span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-sm font-medium rounded-full">
+							<span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-base font-medium rounded-full">
 								Assigned to external company
 							</span>
 						)}
@@ -152,12 +166,12 @@ export default function ReportReviewCard({
 					</div>
 				</div>
 
-				<p className="text-gray-700 mb-4">{report.description}</p>
+				<p className="text-gray-700 text-base leading-relaxed mb-4">
+					{report.description}
+				</p>
 
 				{/* ACTION BUTTONS */}
-				<div
-					className={`grid ${gridCols} gap-3 mt-6 pt-4 border-t border-gray-200`}
-				>
+				<div className={`grid ${gridCols} gap-3 mt-6 pt-4 border-t border-gray-200`}>
 					{/* Approve */}
 					<button
 						onClick={() => onApprove(report.id)}
@@ -179,9 +193,9 @@ export default function ReportReviewCard({
 					)}
 
 					{/* Assign External */}
-					{onAssignExternal && (
+					{showAssignExternal && (
 						<button
-							onClick={() => onAssignExternal(report.id)}
+							onClick={() => onAssignExternal?.(report.id)}
 							disabled={isProcessing}
 							className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50 transition-colors"
 						>
@@ -190,12 +204,14 @@ export default function ReportReviewCard({
 					)}
 
 					{/* Reject */}
-					<DangerButton
-						onClick={() => onReject(report.id)}
-						pending={isProcessing}
-					>
-						{rejectLabel}
-					</DangerButton>
+					{showReject && (
+						<DangerButton
+							onClick={() => onReject(report.id)}
+							pending={isProcessing}
+						>
+							{rejectLabel}
+						</DangerButton>
+					)}
 				</div>
 
 				{allowInternalComments && (

@@ -1,20 +1,17 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ContentContainer from "../containers/ContentContainer";
 import PageTitle from "../titles/PageTitle";
 import SubTitle from "../titles/SubTitle";
 import LoadingState from "../states/LoadingState";
 import ErrorState from "../states/ErrorState";
 import ReportReviewCard from "../cards/ReportReviewCard";
-import { useCategoryReports } from "../../hooks/useCategoryReports";
 import { reportService } from "../../api/reportService";
 import { externalCompanyService } from "../../api/externalcompanyService";
-import { CATEGORY_NAME_TO_ID } from "../../constants/index.ts";
 import { useUser } from "../providers/AuthContext";
 import type { ReportDTO } from "../../interfaces/dto/report/ReportDTO.ts";
 import { postPublicMessage } from "../../action/reportAction.ts";
 
 export default function CategoryReportsPage() {
-	const { refetch } = useCategoryReports();
 	const { user } = useUser();
 	const [processingReportId, setProcessingReportId] = useState<number | null>(
 		null
@@ -25,22 +22,103 @@ export default function CategoryReportsPage() {
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [isError, setIsError] = useState(false);
 
-	useEffect(() => {
-		const init = async () => {
-			setIsLoading(true);
+	const fetchReports = useCallback(async () => {
+		setIsLoading(true);
+		setIsError(false);
+		setErrorMessage(null);
+		try {
 			const response = await reportService.getTechnicianReports();
-			console.log(response);
-
-			if (response.success) {
-				console.log("Fetched reports:", response.data);
-				setReports(response.data);
+			if (!response.success) {
+				setIsError(true);
+				setErrorMessage(response.data?.message ?? "Failed to fetch reports");
+				setReports([]);
+				return;
 			}
 
+			setReports(response.data || []);
+		} catch (e) {
+			setIsError(true);
+			setErrorMessage(
+				e instanceof Error ? e.message : "Failed to fetch reports"
+			);
+			setReports([]);
+		} finally {
 			setIsLoading(false);
-		};
-
-		init();
+		}
 	}, []);
+
+	useEffect(() => {
+		fetchReports();
+	}, [fetchReports]);
+
+	const reportsByCategory = useMemo(() => {
+		const map = new Map<string, ReportDTO[]>();
+		for (const report of reports) {
+			const category = report.category?.category ?? "Unknown";
+			const existing = map.get(category);
+			if (existing) existing.push(report);
+			else map.set(category, [report]);
+		}
+		return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
+	}, [reports]);
+
+	const currentCategoriesLabel = useMemo(() => {
+		const categories = reportsByCategory
+			.map(([category]) => category)
+			.filter((c) => c !== "Unknown");
+		if (categories.length === 0) return null;
+		return categories.length === 1
+			? `Current category: ${categories[0]}`
+			: `Current categories: ${categories.join(", ")}`;
+	}, [reportsByCategory]);
+
+	const renderReportCard = (report: ReportDTO) => {
+		// ASSIGNED reports – start/suspend/resolve/assign external
+		if (report.status === "ASSIGNED") {
+			return (
+				<ReportReviewCard
+					key={report.id}
+					report={report}
+					externalAssigned={report.assignedExternalOfficeId !== null}
+					onApprove={handleStart}
+					onReject={handleResolve}
+					onSuspend={handleSuspend}
+					onAssignExternal={handleAssignExternal}
+					isProcessing={processingReportId === report.id}
+					approveLabel="Start Report"
+					rejectLabel="Resolve Report"
+					suspendLabel="Suspend Report"
+					hideRejectWhenSuspended={true}
+					hideAssignExternalWhenSuspended={true}
+					allowInternalComments={true}
+					allowMessages={true}
+					onSendMessage={handleSendMessage}
+				/>
+			);
+		}
+
+		// Other statuses – toggle + resolve + assign external
+		return (
+			<ReportReviewCard
+				key={report.id}
+				report={report}
+				externalAssigned={report.assignedExternalOfficeId !== null}
+				onApprove={handleToggleStatus}
+				onReject={handleResolve}
+				onAssignExternal={handleAssignExternal}
+				isProcessing={processingReportId === report.id}
+				approveLabel={
+					report.status === "SUSPENDED" ? "Resume Report" : "Suspend Report"
+				}
+				rejectLabel="Resolve Report"
+				hideRejectWhenSuspended={true}
+				hideAssignExternalWhenSuspended={true}
+				allowInternalComments={true}
+				allowMessages={true}
+				onSendMessage={handleSendMessage}
+			/>
+		);
+	};
 
 	const [assignModalOpen, setAssignModalOpen] = useState(false);
 	const [assigningReport, setAssigningReport] = useState<number | null>(null);
@@ -53,7 +131,7 @@ export default function CategoryReportsPage() {
 				reportId,
 				"IN_PROGRESS"
 			);
-			if (result.success) refetch();
+			if (result.success) await fetchReports();
 		} finally {
 			setProcessingReportId(null);
 		}
@@ -66,7 +144,7 @@ export default function CategoryReportsPage() {
 				reportId,
 				"SUSPENDED"
 			);
-			if (result.success) refetch();
+			if (result.success) await fetchReports();
 		} finally {
 			setProcessingReportId(null);
 		}
@@ -86,7 +164,7 @@ export default function CategoryReportsPage() {
 				reportId,
 				newStatus
 			);
-			if (result.success) refetch();
+			if (result.success) await fetchReports();
 		} finally {
 			setProcessingReportId(null);
 		}
@@ -99,7 +177,7 @@ export default function CategoryReportsPage() {
 				reportId,
 				"RESOLVED"
 			);
-			if (result.success) refetch();
+			if (result.success) await fetchReports();
 		} finally {
 			setProcessingReportId(null);
 		}
@@ -189,7 +267,8 @@ export default function CategoryReportsPage() {
 	// =============================
 
 	if (isLoading) return <LoadingState />;
-	if (isError) return <ErrorState error={"Sometimes went wrong"} />;
+	if (isError)
+		return <ErrorState error={errorMessage ?? "Sometimes went wrong"} />;
 
 	if (reports.length === 0) {
 		return (
@@ -213,62 +292,28 @@ export default function CategoryReportsPage() {
 		<ContentContainer width="xl:w-5/6 sm:w-full" gap="gap-6" padding="p-5">
 			<PageTitle>Category Reports</PageTitle>
 			<SubTitle>Overview of reports assigned to your category</SubTitle>
+			{currentCategoriesLabel && <SubTitle>{currentCategoriesLabel}</SubTitle>}
 
-			<div className="flex flex-col gap-4">
+			<div className="flex flex-col gap-6">
 				<p className="text-sm text-gray-600">
-					{reports.length} report{reports.length !== 1 ? "s" : ""} in
-					queue
+					{reports.length} report{reports.length !== 1 ? "s" : ""} in queue
 				</p>
 
-				{reports.map((report) => {
-					// ASSIGNED reports – start/suspend/resolve/assign external
-					if (report.status === "ASSIGNED") {
-						return (
-							<ReportReviewCard
-								key={report.id}
-								report={report}
-								externalAssigned={
-									report.assignedExternalOfficeId !== null
-								}
-								onApprove={handleStart}
-								onReject={handleResolve}
-								onSuspend={handleSuspend}
-								onAssignExternal={handleAssignExternal}
-								isProcessing={processingReportId === report.id}
-								approveLabel="Start Report"
-								rejectLabel="Resolve Report"
-								suspendLabel="Suspend Report"
-								allowInternalComments={true}
-								allowMessages={true}
-								onSendMessage={handleSendMessage}
-							/>
-						);
-					}
+				{reportsByCategory.map(([category, categoryReports]) => (
+					<div key={category} className="flex flex-col gap-4">
+						<div className="flex items-baseline justify-between">
+							<h2 className="text-lg font-semibold text-gray-800">
+								{category}
+							</h2>
+							<p className="text-sm text-gray-600">
+								{categoryReports.length} report
+								{categoryReports.length !== 1 ? "s" : ""}
+							</p>
+						</div>
 
-					// Other statuses – toggle + resolve + assign external
-					return (
-						<ReportReviewCard
-							key={report.id}
-							report={report}
-							externalAssigned={
-								report.assignedExternalOfficeId !== null
-							}
-							onApprove={handleToggleStatus}
-							onReject={handleResolve}
-							onAssignExternal={handleAssignExternal}
-							isProcessing={processingReportId === report.id}
-							approveLabel={
-								report.status === "SUSPENDED"
-									? "Resume Report"
-									: "Suspend Report"
-							}
-							rejectLabel="Resolve Report"
-							allowInternalComments={true}
-							allowMessages={true}
-							onSendMessage={handleSendMessage}
-						/>
-					);
-				})}
+						{categoryReports.map(renderReportCard)}
+					</div>
+				))}
 			</div>
 
 			{/* ===========================
@@ -324,7 +369,7 @@ export default function CategoryReportsPage() {
 											assigningReport,
 											null
 										);
-										await refetch();
+										await fetchReports();
 										setAssignModalOpen(false);
 										return;
 									}
@@ -334,7 +379,7 @@ export default function CategoryReportsPage() {
 											assigningReport,
 											Number(value)
 										);
-										await refetch();
+										await fetchReports();
 									}
 
 									setAssignModalOpen(false);
