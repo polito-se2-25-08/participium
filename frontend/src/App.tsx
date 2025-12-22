@@ -21,6 +21,7 @@ import Redirect from "./components/providers/Redirect";
 import { useNotifications } from "./hooks/useNotifications";
 import { NotificationToast } from "./components/NotificationToast";
 import { VerificationPage } from "./components/pages/VerificationPage";
+import { ApiDownToast } from "./components/ApiDownToast";
 
 function AppContent() {
   const { user } = useAuth();
@@ -30,6 +31,7 @@ function AppContent() {
 
   return (
     <>
+      <ApiDownToast />
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<LoginPage />} />
