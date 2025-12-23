@@ -40,7 +40,7 @@ export const loginAction = async (
 export const registerAction = async (
 	_: unknown,
 	formData: FormData
-): Promise<ApiResponse<RegisterResponse>> => {
+): Promise<ApiResponse<LoginReponse>> => {
 	const name = formData.get("name") as string;
 	const surname = formData.get("surname") as string;
 	const username = formData.get("username") as string;
@@ -59,10 +59,39 @@ export const registerAction = async (
 				email,
 			}),
 		});
+		
+		if (!res.ok) {
+			const errorText = await res.text();
+			console.error("Register error response:", errorText);
+			return {
+				success: false,
+				data: { message: `Registration failed: ${res.status}` },
+			};
+		}
 
-		const result: ApiResponse<RegisterResponse> = await res.json();
+		const registerResult: ApiResponse<RegisterResponse> = await res.json();
+		if (!registerResult.success) {
+			return { success: false, data: { message: registerResult.data.message || "Registration failed" } };
+		}
 
-		return result;
+		// After successful registration, automatically log in the user
+		const loginRes = await fetch(`${API_ENDPOINT}/login`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ username, password }),
+		});
+
+		if (!loginRes.ok) {
+			const errorText = await loginRes.text();
+			console.error("Auto-login error response:", errorText);
+			return {
+				success: false,
+				data: { message: `Registration successful, but login failed: ${loginRes.status}` },
+			};
+		}
+
+		const loginResult: ApiResponse<LoginReponse> = await loginRes.json();
+		return loginResult;
 	} catch (err: unknown) {
 		const message =
 			err instanceof Error ? err.message : "Cannot reach server";
