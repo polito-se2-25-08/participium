@@ -277,10 +277,16 @@ export default function CategoryReportsPage() {
 				gap="gap-6"
 				padding="p-5"
 			>
-				<PageTitle>Category Reports</PageTitle>
-				<SubTitle>
-					Overview of reports assigned to your category
-				</SubTitle>
+				<div className="">
+					<div className="mt-2">
+						<PageTitle>Category Reports</PageTitle>
+					</div>
+					<div className="mt-1">
+						<SubTitle className="opacity-90">
+							Overview of reports assigned to your category
+						</SubTitle>
+					</div>
+				</div>
 				<p className="text-center text-gray-500 py-8">
 					No reports found
 				</p>
@@ -290,9 +296,23 @@ export default function CategoryReportsPage() {
 
 	return (
 		<ContentContainer width="xl:w-5/6 sm:w-full" gap="gap-6" padding="p-5">
-			<PageTitle>Category Reports</PageTitle>
-			<SubTitle>Overview of reports assigned to your category</SubTitle>
-			{currentCategoriesLabel && <SubTitle>{currentCategoriesLabel}</SubTitle>}
+			<div className="">
+				<div className="mt-2">
+					<PageTitle>Category Reports</PageTitle>
+				</div>
+				<div className="mt-1">
+					<SubTitle className="opacity-90">
+						Overview of reports assigned to your category
+					</SubTitle>
+				</div>
+				{currentCategoriesLabel && (
+					<div className="mt-3 flex justify-center">
+						<span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-base font-semibold text-[#2c3e50]">
+							{currentCategoriesLabel}
+						</span>
+					</div>
+				)}
+			</div>
 
 			<div className="flex flex-col gap-6">
 				<p className="text-sm text-gray-600">
