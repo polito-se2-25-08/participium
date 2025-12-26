@@ -22,7 +22,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex flex-row items-center justify-between bg-neutral-900 text-white px-4 py-3 shadow-sm border-b border-white/10">
+    <header className="flex flex-row items-center justify-between bg-blue-500 text-white px-4 py-3 shadow-sm border-b border-white/10">
       <Link
         to="/dashboard"
         aria-label="Go to dashboard"

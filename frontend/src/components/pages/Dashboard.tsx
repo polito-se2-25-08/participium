@@ -59,6 +59,8 @@ export default function Dashboard() {
 	}, []);
 
 	const { user } = useUser();
+	const isCitizen = user?.role === "CITIZEN";
+	const showRightPanel = isReportOpen || isCitizen;
 
 	return (
 		<ContentContainer width="w-full sm:w-full xl:w-11/12" gap="xl:gap-2 gap-4">
@@ -73,9 +75,10 @@ export default function Dashboard() {
 					setClickedReportId={setClickedReportId}
 				/>
 
-				<div className="flex-[2] min-w-0 flex flex-col gap-5 h-full overflow-hidden">
-					{isReportOpen && (
-						<ReportMapInfoContainer>
+				{showRightPanel && (
+					<div className="flex-[2] min-w-0 flex flex-col gap-5 h-full overflow-hidden">
+						{isReportOpen && (
+							<ReportMapInfoContainer>
 							{clickedReport && (
 								<div className="flex flex-col pt-6 mb-3">
 									<SubTitle>{clickedReport.title}</SubTitle>
@@ -134,14 +137,15 @@ export default function Dashboard() {
 								<FontAwesomeIcon icon={faX} />
 							</DangerButton>
 						</div>
-					</ReportMapInfoContainer>
-					)}
-					<UserReports />
-				</div>
+							</ReportMapInfoContainer>
+						)}
+						{isCitizen && <UserReports />}
+					</div>
+				)}
 			</div>
-			{user.role === "CITIZEN" && (
-				<PrimaryButton onClick={() => navigate("/report")}>
-					Submit a report
+			{isCitizen && (
+				<PrimaryButton className="rounded-xl mt-2" onClick={() => navigate("/report")}>
+					Submit a Report
 				</PrimaryButton>
 			)}
 		</ContentContainer>
