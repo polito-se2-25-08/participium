@@ -17,6 +17,7 @@ import type { ClientReportMapI } from "../../interfaces/dto/report/NewReportResp
 import SubTitle from "../titles/SubTitle";
 import { formatTimestamp } from "../../utilis/utils";
 import { MapWindow } from "../map/DashboardMap/MapWindow";
+import UserReports from "./componets/UserReports";
 
 export default function Dashboard() {
 	const navigate = useNavigate();
@@ -68,43 +69,43 @@ export default function Dashboard() {
 			<p className="opacity-50 text-center">
 				Citizen Participation in Urban Environment Management
 			</p>
-			<div className="flex flex-row gap-5">
+			<div className="flex flex-row gap-5 w-full">
 				<MapWindow
 					className={`
 						rounded-xl shadow-xl border border-gray-600 
-						${isReportOpen ? "w-2/3" : "w-full"} 
-						w-full h-full min-h-[70vh]`}
+						flex-[3] min-w-0 h-full min-h-[70vh]`}
 					scrollWheelZoom={false}
 					reports={reports}
 					setClickedReportId={setClickedReportId}
 				/>
 
-				{isReportOpen && (
-					<ReportMapInfoContainer>
-						{clickedReport && (
-							<div className="flex flex-col pt-4 mb-3">
-								<SubTitle>{clickedReport.title}</SubTitle>
-								<div className="flex flex-col overflow-scroll max-h-[50vh] pl-5 pr-5 pb-4 w-full">
-									<SubTitle>Reporter</SubTitle>
-									{!clickedReport.anonymous ? (
-										<div className="flex flex-row items-center justify-center gap-5">
-											{clickedReport.reporterProfilePicture && (
-												<img
-													className="h-35 w-35 rounded-2xl"
-													src={
-														`data:image/png;base64,` +
-														clickedReport.reporterProfilePicture
-													}
-													alt="Reporter profile picture"
-												/>
-											)}
-											<span className="text-center text-2xl font-semibold">
-												{clickedReport.reporterUsername}
-											</span>
-										</div>
-									) : (
-										<span>This report is anonymous</span>
-									)}
+				<div className="flex-[2] min-w-0 flex flex-col gap-5 h-full min-h-[70vh]">
+					{isReportOpen && (
+						<ReportMapInfoContainer>
+							{clickedReport && (
+								<div className="flex flex-col pt-4 mb-3">
+									<SubTitle>{clickedReport.title}</SubTitle>
+									<div className="flex flex-col overflow-scroll max-h-[50vh] pl-5 pr-5 pb-4 w-full">
+										<SubTitle>Reporter</SubTitle>
+										{!clickedReport.anonymous ? (
+											<div className="flex flex-row items-center justify-center gap-5">
+												{clickedReport.reporterProfilePicture && (
+													<img
+														className="h-35 w-35 rounded-2xl"
+														src={
+															`data:image/png;base64,` +
+															clickedReport.reporterProfilePicture
+														}
+														alt="Reporter profile picture"
+													/>
+												)}
+												<span className="text-center text-2xl font-semibold">
+													{clickedReport.reporterUsername}
+												</span>
+											</div>
+										) : (
+											<span>This report is anonymous</span>
+										)}
 
 									<span className="border-b-2 mb-2 mt-2"></span>
 
@@ -140,7 +141,9 @@ export default function Dashboard() {
 							</DangerButton>
 						</div>
 					</ReportMapInfoContainer>
-				)}
+					)}
+					<UserReports />
+				</div>
 			</div>
 			{user.role === "CITIZEN" && (
 				<PrimaryButton onClick={() => navigate("/report")}>

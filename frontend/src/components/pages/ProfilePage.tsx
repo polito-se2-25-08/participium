@@ -24,14 +24,8 @@ export function ProfilePage() {
 
       <div className="flex flex-col w-full">
         {user.role === "ADMIN" && <AdminProfilePage />}
-        {user.role === "CITIZEN" && (
-          <div className="flex flex-row gap-4">
-            <div className="flex flex-col w-1/2">
-              <CitizenProfilePage />
-            </div>
-            <UserReports />
-          </div>
-        )}
+        {user.role === "CITIZEN" && 
+              <CitizenProfilePage />}
         {user.role === "EXTERNAL_MAINTAINER" && (
           <ExternalMaintainerProfilePage />
         )}
