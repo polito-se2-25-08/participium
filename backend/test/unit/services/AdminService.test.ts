@@ -1,6 +1,6 @@
 import { adminService } from '../../../src/services/AdminService';
 import { userRepository } from '../../../src/repositories/userRepository';
-import { upsertTechnicianCategory } from '../../../src/repositories/TechnicianRepository';
+import { upsertTechnicianCategories } from '../../../src/repositories/TechnicianRepository';
 import { generateSalt, hashPassword } from '../../../src/utils/encryption';
 import AppError from '../../../src/utils/AppError';
 
@@ -129,8 +129,8 @@ describe('AdminService', () => {
     });
   });
 
-  describe('assignTechnicianCategory', () => {
-    it('should assign category to technician', async () => {
+  describe('assignTechnicianCategories', () => {
+    it('should assign categories to technician', async () => {
       const mockUser = {
         id: 1,
         role: 'TECHNICIAN',
@@ -138,15 +138,15 @@ describe('AdminService', () => {
       };
 
       (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
-      (upsertTechnicianCategory as jest.Mock).mockResolvedValue(undefined);
+      (upsertTechnicianCategories as jest.Mock).mockResolvedValue(undefined);
 
-      const result = await adminService.assignTechnicianCategory(1, 3);
+      const result = await adminService.assignTechnicianCategories(1, [3]);
 
       expect(userRepository.findById).toHaveBeenCalledWith(1);
-      expect(upsertTechnicianCategory).toHaveBeenCalledWith(1, 3);
+      expect(upsertTechnicianCategories).toHaveBeenCalledWith(1, [3]);
       expect(result).toEqual({
         user_id: 1,
-        category_id: 3,
+        category_ids: [3],
       });
     });
 
@@ -154,7 +154,7 @@ describe('AdminService', () => {
       (userRepository.findById as jest.Mock).mockResolvedValue(null);
 
       await expect(
-        adminService.assignTechnicianCategory(999, 1)
+        adminService.assignTechnicianCategories(999, [1])
       ).rejects.toThrow(
         expect.objectContaining({
           message: 'User not found',
@@ -173,7 +173,7 @@ describe('AdminService', () => {
       (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
 
       await expect(
-        adminService.assignTechnicianCategory(1, 1)
+        adminService.assignTechnicianCategories(1, [1])
       ).rejects.toThrow(
         expect.objectContaining({
           message: 'User must have TECHNICIAN role',
@@ -182,7 +182,7 @@ describe('AdminService', () => {
       );
     });
 
-    it('should throw error for invalid category ID', async () => {
+    it('should throw error for invalid category IDs', async () => {
       const mockUser = {
         id: 1,
         role: 'TECHNICIAN',
@@ -192,34 +192,34 @@ describe('AdminService', () => {
       (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
 
       await expect(
-        adminService.assignTechnicianCategory(1, 0)
+        adminService.assignTechnicianCategories(1, [0])
       ).rejects.toThrow(
         expect.objectContaining({
-          message: 'Invalid Category ID',
+          message: 'No valid Category IDs provided',
           statusCode: 400,
         })
       );
 
       await expect(
-        adminService.assignTechnicianCategory(1, 10)
+        adminService.assignTechnicianCategories(1, [10])
       ).rejects.toThrow(
         expect.objectContaining({
-          message: 'Invalid Category ID',
+          message: 'No valid Category IDs provided',
           statusCode: 400,
         })
       );
 
       await expect(
-        adminService.assignTechnicianCategory(1, -1)
+        adminService.assignTechnicianCategories(1, [-1])
       ).rejects.toThrow(
         expect.objectContaining({
-          message: 'Invalid Category ID',
+          message: 'No valid Category IDs provided',
           statusCode: 400,
         })
       );
     });
 
-    it('should throw error if category ID is null or undefined', async () => {
+    it('should throw error if category IDs is null or not an array', async () => {
       const mockUser = {
         id: 1,
         role: 'TECHNICIAN',
@@ -229,10 +229,10 @@ describe('AdminService', () => {
       (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
 
       await expect(
-        adminService.assignTechnicianCategory(1, null as any)
+        adminService.assignTechnicianCategories(1, null as any)
       ).rejects.toThrow(
         expect.objectContaining({
-          message: 'Category ID must be provided',
+          message: 'Category IDs must be provided as an array',
           statusCode: 400,
         })
       );
@@ -246,11 +246,11 @@ describe('AdminService', () => {
       };
 
       (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
-      (upsertTechnicianCategory as jest.Mock).mockResolvedValue(undefined);
+      (upsertTechnicianCategories as jest.Mock).mockResolvedValue(undefined);
 
       for (let categoryId = 1; categoryId <= 9; categoryId++) {
-        const result = await adminService.assignTechnicianCategory(1, categoryId);
-        expect(result.category_id).toBe(categoryId);
+        const result = await adminService.assignTechnicianCategories(1, [categoryId]);
+        expect(result.category_ids).toEqual([categoryId]);
       }
     });
 
@@ -260,7 +260,7 @@ describe('AdminService', () => {
       );
 
       await expect(
-        adminService.assignTechnicianCategory(1, 1)
+        adminService.assignTechnicianCategories(1, [1])
       ).rejects.toThrow(
         expect.objectContaining({
           message: expect.stringContaining('Failed to load user'),

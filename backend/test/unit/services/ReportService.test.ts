@@ -36,17 +36,100 @@ describe('ReportService', () => {
 
   describe('getAllReports', () => {
     it('should return all reports', async () => {
+      const baseUser = {
+        id: 1,
+        name: 'John',
+        surname: 'Doe',
+        username: 'jdoe',
+        profile_picture: null,
+      };
+
+      const baseCategory = { id: 1, name: 'Category 1' };
+
       const mockReports = [
-        { id: 1, title: 'Report 1' },
-        { id: 2, title: 'Report 2' },
+        {
+          id: 1,
+          title: 'Report 1',
+          description: 'Desc 1',
+          latitude: '45.0',
+          longitude: '7.0',
+          timestamp: new Date().toISOString(),
+          anonymous: false,
+          status: 'ASSIGNED',
+          category: baseCategory,
+          user: baseUser,
+          photos: [],
+          report_message: [],
+          assignedExternalOfficeId: null,
+        },
+        {
+          id: 2,
+          title: 'Report 2',
+          description: 'Desc 2',
+          latitude: '45.1',
+          longitude: '7.1',
+          timestamp: new Date().toISOString(),
+          anonymous: true,
+          status: 'IN_PROGRESS',
+          category: baseCategory,
+          user: baseUser,
+          photos: [],
+          report_message: [],
+          assignedExternalOfficeId: null,
+        },
       ];
 
       (ReportRepository.getAllReports as jest.Mock).mockResolvedValue(mockReports);
 
       const result = await ReportService.getAllReports();
 
-      expect(ReportRepository.getAllReports).toHaveBeenCalledWith('CITIZEN');
-      expect(result).toEqual(mockReports);
+      expect(ReportRepository.getAllReports).toHaveBeenCalledWith();
+      expect(result).toEqual([
+        {
+          id: 1,
+          title: 'Report 1',
+          description: 'Desc 1',
+          latitude: '45.0',
+          longitude: '7.0',
+          timestamp: mockReports[0].timestamp,
+          anonymous: false,
+          status: 'ASSIGNED',
+          category: baseCategory,
+          user: {
+            id: 1,
+            name: 'John',
+            surname: 'Doe',
+            username: 'jdoe',
+            profilePicture: null,
+          },
+          photos: [],
+          internalMessages: [],
+          publicMessages: [],
+          assignedExternalOfficeId: null,
+        },
+        {
+          id: 2,
+          title: 'Report 2',
+          description: 'Desc 2',
+          latitude: '45.1',
+          longitude: '7.1',
+          timestamp: mockReports[1].timestamp,
+          anonymous: true,
+          status: 'IN_PROGRESS',
+          category: baseCategory,
+          user: {
+            id: 1,
+            name: 'John',
+            surname: 'Doe',
+            username: 'jdoe',
+            profilePicture: null,
+          },
+          photos: [],
+          internalMessages: [],
+          publicMessages: [],
+          assignedExternalOfficeId: null,
+        },
+      ]);
     });
   });
 

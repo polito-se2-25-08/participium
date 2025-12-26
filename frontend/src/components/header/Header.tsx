@@ -10,15 +10,34 @@ export default function Header() {
   const hideNav =
     location.pathname === "/" || location.pathname === "/register" || location.pathname === "/verify";
 
+  const navLinkClass = (path: string) => {
+    const active = isActive(path);
+
+    return [
+      "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900",
+      "transition-colors",
+      active ? "bg-white/10 text-white" : "text-white/80 hover:bg-white/5 hover:text-white",
+    ].join(" ");
+  };
+
   return (
-    <header className="flex flex-row justify-between bg-[#222] text-white items-center p-4 shadow-2xl font-bold">
-      <p className="text-3xl ">Participium</p>
+    <header className="flex flex-row items-center justify-between bg-blue-500 text-white px-4 py-3 shadow-sm border-b border-white/10">
+      <Link
+        to="/dashboard"
+        aria-label="Go to dashboard"
+        className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
+      >
+        <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-white hover:text-white">
+          Participium
+        </span>
+      </Link>
 
       {!hideNav && (
-        <nav className="flex flex-row gap-7 text-white no-underline text-lg">
+        <nav className="flex flex-row items-center gap-1 sm:gap-2 text-white no-underline">
           <Link
             to="/dashboard"
-            className={isActive("/dashboard") ? "text-blue-500" : ""}
+            className={navLinkClass("/dashboard")}
           >
             Dashboard
           </Link>
@@ -26,10 +45,10 @@ export default function Header() {
           {user?.role !== "ADMIN" &&
             user?.role !== "OFFICER" &&
             user?.role !== "TECHNICIAN" &&
-            user?.role !== "EXTERNAL MAINTAINER" && (
+            user?.role !== "EXTERNAL_MAINTAINER" && (
               <Link
                 to="/report"
-                className={isActive("/report") ? "text-blue-500" : ""}
+                className={navLinkClass("/report")}
               >
                 Report
               </Link>
@@ -38,22 +57,23 @@ export default function Header() {
           {user?.role === "OFFICER" && (
             <Link
               to="/pending-reports"
-              className={isActive("/pending-reports") ? "text-blue-500" : ""}
+              className={navLinkClass("/pending-reports")}
             >
               Review Queue
             </Link>
           )}
-          {(user?.role === "TECHNICIAN" || user?.role === "EXTERNAL MAINTAINER") && (
+          {(user?.role === "TECHNICIAN" ||
+            user?.role === "EXTERNAL_MAINTAINER") && (
             <Link
               to="/category-reports"
-              className={isActive("/category-reports") ? "text-blue-500" : ""}
+              className={navLinkClass("/category-reports")}
             >
               Report Queue
             </Link>
           )}
           <Link
             to="/profile"
-            className={isActive("/profile") ? "text-blue-500" : ""}
+            className={navLinkClass("/profile")}
           >
             Profile
           </Link>

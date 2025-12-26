@@ -73,7 +73,7 @@ describe('adminController', () => {
         role: 'TECHNICIAN',
         name: 'Test',
         surname: 'Technician',
-        category_id: '3',
+        category_ids: ['3'],
       };
 
       const mockUser = {
@@ -85,9 +85,9 @@ describe('adminController', () => {
 
       mockRequest.body = technicianData;
       (adminService.createUser as jest.Mock).mockResolvedValue(mockUser);
-      (adminService.assignTechnicianCategory as jest.Mock).mockResolvedValue({
+      (adminService.assignTechnicianCategories as jest.Mock).mockResolvedValue({
         user_id: 1,
-        category_id: 3,
+        category_ids: [3],
       });
 
       await adminController.setupTechnician(mockRequest as Request, mockResponse as Response, mockNext);
@@ -99,7 +99,7 @@ describe('adminController', () => {
         name: technicianData.name,
         surname: technicianData.surname,
       });
-      expect(adminService.assignTechnicianCategory).toHaveBeenCalledWith(1, 3);
+      expect(adminService.assignTechnicianCategories).toHaveBeenCalledWith(1, [3]);
     });
 
     it('should create technician without category assignment', async () => {
@@ -124,25 +124,25 @@ describe('adminController', () => {
       await adminController.setupTechnician(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(adminService.createUser).toHaveBeenCalled();
-      expect(adminService.assignTechnicianCategory).not.toHaveBeenCalled();
+      expect(adminService.assignTechnicianCategories).not.toHaveBeenCalled();
       expect(responseStatus).toHaveBeenCalledWith(201);
     });
   });
 
-  describe('setTechnicianCategory', () => {
-    it('should assign category to technician', async () => {
+  describe('updateTechnicianCategories', () => {
+    it('should replace technician categories', async () => {
       const mockResult = {
         user_id: 1,
-        category_id: 5,
+        category_ids: [5],
       };
 
       mockRequest.params = { id: '1' };
-      mockRequest.body = { category_id: '5' };
-      (adminService.assignTechnicianCategory as jest.Mock).mockResolvedValue(mockResult);
+      mockRequest.body = { category_ids: ['5'] };
+      (adminService.updateTechnicianCategories as jest.Mock).mockResolvedValue(mockResult);
 
-      await adminController.setTechnicianCategory(mockRequest as Request, mockResponse as Response, mockNext);
+      await adminController.updateTechnicianCategories(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(adminService.assignTechnicianCategory).toHaveBeenCalledWith(1, 5);
+      expect(adminService.updateTechnicianCategories).toHaveBeenCalledWith(1, [5]);
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,

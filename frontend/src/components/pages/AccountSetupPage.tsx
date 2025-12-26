@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import {
   setupUser,
   setupTechnician,
-  getCategories,
+  setupExternalMaintainer,
 } from "../../api/adminService";
+import { categoryService } from "../../api/categoryService";
 import { externalCompanyService } from "../../api/externalcompanyService";
 import { useAuth } from "../providers/AuthContext";
 import ContentContainer from "../containers/ContentContainer";
@@ -26,7 +27,7 @@ export function AccountSetupPage() {
     username: "",
     role: "",
     email: "",
-    category_id: "",
+    category_ids: [] as string[],
     external_company_id: "", // 👈 Added for External Maintainer
   });
 
@@ -49,13 +50,23 @@ export function AccountSetupPage() {
   // FETCH CATEGORIES (for TECHNICIAN role)
   // ========================================
   useEffect(() => {
-    if (!token) return;
+    const fetchCategories = async () => {
+      if (token) {
+        try {
+          const response = await categoryService.getAllCategories();
+          if (response.success && Array.isArray(response.data)) {
+            console.log("Fetched categories:", response.data);
+            setCategories(response.data);
+          } else {
+            console.error("Failed to load categories:", response.data);
+          }
+        } catch (err) {
+          console.error("Failed to load categories", err);
+        }
+      }
+    };
 
-    getCategories(token)
-      .then((data) => {
-        setCategories(data);
-      })
-      .catch((err) => console.error("Failed to load categories", err));
+    fetchCategories();
   }, [token]);
 
   // ========================================
@@ -79,8 +90,7 @@ export function AccountSetupPage() {
     const isTechnician = formData.role === "TECHNICIAN";
     const isExternal = formData.role === "EXTERNAL_MAINTAINER";
 
-    const categoryValid =
-      !isTechnician || formData.category_id !== ""; // category required only for TECHNICIAN
+    const categoryValid = !isTechnician || formData.category_ids.length > 0; // category required only for TECHNICIAN
 
     const externalCompanyValid =
       !isExternal || formData.external_company_id !== ""; // company required only for EXTERNAL MAINTAINER
@@ -110,6 +120,21 @@ export function AccountSetupPage() {
     }));
   };
 
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+    setFormData((prev) => {
+      const currentIds = prev.category_ids;
+      if (checked) {
+        return { ...prev, category_ids: [...currentIds, value] };
+      } else {
+        return {
+          ...prev,
+          category_ids: currentIds.filter((id) => id !== value),
+        };
+      }
+    });
+  };
+
   // ========================================
   // HANDLE SUBMIT
   // ========================================
@@ -130,8 +155,10 @@ export function AccountSetupPage() {
 
       if (formData.role === "TECHNICIAN") {
         generatedPassword = await setupTechnician(formData, token);
+      } else if (formData.role === "EXTERNAL_MAINTAINER") {
+        generatedPassword = await setupExternalMaintainer(formData, token);
       } else {
-        // OFFICER or EXTERNAL_MAINTAINER
+        // OFFICER
         generatedPassword = await setupUser(formData, token);
       }
 
@@ -222,20 +249,34 @@ export function AccountSetupPage() {
 
           {/* CATEGORY INPUT (TECHNICIAN ONLY) */}
           {formData.role === "TECHNICIAN" && (
-            <Select
-              required
-              id="category_id"
-              name="category_id"
-              hasLabel
-              placeholder="Select Technical Office"
-              label="Technical Office"
-              options={categories.map((cat) => ({
-                value: String(cat.id),
-                label: cat.category || "Unnamed Category",
-              }))}
-              value={formData.category_id}
-              onChange={handleChange}
-            />
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-gray-700">
+                Technical Offices <span className="text-red-500">*</span>
+              </label>
+              <div className="flex flex-col gap-2 p-3 border border-gray-300 rounded-md max-h-48 overflow-y-auto bg-white">
+                {categories.length === 0 ? (
+                  <p className="text-sm text-gray-500">
+                    No categories available
+                  </p>
+                ) : (
+                  categories.map((cat) => (
+                    <label
+                      key={cat.id}
+                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        value={String(cat.id)}
+                        checked={formData.category_ids.includes(String(cat.id))}
+                        onChange={handleCategoryChange}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      {cat.category || "Unnamed Category"}
+                    </label>
+                  ))
+                )}
+              </div>
+            </div>
           )}
 
           {/* COMPANY INPUT (EXTERNAL MAINTAINER ONLY) */}
@@ -264,7 +305,11 @@ export function AccountSetupPage() {
           )}
 
           {/* SUBMIT BUTTON */}
-          <PrimaryButton pending={isPending} type="submit" disabled={!canSubmit}>
+          <PrimaryButton
+            pending={isPending}
+            type="submit"
+            disabled={!canSubmit}
+          >
             Create Account
           </PrimaryButton>
         </Form>

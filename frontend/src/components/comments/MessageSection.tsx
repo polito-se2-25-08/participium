@@ -4,9 +4,9 @@ interface MessageSectionProps {
 	messages: {
 		id: number;
 		message: string;
-		created_at: string;
-		report_id: number;
-		sender_id: number;
+		createdAt: string;
+		reportId: number;
+		senderId: number;
 	}[];
 }
 
@@ -38,31 +38,36 @@ export default function MessageSection({ messages }: MessageSectionProps) {
 					<p className="opacity-50 text-center">No messages yet</p>
 				)}
 
-				{messages && messages.map((message) => {
-					const isOtherUser = message.sender_id !== user.id;
+				{messages &&
+					messages.map((message) => {
+						const isOtherUser = message.senderId !== user.id;
 
-					return (
-						<div
-							key={message.id}
-							className={`flex ${
-								isOtherUser ? "justify-start" : "justify-end"
-							}`}
-						>
+						return (
 							<div
-								className={`max-w-[70%] rounded-lg px-3 py-2 text-sm ${
+								key={message.id}
+								className={`flex ${
 									isOtherUser
-										? "bg-gray-100 text-gray-800 rounded-bl-none"
-										: "bg-blue-100 text-blue-900 rounded-br-none"
+										? "justify-start"
+										: "justify-end"
 								}`}
 							>
-								<p>{message.message}</p>
-								<p className="text-xs opacity-60 mt-1 text-right">
-									{new Date(message.created_at).toLocaleString()}
-								</p>
+								<div
+									className={`max-w-[70%] rounded-lg px-3 py-2 text-sm ${
+										isOtherUser
+											? "bg-gray-100 text-gray-800 rounded-bl-none"
+											: "bg-blue-100 text-blue-900 rounded-br-none"
+									}`}
+								>
+									<p>{message.message}</p>
+									<p className="text-xs opacity-60 mt-1 text-right">
+										{new Date(
+											message.createdAt
+										).toLocaleString()}
+									</p>
+								</div>
 							</div>
-						</div>
-					);
-				})}
+						);
+					})}
 			</div>
 		</div>
 	);

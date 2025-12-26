@@ -10,25 +10,31 @@ describe('NotificationService', () => {
 
   describe('createNotification', () => {
     it('should create a notification', async () => {
-      const notificationData = {
-        user_id: 1,
-        report_id: 5,
-        type: 'STATUS_UPDATE' as const,
-        message: 'Your report status has been updated',
-      };
+      const senderId = 1;
+      const reportId = 5;
+      const type = 'STATUS_UPDATE' as const;
+      const message = 'Your report status has been updated';
 
       const mockNotification = {
         id: 1,
-        ...notificationData,
+        user_id: senderId,
+        report_id: reportId,
+        type,
+        message,
         is_read: false,
         created_at: new Date().toISOString(),
       };
 
       (NotificationRepository.createNotification as jest.Mock).mockResolvedValue(mockNotification);
 
-      const result = await NotificationService.createNotification(notificationData);
+      const result = await NotificationService.createNotification(senderId, reportId, type, message);
 
-      expect(NotificationRepository.createNotification).toHaveBeenCalledWith(notificationData);
+      expect(NotificationRepository.createNotification).toHaveBeenCalledWith({
+        user_id: senderId,
+        report_id: reportId,
+        type,
+        message,
+      });
       expect(result).toEqual(mockNotification);
       expect(result.is_read).toBe(false);
     });
@@ -37,19 +43,19 @@ describe('NotificationService', () => {
       const types = ['STATUS_UPDATE', 'NEW_MESSAGE'] as const;
 
       for (const type of types) {
-        const notificationData = {
-          user_id: 1,
-          report_id: 1,
-          type,
-          message: `Test message for ${type}`,
-        };
+        const senderId = 1;
+        const reportId = 1;
+        const message = `Test message for ${type}`;
 
         (NotificationRepository.createNotification as jest.Mock).mockResolvedValue({
           id: 1,
-          ...notificationData,
+          user_id: senderId,
+          report_id: reportId,
+          type,
+          message,
         });
 
-        const result = await NotificationService.createNotification(notificationData);
+        const result = await NotificationService.createNotification(senderId, reportId, type, message);
         expect(result.type).toBe(type);
       }
     });
@@ -58,19 +64,19 @@ describe('NotificationService', () => {
       const userIds = [1, 5, 10, 100];
 
       for (const userId of userIds) {
-        const notificationData = {
-          user_id: userId,
-          report_id: 1,
-          type: 'STATUS_UPDATE' as const,
-          message: 'Test notification',
-        };
+        const reportId = 1;
+        const type = 'STATUS_UPDATE' as const;
+        const message = 'Test notification';
 
         (NotificationRepository.createNotification as jest.Mock).mockResolvedValue({
           id: 1,
-          ...notificationData,
+          user_id: userId,
+          report_id: reportId,
+          type,
+          message,
         });
 
-        const result = await NotificationService.createNotification(notificationData);
+        const result = await NotificationService.createNotification(userId, reportId, type, message);
         expect(result.user_id).toBe(userId);
       }
     });

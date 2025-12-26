@@ -17,12 +17,13 @@ export type UserReport = {
 		| null;
 	category: string;
 	photos: string[];
-	messages: {
+	publicMessages: {
 		id: number;
 		message: string;
 		createdAt: string;
 		senderId: number;
 		reportId: number;
+		isPublic: boolean;
 	}[];
 };
 

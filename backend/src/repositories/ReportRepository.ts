@@ -6,6 +6,7 @@ import { ActiveReportDTO } from "../dto/ActiveReport";
 import { mapActiveReportsToDTO } from "../controllers/mapper/ActiveReportToDTO";
 import { ActiveReport } from "../controllers/interface/ActiveReport";
 import { UserReport } from "../controllers/interface/UserReports";
+import { ReportDB } from "../controllers/interface/ReportDB";
 
 export const createReport = async (
 	reportData: Partial<Report> & { photos: string[] }
@@ -49,9 +50,7 @@ export const createReport = async (
 	return data;
 };
 
-export const getAllReports = async (
-	userRole: string = "CITIZEN"
-): Promise<Report[]> => {
+export const getAllReports = async (): Promise<ReportDB[]> => {
 	const { data, error } = await supabase
 		.from("Report")
 		.select(
@@ -61,15 +60,22 @@ export const getAllReports = async (
 				*
 			),
       		user:User(
-				name, 
-				surname
+				*
 			),
-	  		messages:Report_Message(
+	  	    report_message:Report_Message(
+				*
+			),
+			category:Category(
+				*
+			),
+			report_comment:Report_Comment(
 				*
 			)
     	`
 		)
 		.order("timestamp", { ascending: true });
+
+	console.dir(data, { depth: null });
 
 	if (error) {
 		throw new AppError(
@@ -79,9 +85,9 @@ export const getAllReports = async (
 		);
 	}
 
-	const remappedData = data ? await remapReports(data, userRole) : [];
+	const reportsDB = data as ReportDB[];
 
-	return remappedData;
+	return reportsDB;
 };
 
 const remapReports = async (
@@ -384,7 +390,9 @@ export const rejectReport = async (
 		);
 	}
 
-	const remappedData = reportData ? await remapReports([reportData], "OFFICER") : [];
+	const remappedData = reportData
+		? await remapReports([reportData], "OFFICER")
+		: [];
 	return remappedData[0];
 };
 
@@ -415,26 +423,45 @@ export const getReportsByCategoryAndStatus = async (
 };
 
 export const getReportsByTechnician = async (
-	category_id: number,
+	category_ids: number[],
 	status?: Report["status"] | Report["status"][]
-): Promise<Report[]> => {
+): Promise<ReportDB[]> => {
 	let query = supabase
 		.from("Report")
 		.select(
 			`
-      *,
-      photos:Report_Photo(*),
-      user:User(name, surname),
-      messages:Report_Message(*)
-    `
+			*,
+      		photos:Report_Photo(
+				*
+			),
+      		user:User(
+				*
+			),
+	  		report_message:Report_Message(
+				*,
+				sender:User!Report_Message_sender_id_fkey (
+				id,
+				name,
+				surname,
+				username,
+				profile_picture,
+				role
+			)
+			),
+			category:Category(
+				*
+			)
+		`
 		)
-		.eq("category_id", category_id)
+		.in("category_id", category_ids)
 		.neq("status", "REJECTED")
 		.neq("status", "RESOLVED");
 
 	const { data, error } = await query.order("timestamp", {
 		ascending: false,
 	});
+
+	console.dir(data, { depth: null });
 
 	if (error) {
 		throw new AppError(
@@ -448,11 +475,12 @@ export const getReportsByTechnician = async (
 		return [];
 	}
 
-	const remappedData = await remapReports(data, "TECHNICIAN");
-	return remappedData;
+	const technicianReports = data as ReportDB[];
+
+	return technicianReports;
 };
 
-export const getReportsByUserId = async (
+export const getReportsByCitizenId = async (
 	userId: number
 ): Promise<UserReport[]> => {
 	const { data, error } = await supabase
@@ -470,6 +498,7 @@ export const getReportsByUserId = async (
     	`
 		)
 		.eq("user_id", userId)
+		.eq("Report_Message.is_public", true)
 		.in("status", ["ASSIGNED", "IN_PROGRESS", "SUSPENDED"])
 		.order("timestamp", { ascending: false });
 
@@ -488,4 +517,47 @@ export const getReportsByUserId = async (
 	}
 
 	return userReports;
+};
+
+export const getPendingReports = async (): Promise<ReportDB[]> => {
+	const { data, error } = await supabase
+		.from("Report")
+		.select(
+			`
+      		*,
+      		photos:Report_Photo(
+				*
+			),
+      		user:User(
+				*
+			),
+	  	    report_message:Report_Message(
+				*
+			),
+			category:Category(
+				*
+			),
+			report_comment:Report_Comment(
+				*
+			)
+    	`
+		)
+		.eq("status", "PENDING_APPROVAL")
+		.order("timestamp", { ascending: false });
+
+	if (error) {
+		throw new AppError(
+			`Failed to fetch pending reports: ${error.message}`,
+			500,
+			"DB_FETCH_ERROR"
+		);
+	}
+
+	const pendingReports = data as ReportDB[];
+
+	if (!data) {
+		return [];
+	}
+
+	return pendingReports;
 };

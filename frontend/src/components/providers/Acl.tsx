@@ -1,7 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
-type Role = "ADMIN" | "CITIZEN" | "OFFICER" | "TECHNICIAN" | "EXTERNAL MAINTAINER";
+type Role =
+  | "ADMIN"
+  | "CITIZEN"
+  | "OFFICER"
+  | "TECHNICIAN"
+  | "EXTERNAL_MAINTAINER";
 
 interface Props {
   allowedRoles: Role[];

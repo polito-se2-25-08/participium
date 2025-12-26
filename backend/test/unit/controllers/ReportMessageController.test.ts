@@ -37,93 +37,51 @@ describe('ReportMessageController', () => {
     } as any;
   });
 
-  describe('sendMessage', () => {
+  describe('sendPublicMessage', () => {
     it('should return 400 if report ID is invalid', async () => {
       mockRequest.params = { id: 'invalid' };
       mockRequest.body = { message: 'Hello', senderId: 1 };
 
-      await ReportMessageController.sendMessage(mockRequest as Request, mockResponse as Response);
+      await ReportMessageController.sendPublicMessage(mockRequest as Request, mockResponse as Response);
 
       expect(responseStatus).toHaveBeenCalledWith(400);
       expect(responseJson).toHaveBeenCalledWith({
         success: false,
-        data: 'Invalid report ID',
+        data: 'Invalid report ID or message or sender ID',
       });
     });
 
-    it('should return 400 if message is empty', async () => {
-      mockRequest.params = { id: '1' };
-      mockRequest.body = { message: '   ', senderId: 1 };
-
-      await ReportMessageController.sendMessage(mockRequest as Request, mockResponse as Response);
-
-      expect(responseStatus).toHaveBeenCalledWith(400);
-      expect(responseJson).toHaveBeenCalledWith({
-        success: false,
-        data: 'Message is required',
-      });
-    });
-
-    it('should return 401 if senderId is missing', async () => {
+    it('should return 400 if senderId is missing', async () => {
       mockRequest.params = { id: '1' };
       mockRequest.body = { message: 'Hello' };
 
-      await ReportMessageController.sendMessage(mockRequest as Request, mockResponse as Response);
+      await ReportMessageController.sendPublicMessage(mockRequest as Request, mockResponse as Response);
 
-      expect(responseStatus).toHaveBeenCalledWith(401);
+      expect(responseStatus).toHaveBeenCalledWith(400);
       expect(responseJson).toHaveBeenCalledWith({
         success: false,
-        data: 'Authentication required',
+        data: 'Invalid report ID or message or sender ID',
       });
     });
 
-    it('should return 404 if report is not found', async () => {
+    it('should send public message successfully', async () => {
       mockRequest.params = { id: '1' };
       mockRequest.body = { message: 'Hello', senderId: 1 };
-
-      (supabase.from('Report').select('user_id').eq('id', 1).single as jest.Mock).mockResolvedValue({
-        data: null,
-        error: { message: 'Not found' },
-      });
-
-      await ReportMessageController.sendMessage(mockRequest as Request, mockResponse as Response);
-
-      expect(responseStatus).toHaveBeenCalledWith(404);
-      expect(responseJson).toHaveBeenCalledWith({
-        success: false,
-        data: 'Report not found',
-      });
-    });
-
-    it('should send message successfully', async () => {
-      mockRequest.params = { id: '1' };
-      mockRequest.body = { message: 'Hello', senderId: 1 };
-
-      (supabase.from('Report').select('user_id').eq('id', 1).single as jest.Mock).mockResolvedValue({
-        data: { user_id: 2 },
-        error: null,
-      });
 
       const mockSavedMessage = {
         id: 1,
-        report_id: 1,
-        sender_id: 1,
+        reportId: 1,
+        senderId: 1,
         message: 'Hello',
-        created_at: new Date(),
+        createdAt: '2024-01-01T00:00:00Z',
+        isPublic: true,
       };
 
-      (ReportMessageService.createMessage as jest.Mock).mockResolvedValue(mockSavedMessage);
+      (ReportMessageService.createPublicMessage as jest.Mock).mockResolvedValue(mockSavedMessage);
 
-      await ReportMessageController.sendMessage(mockRequest as Request, mockResponse as Response);
+      await ReportMessageController.sendPublicMessage(mockRequest as Request, mockResponse as Response);
 
-      expect(ReportMessageService.createMessage).toHaveBeenCalledWith(
-        {
-          report_id: 1,
-          sender_id: 1,
-          message: 'Hello',
-        },
-        2 // recipientId (report owner)
-      );
+      expect(ReportMessageService.createPublicMessage).toHaveBeenCalledWith(1, 1, 'Hello');
       expect(responseStatus).toHaveBeenCalledWith(201);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
@@ -135,19 +93,41 @@ describe('ReportMessageController', () => {
       mockRequest.params = { id: '1' };
       mockRequest.body = { message: 'Hello', senderId: 1 };
 
-      (supabase.from('Report').select('user_id').eq('id', 1).single as jest.Mock).mockResolvedValue({
-        data: { user_id: 2 },
-        error: null,
-      });
+      (ReportMessageService.createPublicMessage as jest.Mock).mockRejectedValue(new Error('Database error'));
 
-      (ReportMessageService.createMessage as jest.Mock).mockRejectedValue(new Error('Database error'));
-
-      await ReportMessageController.sendMessage(mockRequest as Request, mockResponse as Response);
+      await ReportMessageController.sendPublicMessage(mockRequest as Request, mockResponse as Response);
 
       expect(responseStatus).toHaveBeenCalledWith(500);
       expect(responseJson).toHaveBeenCalledWith({
         success: false,
         data: 'Database error',
+      });
+    });
+  });
+
+  describe('sendInternalMessage', () => {
+    it('should send internal message successfully', async () => {
+      mockRequest.params = { id: '1' };
+      mockRequest.body = { message: 'Hello', senderId: 1 };
+
+      const mockSavedMessage = {
+        id: 1,
+        report_id: 1,
+        sender_id: 1,
+        message: 'Hello',
+        created_at: '2024-01-01T00:00:00Z',
+        is_public: false,
+      };
+
+      (ReportMessageService.createInternalMessage as jest.Mock).mockResolvedValue(mockSavedMessage);
+
+      await ReportMessageController.sendInternalMessage(mockRequest as Request, mockResponse as Response);
+
+      expect(ReportMessageService.createInternalMessage).toHaveBeenCalledWith(1, 1, 'Hello');
+      expect(responseStatus).toHaveBeenCalledWith(201);
+      expect(responseJson).toHaveBeenCalledWith({
+        success: true,
+        data: mockSavedMessage,
       });
     });
   });

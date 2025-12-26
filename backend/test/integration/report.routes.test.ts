@@ -249,7 +249,7 @@ describe('Report Routes Integration Tests', () => {
     });
   });
 
-  describe('POST /api/v1/reports/:id/messages', () => {
+  describe('POST /api/v1/reports/:id/public-messages', () => {
     it('should send message to report with authentication', async () => {
       (global as any).mockAuthHeader = 'Bearer citizen-token';
 
@@ -260,7 +260,7 @@ describe('Report Routes Integration Tests', () => {
         message: 'Test message',
       };
 
-      (ReportMessageController.sendMessage as jest.Mock).mockImplementation((req, res) => {
+      (ReportMessageController.sendPublicMessage as jest.Mock).mockImplementation((req, res) => {
         res.status(201).json({
           success: true,
           data: mockMessage,
@@ -268,10 +268,11 @@ describe('Report Routes Integration Tests', () => {
       });
 
       const response = await request(app)
-        .post('/api/v1/reports/1/messages')
+        .post('/api/v1/reports/1/public-messages')
         .set('Authorization', 'Bearer citizen-token')
         .send({
           message: 'Test message',
+          senderId: 1,
         });
 
       expect(response.status).toBe(201);
@@ -283,9 +284,10 @@ describe('Report Routes Integration Tests', () => {
       (global as any).mockAuthHeader = undefined;
 
       const response = await request(app)
-        .post('/api/v1/reports/1/messages')
+        .post('/api/v1/reports/1/public-messages')
         .send({
           message: 'Test message',
+          senderId: 1,
         });
 
       expect(response.status).toBe(401);

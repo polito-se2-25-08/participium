@@ -25,7 +25,7 @@ describe('ReportRepository', () => {
     mockSingle = jest.fn();
     mockOrder = jest.fn();
     mockNeq = jest.fn(() => ({ neq: mockNeq, order: mockOrder }));
-    mockIn = jest.fn(() => ({ order: mockOrder }));
+    mockIn = jest.fn(() => ({ neq: mockNeq, order: mockOrder }));
     mockEq = jest.fn(() => ({ 
       eq: mockEq, 
       select: mockSelect, 
@@ -429,22 +429,10 @@ describe('ReportRepository', () => {
 
       // Mock for getReportsByTechnician query
       mockOrder.mockResolvedValueOnce({ data: mockReports, error: null });
-      
-      // Mock for remapReports - Category query
-      mockOrder.mockResolvedValueOnce({ 
-        data: [{ id: 1, category: 'Roads' }], 
-        error: null 
-      });
-      
-      // Mock for remapReports - User query
-      mockOrder.mockResolvedValueOnce({ 
-        data: [{ id: 1, username: 'testuser' }], 
-        error: null 
-      });
 
-      const result = await ReportRepository.getReportsByTechnician(1);
+      const result = await ReportRepository.getReportsByTechnician([1]);
 
-      expect(mockEq).toHaveBeenCalledWith('category_id', 1);
+      expect(mockIn).toHaveBeenCalledWith('category_id', [1]);
       expect(mockNeq).toHaveBeenCalledWith('status', 'REJECTED');
       expect(mockNeq).toHaveBeenCalledWith('status', 'RESOLVED');
       expect(result).toBeDefined();
@@ -453,7 +441,7 @@ describe('ReportRepository', () => {
     it('should return empty array if no reports', async () => {
       mockOrder.mockResolvedValueOnce({ data: null, error: null });
 
-      const result = await ReportRepository.getReportsByTechnician(1);
+      const result = await ReportRepository.getReportsByTechnician([1]);
 
       expect(result).toEqual([]);
     });
@@ -462,8 +450,8 @@ describe('ReportRepository', () => {
       const dbError = new Error('Database error');
       mockOrder.mockResolvedValue({ data: null, error: dbError });
 
-      await expect(ReportRepository.getReportsByTechnician(1)).rejects.toThrow(AppError);
-      await expect(ReportRepository.getReportsByTechnician(1)).rejects.toThrow('Failed to fetch reports by category and status');
+      await expect(ReportRepository.getReportsByTechnician([1])).rejects.toThrow(AppError);
+      await expect(ReportRepository.getReportsByTechnician([1])).rejects.toThrow('Failed to fetch reports by category and status');
     });
   });
 
@@ -509,7 +497,7 @@ describe('ReportRepository', () => {
 
       const result = await ReportRepository.getAllReports();
 
-      expect(result).toEqual([]);
+      expect(result).toEqual(null);
     });
   });
 

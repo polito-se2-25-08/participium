@@ -2,7 +2,10 @@ import { generateSalt, hashPassword } from "../utils/encryption";
 import AppError from "../utils/AppError";
 import { TablesInsert } from "../utils/DatabaseSchema";
 import { userRepository } from "../repositories/userRepository";
-import { upsertTechnicianCategory } from "../repositories/TechnicianRepository";
+import {
+  upsertTechnicianCategories,
+  deleteTechnicianCategories,
+} from "../repositories/TechnicianRepository";
 import crypto from "node:crypto";
 
 export const adminService = {
@@ -40,7 +43,10 @@ export const adminService = {
       const passwordArray = password.split("");
       for (let i = passwordArray.length - 1; i > 0; i--) {
         const j = crypto.randomInt(0, i + 1);
-        [passwordArray[i], passwordArray[j]] = [passwordArray[j], passwordArray[i]];
+        [passwordArray[i], passwordArray[j]] = [
+          passwordArray[j],
+          passwordArray[i],
+        ];
       }
       return passwordArray.join("");
     };
@@ -69,7 +75,7 @@ export const adminService = {
     return createdUser;
   },
 
-  async assignTechnicianCategory(userId: number, categoryId: number) {
+  async assignTechnicianCategories(userId: number, categoryIds: number[]) {
     // Verify user exists and is TECHNICIAN using repository
     let user;
     try {
@@ -81,22 +87,61 @@ export const adminService = {
     if (user.role !== "TECHNICIAN")
       throw new AppError("User must have TECHNICIAN role", 400);
 
-    // Verify category exists
-    if (categoryId === null || categoryId === undefined) {
-      throw new AppError("Category ID must be provided", 400);
-    }
-    if (
-      typeof categoryId !== "number" ||
-      Number.isNaN(categoryId) ||
-      categoryId <= 0 ||
-      categoryId > 9
-    ) {
-      throw new AppError("Invalid Category ID", 400);
+    // Verify categories exist (basic validation)
+    if (!categoryIds || !Array.isArray(categoryIds)) {
+      throw new AppError("Category IDs must be provided as an array", 400);
     }
 
-    // Upsert mapping
-    await upsertTechnicianCategory(userId, categoryId);
+    const validIds = categoryIds.filter(
+      (id) => typeof id === "number" && !Number.isNaN(id) && id > 0 && id <= 9
+    );
 
-    return { user_id: userId, category_id: categoryId };
+    if (validIds.length === 0 && categoryIds.length > 0) {
+      throw new AppError("No valid Category IDs provided", 400);
+    }
+
+    // Upsert mappings
+    await upsertTechnicianCategories(userId, validIds);
+
+    return { user_id: userId, category_ids: validIds };
+  },
+
+  async updateTechnicianCategories(userId: number, categoryIds: number[]) {
+    // Verify user exists and is TECHNICIAN
+    let user;
+    try {
+      user = await userRepository.findById(userId);
+    } catch (err: any) {
+      throw new AppError(`Failed to load user: ${err?.message ?? err}`, 500);
+    }
+    if (!user) throw new AppError("User not found", 404);
+    if (user.role !== "TECHNICIAN")
+      throw new AppError("User must have TECHNICIAN role", 400);
+
+    // Verify categories array
+    if (!categoryIds || !Array.isArray(categoryIds)) {
+      throw new AppError("Category IDs must be provided as an array", 400);
+    }
+
+    const validIds = categoryIds.filter(
+      (id) => typeof id === "number" && !isNaN(id) && id > 0 && id <= 9
+    );
+
+    // 1. Delete existing categories for this user (replace logic)
+    await deleteTechnicianCategories(userId);
+
+    // 2. Insert new categories if any
+    if (validIds.length > 0) {
+      await upsertTechnicianCategories(userId, validIds);
+    }
+
+    return { user_id: userId, category_ids: validIds };
+  },
+
+  async deleteUser(userId: number) {
+    const user = await userRepository.findById(userId);
+    if (!user) throw new AppError("User not found", 404);
+
+    await userRepository.deleteUser(userId);
   },
 };

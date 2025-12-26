@@ -5,3 +5,16 @@
   margin: 0;
   min-height: 100vh;
 }
+
+html,
+body {
+  min-height: 100vh;
+}
+
+body {
+  background-color: #F3F4F6;
+}
+
+#root {
+  min-height: 100vh;
+}

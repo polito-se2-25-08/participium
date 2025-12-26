@@ -88,14 +88,14 @@ describe('TechnicianRepository', () => {
     });
   });
 
-  describe('upsertTechnicianCategory', () => {
-    it('should upsert technician category', async () => {
+  describe('upsertTechnicianCategories', () => {
+    it('should upsert technician categories', async () => {
       mockUpsert.mockResolvedValue({ error: null });
 
-      await TechnicianRepository.upsertTechnicianCategory(1, 3);
+      await TechnicianRepository.upsertTechnicianCategories(1, [3]);
 
       expect(mockFrom).toHaveBeenCalledWith('Technician_Category');
-      expect(mockUpsert).toHaveBeenCalledWith({ user_id: 1, category_id: 3 });
+      expect(mockUpsert).toHaveBeenCalledWith([{ user_id: 1, category_id: 3 }]);
     });
 
     it('should throw AppError on database error', async () => {
@@ -103,12 +103,12 @@ describe('TechnicianRepository', () => {
       mockUpsert.mockResolvedValue({ error: dbError });
 
       await expect(
-        TechnicianRepository.upsertTechnicianCategory(1, 3)
+        TechnicianRepository.upsertTechnicianCategories(1, [3])
       ).rejects.toThrow(AppError);
 
       await expect(
-        TechnicianRepository.upsertTechnicianCategory(1, 3)
-      ).rejects.toThrow('Failed to upsert technician category');
+        TechnicianRepository.upsertTechnicianCategories(1, [3])
+      ).rejects.toThrow('Failed to upsert technician categories');
     });
 
     it('should handle different user and category combinations', async () => {
@@ -121,23 +121,22 @@ describe('TechnicianRepository', () => {
       for (const testCase of testCases) {
         mockUpsert.mockResolvedValue({ error: null });
 
-        await TechnicianRepository.upsertTechnicianCategory(
-          testCase.user_id,
-          testCase.category_id
-        );
+        await TechnicianRepository.upsertTechnicianCategories(testCase.user_id, [testCase.category_id]);
 
-        expect(mockUpsert).toHaveBeenCalledWith(testCase);
+        expect(mockUpsert).toHaveBeenCalledWith([
+          { user_id: testCase.user_id, category_id: testCase.category_id },
+        ]);
       }
     });
 
     it('should handle category update for existing technician', async () => {
       mockUpsert.mockResolvedValue({ error: null });
 
-      await TechnicianRepository.upsertTechnicianCategory(1, 3);
-      await TechnicianRepository.upsertTechnicianCategory(1, 5);
+      await TechnicianRepository.upsertTechnicianCategories(1, [3]);
+      await TechnicianRepository.upsertTechnicianCategories(1, [5]);
 
       expect(mockUpsert).toHaveBeenCalledTimes(2);
-      expect(mockUpsert).toHaveBeenLastCalledWith({ user_id: 1, category_id: 5 });
+      expect(mockUpsert).toHaveBeenLastCalledWith([{ user_id: 1, category_id: 5 }]);
     });
   });
 });

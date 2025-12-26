@@ -1,6 +1,8 @@
 import { UserReportDTO } from "../controllers/interface/UserReports";
+import { mapReportsDBToReports } from "../controllers/mapper/MapReportDBToReport";
 import { mapReportsToReportsDTO } from "../controllers/mapper/ReportMapper";
 import { ActiveReportDTO } from "../dto/ActiveReport";
+import { ReportDTO } from "../dto/ReportDTO";
 import { Report, ReportInsert } from "../models/Report";
 import * as ReportRepository from "../repositories/ReportRepository";
 import * as NotificationService from "./NotificationService";
@@ -11,10 +13,10 @@ export const createReport = async (
 	return await ReportRepository.createReport(reportData);
 };
 
-export const getAllReports = async (
-	userRole: string = "CITIZEN"
-): Promise<Report[]> => {
-	return await ReportRepository.getAllReports(userRole);
+export const getAllReports = async (): Promise<ReportDTO[]> => {
+	const dbData = await ReportRepository.getAllReports();
+	const mappedData = mapReportsDBToReports(dbData);
+	return mappedData;
 };
 
 export const getReportById = async (
@@ -78,12 +80,19 @@ export const updateReportStatus = async (
 	return report;
 };
 
-export const getReportsByUserId = async (
+export const getReportsByCitizenId = async (
 	userId: number
 ): Promise<UserReportDTO[]> => {
-	const reports = await ReportRepository.getReportsByUserId(userId);
+	const reports = await ReportRepository.getReportsByCitizenId(userId);
 
 	const mappedReports = mapReportsToReportsDTO(reports);
+
+	return mappedReports;
+};
+
+export const getPendingReports = async (): Promise<ReportDTO[]> => {
+	const dbReports = await ReportRepository.getPendingReports();
+	const mappedReports = mapReportsDBToReports(dbReports);
 
 	return mappedReports;
 };

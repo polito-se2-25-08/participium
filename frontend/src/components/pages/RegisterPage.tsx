@@ -8,11 +8,13 @@ import TextInput from "../input/variants/TextInput";
 import EmailInput from "../input/variants/EmailInput";
 import PasswordInput from "../input/variants/PasswordInput";
 import { registerAction } from "../../action/UserAction";
+import { useAuth } from "../providers/AuthContext";
 
 export function RegisterPage() {
 	const [state, formAction, isPending] = useActionState(registerAction, null);
 
 	const navigate = useNavigate();
+	const { login } = useAuth();
 
 	const [usernameError, setUsernameError] = useState<boolean>(false);
 	const [passwordError, setPasswordError] = useState<boolean>(false);
@@ -73,12 +75,13 @@ export function RegisterPage() {
 			return;
 		}
 		if (state.success === true) {
+			login(state.data.user, state.data.token);
 			navigate("/verify");
 		}
 		if (state.success === false) {
 			console.error("Registration failed:", state.data);
 		}
-	}, [state, navigate]);
+	}, [state, navigate, login]);
 
 	useEffect(() => {
 		const timeout = setTimeout(() => {

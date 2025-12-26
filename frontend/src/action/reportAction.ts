@@ -69,6 +69,10 @@ function filesToBase64(files: File[]): Promise<string[]> {
 	return Promise.all(promises);
 }
 
-export const postMessage = async (reportId: number, message: string) => {
-	return await messageService.sendMessage(reportId, message);
+export const postPublicMessage = async (
+	reportId: number,
+	message: string,
+	userId: number
+) => {
+	return await messageService.sendPublicMessage(reportId, message, userId);
 };

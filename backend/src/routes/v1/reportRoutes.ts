@@ -19,6 +19,8 @@ router.post(
 
 router.get("/reports", protect, ReportController.getAllReports);
 
+router.get("/reports/pending", protect, ReportController.getPendingReports);
+
 router.get("/reports/active", protect, ReportController.getActiveReports);
 
 router.get("/reports/:id", protect, ReportController.getReportById);
@@ -63,9 +65,15 @@ router.patch(
 );
 
 router.post(
-	"/reports/:id/messages",
+	"/reports/:id/public-messages",
 	protect,
-	ReportMessageController.sendMessage
+	ReportMessageController.sendPublicMessage
+);
+
+router.post(
+	"/reports/:id/internal-messages",
+	protect,
+	ReportMessageController.sendInternalMessage
 );
 
 export default router;

@@ -1,9 +1,18 @@
 import { useState, useEffect } from "react";
-import { getAllUsers, assignRole } from "../../api/adminService";
+import {
+  getAllUsers,
+  assignRole,
+  deleteUser,
+  getTechnicianCategories,
+  updateTechnicianCategories,
+} from "../../api/adminService";
+import { categoryService } from "../../api/categoryService";
 import { useAuth } from "../providers/AuthContext";
 import PageTitle from "../titles/PageTitle";
 import ContentContainer from "../containers/ContentContainer";
 import type { User } from "../../interfaces/dto/user/User";
+import DeleteUserModal from "../modals/DeleteUserModal";
+import ManageCategoriesModal from "../modals/ManageCategoriesModal";
 
 export function AssignRolesPage() {
   const { token } = useAuth();
@@ -11,6 +20,21 @@ export function AssignRolesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatingUserId, setUpdatingUserId] = useState<number | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{
+    // State to manage the visibility and target of the delete confirmation modal
+    isOpen: boolean;
+    userId: number | null;
+  }>({ isOpen: false, userId: null });
+
+  const [categoryModal, setCategoryModal] = useState<{
+    isOpen: boolean;
+    userId: number | null;
+    selectedCategories: number[];
+  }>({ isOpen: false, userId: null, selectedCategories: [] });
+
+  const [allCategories, setAllCategories] = useState<
+    { id: number; category: string }[]
+  >([]);
 
   // Define possible roles to show (excluding "CITIZEN")
   const roles: Array<"ADMIN" | "OFFICER" | "TECHNICIAN"> = [
@@ -22,8 +46,16 @@ export function AssignRolesPage() {
   useEffect(() => {
     if (token) {
       fetchUsers();
+      fetchCategories();
     }
   }, [token]);
+
+  const fetchCategories = async () => {
+    const response = await categoryService.getAllCategories();
+    if (response.success && Array.isArray(response.data)) {
+      setAllCategories(response.data);
+    }
+  };
 
   const fetchUsers = async () => {
     if (!token) {
@@ -62,6 +94,86 @@ export function AssignRolesPage() {
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update role");
+    } finally {
+      setUpdatingUserId(null);
+    }
+  };
+
+  const handleManageCategories = async (userId: number) => {
+    if (!token) return;
+    try {
+      setUpdatingUserId(userId);
+      const categories = await getTechnicianCategories(userId, token);
+      setCategoryModal({
+        isOpen: true,
+        userId,
+        selectedCategories: categories,
+      });
+    } catch (err) {
+      setError("Failed to load technician categories");
+    } finally {
+      setUpdatingUserId(null);
+    }
+  };
+
+  const toggleCategory = (categoryId: number) => {
+    setCategoryModal((prev) => {
+      const isSelected = prev.selectedCategories.includes(categoryId);
+      return {
+        ...prev,
+        selectedCategories: isSelected
+          ? prev.selectedCategories.filter((id) => id !== categoryId)
+          : [...prev.selectedCategories, categoryId],
+      };
+    });
+  };
+
+  const saveCategories = async () => {
+    const { userId, selectedCategories } = categoryModal;
+    if (!token || !userId) return;
+
+    try {
+      setUpdatingUserId(userId);
+      await updateTechnicianCategories(userId, selectedCategories, token);
+      setCategoryModal({ isOpen: false, userId: null, selectedCategories: [] });
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to update categories"
+      );
+    } finally {
+      setUpdatingUserId(null);
+    }
+  };
+
+  // when the "Delete" button is clicked sets the user ID and opens the confirmation modal
+  const promptDeleteUser = (userId: number) => {
+    setDeleteModal({ isOpen: true, userId });
+  };
+
+  // when "Cancel" is clicked resets the modal state without performing any action
+  const cancelDelete = () => {
+    setDeleteModal({ isOpen: false, userId: null });
+  };
+
+  // Performs the actual delete
+  const confirmDeleteUser = async () => {
+    const userId = deleteModal.userId;
+    if (!token || !userId) return;
+
+    try {
+      setUpdatingUserId(userId);
+      setError(null);
+
+      // Close the modal immediately
+      setDeleteModal({ isOpen: false, userId: null });
+
+      // API call to delete the user
+      await deleteUser(userId, token);
+
+      // Remove the deleted user from the local list to update UI without reloading
+      setUsers(users.filter((user) => user.id !== userId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete user");
     } finally {
       setUpdatingUserId(null);
     }
@@ -107,6 +219,9 @@ export function AssignRolesPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Role
                 </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -136,6 +251,26 @@ export function AssignRolesPage() {
                         </option>
                       ))}
                     </select>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <div className="flex gap-2 justify-end">
+                      {user.role === "TECHNICIAN" && (
+                        <button
+                          onClick={() => handleManageCategories(user.id)}
+                          disabled={updatingUserId === user.id}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs disabled:bg-gray-400 transition-colors"
+                        >
+                          Offices
+                        </button>
+                      )}
+                      <button
+                        onClick={() => promptDeleteUser(user.id)}
+                        disabled={updatingUserId === user.id}
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs disabled:bg-gray-400 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -193,6 +328,24 @@ export function AssignRolesPage() {
                     ))}
                   </select>
                 </div>
+                <div className="pt-2 flex flex-col gap-2">
+                  {user.role === "TECHNICIAN" && (
+                    <button
+                      onClick={() => handleManageCategories(user.id)}
+                      disabled={updatingUserId === user.id}
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded text-sm disabled:bg-gray-400 transition-colors"
+                    >
+                      Manage Offices
+                    </button>
+                  )}
+                  <button
+                    onClick={() => promptDeleteUser(user.id)}
+                    disabled={updatingUserId === user.id}
+                    className="w-full bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm disabled:bg-gray-400 transition-colors"
+                  >
+                    Delete User
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -204,6 +357,27 @@ export function AssignRolesPage() {
           </p>
         )}
       </div>
+
+      <ManageCategoriesModal
+        isOpen={categoryModal.isOpen}
+        allCategories={allCategories}
+        selectedCategories={categoryModal.selectedCategories}
+        onClose={() =>
+          setCategoryModal({
+            isOpen: false,
+            userId: null,
+            selectedCategories: [],
+          })
+        }
+        onSave={saveCategories}
+        onToggleCategory={toggleCategory}
+      />
+
+      <DeleteUserModal
+        isOpen={deleteModal.isOpen}
+        onClose={cancelDelete}
+        onConfirm={confirmDeleteUser}
+      />
     </ContentContainer>
   );
 }
