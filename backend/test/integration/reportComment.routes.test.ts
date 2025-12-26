@@ -10,13 +10,16 @@ jest.mock('../../src/controllers/ReportCommentController');
 jest.mock('../../src/controllers/ReportController', () => ({
   createReport: jest.fn(),
   getAllReports: jest.fn(),
+  getPendingReports: jest.fn(),
   getActiveReports: jest.fn(),
   getReportById: jest.fn(),
   updateReportStatus: jest.fn(),
+  getReportsByCitizenId: jest.fn(),
 }));
 jest.mock('../../src/controllers/ReportMessageController', () => ({
-  sendMessage: jest.fn(),
   getMessages: jest.fn(),
+  sendPublicMessage: jest.fn(),
+  sendInternalMessage: jest.fn(),
 }));
 jest.mock('../../src/controllers/NotificationController', () => ({
   getUnreadNotifications: jest.fn(),

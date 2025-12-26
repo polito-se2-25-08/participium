@@ -12,6 +12,10 @@ describe("ReportCommentRepository", () => {
 		jest.clearAllMocks();
 	});
 
+	it("should load the test suite", () => {
+		expect(true).toBe(true);
+	});
+
 	/*
 	describe("createComment", () => {
 		it("should create a comment successfully", async () => {

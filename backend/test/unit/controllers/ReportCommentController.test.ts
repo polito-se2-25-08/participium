@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 import * as ReportCommentController from '../../../src/controllers/ReportCommentController';
-import * as ReportCommentService from '../../../src/services/ReportCommentService';
 import { userRepository } from '../../../src/repositories/userRepository';
 
-jest.mock('../../../src/services/ReportCommentService');
 jest.mock('../../../src/repositories/userRepository');
 
 describe('ReportCommentController', () => {
@@ -14,6 +12,10 @@ describe('ReportCommentController', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Reset global ReportCommentService stub
+    (global as any).ReportCommentService.createComment = jest.fn();
+    (global as any).ReportCommentService.getCommentsByReportId = jest.fn();
 
     responseJson = jest.fn();
     responseStatus = jest.fn(() => ({ json: responseJson })) as any;
@@ -56,15 +58,15 @@ describe('ReportCommentController', () => {
         profile_picture: 'pic.jpg',
       };
 
-      (ReportCommentService.createComment as jest.Mock).mockResolvedValue(mockSavedComment);
+      ((global as any).ReportCommentService.createComment as jest.Mock).mockResolvedValue(mockSavedComment);
       (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
 
       await ReportCommentController.addComment(mockRequest as Request, mockResponse as Response);
 
-      expect(ReportCommentService.createComment).toHaveBeenCalledWith({
+      expect((global as any).ReportCommentService.createComment).toHaveBeenCalledWith({
         report_id: reportId,
         sender_id: userId,
-        message: content,
+        message: content.trim(),
       });
       expect(userRepository.findById).toHaveBeenCalledWith(userId);
       expect(responseStatus).toHaveBeenCalledWith(201);
@@ -131,7 +133,7 @@ describe('ReportCommentController', () => {
       mockRequest.body = { content: 'Test' };
       (mockRequest as any).user = { id: 1 };
 
-      (ReportCommentService.createComment as jest.Mock).mockRejectedValue(new Error('Service error'));
+      ((global as any).ReportCommentService.createComment as jest.Mock).mockRejectedValue(new Error('Service error'));
 
       await ReportCommentController.addComment(mockRequest as Request, mockResponse as Response);
 
@@ -165,11 +167,11 @@ describe('ReportCommentController', () => {
         },
       ];
 
-      (ReportCommentService.getCommentsByReportId as jest.Mock).mockResolvedValue(mockComments);
+      ((global as any).ReportCommentService.getCommentsByReportId as jest.Mock).mockResolvedValue(mockComments);
 
       await ReportCommentController.getComments(mockRequest as Request, mockResponse as Response);
 
-      expect(ReportCommentService.getCommentsByReportId).toHaveBeenCalledWith(reportId);
+      expect((global as any).ReportCommentService.getCommentsByReportId).toHaveBeenCalledWith(reportId);
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
@@ -205,7 +207,7 @@ describe('ReportCommentController', () => {
 
     it('should return 500 if service throws error', async () => {
       mockRequest.params = { id: '1' };
-      (ReportCommentService.getCommentsByReportId as jest.Mock).mockRejectedValue(new Error('Service error'));
+      ((global as any).ReportCommentService.getCommentsByReportId as jest.Mock).mockRejectedValue(new Error('Service error'));
 
       await ReportCommentController.getComments(mockRequest as Request, mockResponse as Response);
 

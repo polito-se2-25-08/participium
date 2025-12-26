@@ -252,16 +252,16 @@ describe('Admin Routes Integration Tests', () => {
     });
   });
 
-  describe('PUT /api/v1/admin/technicians/:id/category', () => {
-    it('should assign category to technician', async () => {
+  describe('PUT /api/v1/admin/technicians/:id/categories', () => {
+    it('should update technician categories', async () => {
       (global as any).mockAuthHeader = 'Bearer admin-token';
 
       const mockResult = {
         user_id: 3,
-        category_id: 5,
+        category_ids: [5],
       };
 
-      (adminController.setTechnicianCategory as jest.Mock).mockImplementation((req, res) => {
+      (adminController.updateTechnicianCategories as jest.Mock).mockImplementation((req, res) => {
         res.status(200).json({
           success: true,
           data: mockResult,
@@ -269,15 +269,15 @@ describe('Admin Routes Integration Tests', () => {
       });
 
       const response = await request(app)
-        .put('/api/v1/admin/technicians/3/category')
+        .put('/api/v1/admin/technicians/3/categories')
         .set('Authorization', 'Bearer admin-token')
         .send({
-          category_id: 5,
+          category_ids: [5],
         });
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.data.category_id).toBe(5);
+      expect(response.body.data.category_ids).toEqual([5]);
     });
   });
 });

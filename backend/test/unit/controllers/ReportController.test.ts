@@ -127,7 +127,7 @@ describe('ReportController', () => {
 
       await ReportController.getAllReports(mockRequest as Request, mockResponse as Response);
 
-      expect(ReportService.getAllReports).toHaveBeenCalledWith('CITIZEN');
+      expect(ReportService.getAllReports).toHaveBeenCalledWith();
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
