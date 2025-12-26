@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-
-import PageTitle from "../titles/PageTitle";
 import PrimaryButton from "../buttons/variants/primary/PrimaryButton";
 
 import ContentContainer from "../containers/ContentContainer";
@@ -63,13 +61,9 @@ export default function Dashboard() {
 	const { user } = useUser();
 
 	return (
-		<ContentContainer width="xl:w-5/6 sm:w-1/2 " gap="xl:gap-2 gap-4">
-			<PageTitle>Participium</PageTitle>
+		<ContentContainer width="w-full sm:w-full xl:w-11/12" gap="xl:gap-2 gap-4">
 
-			<p className="opacity-50 text-center">
-				Citizen Participation in Urban Environment Management
-			</p>
-			<div className="flex flex-row gap-5 w-full h-[70vh] items-stretch">
+			<div className="flex flex-row gap-5 w-full h-[80vh] items-stretch">
 				<MapWindow
 					className={`
 						rounded-xl shadow-xl border border-gray-600 
@@ -83,15 +77,15 @@ export default function Dashboard() {
 					{isReportOpen && (
 						<ReportMapInfoContainer>
 							{clickedReport && (
-								<div className="flex flex-col pt-4 mb-3">
+								<div className="flex flex-col pt-6 mb-3">
 									<SubTitle>{clickedReport.title}</SubTitle>
-									<div className="flex flex-col overflow-scroll max-h-[50vh] pl-5 pr-5 pb-4 w-full">
+									<div className="flex flex-col overflow-scroll max-h-[58vh] pl-6 pr-6 pb-5 w-full">
 										<SubTitle>Reporter</SubTitle>
 										{!clickedReport.anonymous ? (
 											<div className="flex flex-row items-center justify-center gap-5">
 												{clickedReport.reporterProfilePicture && (
 													<img
-														className="h-35 w-35 rounded-2xl"
+														className="h-36 w-36 rounded-2xl"
 														src={
 															`data:image/png;base64,` +
 															clickedReport.reporterProfilePicture
@@ -99,7 +93,7 @@ export default function Dashboard() {
 														alt="Reporter profile picture"
 													/>
 												)}
-												<span className="text-center text-2xl font-semibold">
+												<span className="text-center text-3xl font-semibold">
 													{clickedReport.reporterUsername}
 												</span>
 											</div>
@@ -112,10 +106,10 @@ export default function Dashboard() {
 									<div>{clickedReport.description}</div>
 
 									<span className="border-b-2 mb-2 mt-2"></span>
-									<div className="flex flex-wrap gap-4">
+										<div className="flex flex-wrap gap-4">
 										{clickedReport.photos.map((photo) => (
 											<img
-												className="h-32 w-32 object-cover"
+													className="h-36 w-36 object-cover rounded-lg"
 												src={photo}
 												key={photo}
 											/>

@@ -197,21 +197,21 @@ export default function UserReports() {
 
 	return (
 		<div className="flex flex-col rounded-xl shadow-xl border border-gray-600 w-full flex-1 min-h-0 overflow-hidden">
-			<div className="flex flex-col gap-1 px-4 py-3 border-b border-gray-200 bg-gray-50">
+			<div className="flex flex-col gap-1 px-6 py-4 border-b border-gray-200 bg-gray-50">
 				<div className="flex flex-row items-center justify-between gap-3">
-					<SubTitle fontSize="text-[1.4rem]" textStart>
+					<SubTitle fontSize="text-[1.6rem]" textStart>
 						Your Reports
 					</SubTitle>
-					<span className="text-sm opacity-70">
+					<span className="text-base opacity-70">
 						{userReports.length}
 					</span>
 				</div>
-				<span className="text-sm opacity-70">
+				<span className="text-base opacity-70">
 					Click a report to view details
 				</span>
 			</div>
 
-			<div className="overflow-y-auto flex-1 min-h-0 flex flex-col px-4 py-4">
+			<div className="overflow-y-auto flex-1 min-h-0 flex flex-col px-6 py-5">
 				{isLoading ? (
 					<div className="flex flex-col h-full w-full justify-center items-center">
 						<Spinner />
@@ -221,7 +221,7 @@ export default function UserReports() {
 						<span>No reports found</span>
 					</div>
 				) : (
-					<div className="flex flex-col gap-3">
+					<div className="flex flex-col gap-4">
 						{userReports.map((report) => {
 							const statusBadge = getStatusBadge(report.status);
 							const reportDate = formatTimestamp(report.timestamp);
@@ -232,25 +232,25 @@ export default function UserReports() {
 								>
 									<button
 										onClick={() => handleToggleExpand(report.id)}
-										className="flex flex-row items-center gap-3 hover:cursor-pointer w-full px-3 py-3"
+										className="flex flex-row items-center gap-4 hover:cursor-pointer w-full px-5 py-4"
 									>
 										<div className="flex flex-row justify-between items-start w-full gap-3">
 											<div className="flex flex-col min-w-0 flex-1">
 												<SubTitle
 													textStart
-													fontSize="text-[1.1rem]"
+													fontSize="text-[1.25rem]"
 													className="!truncate"
 												>
 													{report.title}
 												</SubTitle>
-												<span className="text-xs opacity-60 text-start flex flex-row items-center gap-2">
+												<span className="text-sm opacity-60 text-start flex flex-row items-center gap-2">
 													<FontAwesomeIcon icon={faClock} />
 													{reportDate}
 												</span>
 											</div>
 
 											<span
-												className={`inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full border ${statusBadge.className}`}
+												className={`inline-flex items-center gap-2 text-sm font-medium px-4 py-1.5 rounded-full border ${statusBadge.className}`}
 											>
 												<FontAwesomeIcon icon={statusBadge.icon} />
 												{statusBadge.label}
@@ -278,53 +278,53 @@ export default function UserReports() {
 						onClick={handleCloseModal}
 						aria-label="Close report details"
 					/>
-					<div className="relative w-11/12 max-w-3xl max-h-[85vh] rounded-xl shadow-xl border border-gray-600 bg-white flex flex-col overflow-hidden">
-						<div className="flex flex-row items-center justify-between p-4 border-b border-gray-200">
+					<div className="relative w-11/12 max-w-4xl max-h-[90vh] rounded-xl shadow-xl border border-gray-600 bg-white flex flex-col overflow-hidden">
+						<div className="flex flex-row items-center justify-between p-6 border-b border-gray-200">
 							<div className="flex flex-col min-w-0 flex-1 gap-1">
-								<SubTitle fontSize="text-[1.3rem]" textStart className="!truncate">
+								<SubTitle fontSize="text-[1.5rem]" textStart className="!truncate">
 									{selectedReport.title}
 								</SubTitle>
 								<div className="flex flex-row flex-wrap items-center gap-2">
 									<span
-										className={`inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full border ${statusBadge.className}`}
+										className={`inline-flex items-center gap-2 text-sm font-medium px-4 py-1.5 rounded-full border ${statusBadge.className}`}
 									>
 										<FontAwesomeIcon icon={statusBadge.icon} />
 										{statusBadge.label}
 									</span>
-									<span className="text-xs opacity-60">
+									<span className="text-sm opacity-60">
 										{formatTimestamp(selectedReport.timestamp)}
 									</span>
 								</div>
 							</div>
 							<button
 								onClick={handleCloseModal}
-								className="border rounded-full p-2 flex items-center justify-center hover:cursor-pointer"
+								className="border rounded-full p-3 flex items-center justify-center hover:cursor-pointer"
 								aria-label="Close"
 							>
 								<FontAwesomeIcon icon={faX} />
 							</button>
 						</div>
 
-						<div className="p-4 overflow-y-auto min-h-0">
+						<div className="p-6 overflow-y-auto min-h-0">
 							{selectedReport.anonymous && (
 								<>
 									<span className="border-b-2 my-2 block"></span>
-									<span className="text-sm opacity-80">
+									<span className="text-base opacity-80">
 										This report is anonymous
 									</span>
 								</>
 							)}
 
-							<SubTitle fontSize="text-[1.2rem]" textStart>
+							<SubTitle fontSize="text-[1.3rem]" textStart>
 								{selectedReport.category}
 							</SubTitle>
 							<span className="border-b-2 my-2 block"></span>
 
-							<div className="text-sm opacity-80">
+							<div className="text-base opacity-80">
 								{selectedReport.description}
 							</div>
 
-							<SubTitle fontSize="text-[1.2rem]" textStart>
+							<SubTitle fontSize="text-[1.3rem]" textStart>
 								Photos
 							</SubTitle>
 							<span className="border-b-2 my-2 block"></span>
@@ -333,7 +333,7 @@ export default function UserReports() {
 								{selectedReport.photos.map((photo, idx) => (
 									<img
 										key={photo ?? idx}
-										className="h-28 w-28 object-cover rounded-lg"
+										className="h-32 w-32 object-cover rounded-lg"
 										src={photo}
 										alt="report"
 									/>
@@ -342,19 +342,19 @@ export default function UserReports() {
 
 							{selectedReport.status !== "PENDING_APPROVAL" && (
 								<div className="flex flex-col mt-4">
-									<SubTitle fontSize="text-[1.2rem]" textStart>
+									<SubTitle fontSize="text-[1.3rem]" textStart>
 										Updates
 									</SubTitle>
 									<span className="border-b-2 my-2 block"></span>
 
 									<div className="flex flex-col">
-										<div className="max-h-40 overflow-y-auto p-2 rounded-lg mb-2 space-y-2">
+										<div className="max-h-56 overflow-y-auto p-3 rounded-lg mb-3 space-y-2">
 											{selectedReport.publicMessages &&
 											selectedReport.publicMessages.length > 0 ? (
 												selectedReport.publicMessages.map((msg) => (
 													<div
 														key={msg.id}
-														className={`p-2 rounded-lg text-sm ${
+														className={`p-3 rounded-lg text-base ${
 															msg.senderId === user.id
 																? "bg-blue-100 ml-auto text-right"
 																: "bg-gray-100 mr-auto text-left"
@@ -391,7 +391,7 @@ export default function UserReports() {
 												onClick={() =>
 													handleSendMessage(selectedReport.id)
 												}
-												className="border rounded-full p-2 flex items-center justify-center hover:cursor-pointer"
+												className="border rounded-full p-3 flex items-center justify-center hover:cursor-pointer"
 											>
 												<FontAwesomeIcon icon={faPaperPlane} />
 											</button>
