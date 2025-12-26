@@ -69,17 +69,17 @@ export default function Dashboard() {
 			<p className="opacity-50 text-center">
 				Citizen Participation in Urban Environment Management
 			</p>
-			<div className="flex flex-row gap-5 w-full">
+			<div className="flex flex-row gap-5 w-full h-[70vh] items-stretch">
 				<MapWindow
 					className={`
 						rounded-xl shadow-xl border border-gray-600 
-						flex-[3] min-w-0 h-full min-h-[70vh]`}
+						flex-[3] min-w-0 h-full`}
 					scrollWheelZoom={false}
 					reports={reports}
 					setClickedReportId={setClickedReportId}
 				/>
 
-				<div className="flex-[2] min-w-0 flex flex-col gap-5 h-full min-h-[70vh]">
+				<div className="flex-[2] min-w-0 flex flex-col gap-5 h-full overflow-hidden">
 					{isReportOpen && (
 						<ReportMapInfoContainer>
 							{clickedReport && (

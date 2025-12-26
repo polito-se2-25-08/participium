@@ -12,8 +12,14 @@ import Spinner from "../../loaders/Spinner";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+	faCircleCheck,
+	faCirclePause,
+	faCircleXmark,
+	faClock,
+	faPersonDigging,
 	faX,
 	faPaperPlane,
+	faUserCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "../../input/variants/TextInput";
 import { postPublicMessage } from "../../../action/reportAction";
@@ -101,7 +107,6 @@ export default function UserReports() {
 			setReportFetched(false);
 			setIsLoading(true);
 			const reponse = await fetchUserReportsById(user.id);
-			console.log(reponse);
 			if (reponse.success) {
 				setUserReports(reponse.data);
 			}
@@ -140,10 +145,73 @@ export default function UserReports() {
 			? reportStates[selectedReportId]
 			: { newMessage: "" };
 
+	const getStatusBadge = (status: UserReport["status"]) => {
+		switch (status) {
+			case "PENDING_APPROVAL":
+				return {
+					label: "Pending approval",
+					icon: faClock,
+					className:
+						"bg-yellow-100 text-yellow-800 border-yellow-200",
+				};
+			case "ASSIGNED":
+				return {
+					label: "Assigned",
+					icon: faUserCheck,
+					className: "bg-blue-100 text-blue-800 border-blue-200",
+				};
+			case "IN_PROGRESS":
+				return {
+					label: "In progress",
+					icon: faPersonDigging,
+					className:
+						"bg-indigo-100 text-indigo-800 border-indigo-200",
+				};
+			case "SUSPENDED":
+				return {
+					label: "Suspended",
+					icon: faCirclePause,
+					className: "bg-gray-100 text-gray-800 border-gray-200",
+				};
+			case "REJECTED":
+				return {
+					label: "Rejected",
+					icon: faCircleXmark,
+					className: "bg-red-100 text-red-800 border-red-200",
+				};
+			case "RESOLVED":
+				return {
+					label: "Resolved",
+					icon: faCircleCheck,
+					className:
+						"bg-green-100 text-green-800 border-green-200",
+				};
+			default:
+				return {
+					label: "Unknown",
+					icon: faClock,
+					className: "bg-gray-100 text-gray-800 border-gray-200",
+				};
+		}
+	};
+
 	return (
-		<div className="flex flex-col rounded-xl shadow-xl border border-gray-600 gap-2 w-full flex-1 min-h-0">
-			<SubTitle fontSize="text-[1.4rem]">Your Reports</SubTitle>
-			<div className="overflow-y-auto flex-1 min-h-0 flex flex-col pr-8 pb-5 pl-8">
+		<div className="flex flex-col rounded-xl shadow-xl border border-gray-600 w-full flex-1 min-h-0 overflow-hidden">
+			<div className="flex flex-col gap-1 px-4 py-3 border-b border-gray-200 bg-gray-50">
+				<div className="flex flex-row items-center justify-between gap-3">
+					<SubTitle fontSize="text-[1.4rem]" textStart>
+						Your Reports
+					</SubTitle>
+					<span className="text-sm opacity-70">
+						{userReports.length}
+					</span>
+				</div>
+				<span className="text-sm opacity-70">
+					Click a report to view details
+				</span>
+			</div>
+
+			<div className="overflow-y-auto flex-1 min-h-0 flex flex-col px-4 py-4">
 				{isLoading ? (
 					<div className="flex flex-col h-full w-full justify-center items-center">
 						<Spinner />
@@ -153,29 +221,40 @@ export default function UserReports() {
 						<span>No reports found</span>
 					</div>
 				) : (
-					<div className="flex flex-col gap-2">
+					<div className="flex flex-col gap-3">
 						{userReports.map((report) => {
+							const statusBadge = getStatusBadge(report.status);
+							const reportDate = formatTimestamp(report.timestamp);
 							return (
 								<div
 									key={report.id}
-									className="flex flex-col gap-2 shadow hover:shadow-md p-2 rounded-2xl"
+									className="flex flex-col border border-gray-200 bg-white shadow hover:shadow-md rounded-2xl"
 								>
 									<button
 										onClick={() => handleToggleExpand(report.id)}
-										className="flex flex-row items-center gap-3 hover:cursor-pointer w-full"
+										className="flex flex-row items-center gap-3 hover:cursor-pointer w-full px-3 py-3"
 									>
-										<div className="flex flex-row justify-between items-center w-full">
-											<div className="w-1/2">
-												<SubTitle textStart fontSize="text-[1.1rem]">
+										<div className="flex flex-row justify-between items-start w-full gap-3">
+											<div className="flex flex-col min-w-0 flex-1">
+												<SubTitle
+													textStart
+													fontSize="text-[1.1rem]"
+													className="!truncate"
+												>
 													{report.title}
 												</SubTitle>
-											</div>
-
-											<div className="flex flex-row items-center gap-4">
-												<span className="text-sm opacity-80">
-													{report.status}
+												<span className="text-xs opacity-60 text-start flex flex-row items-center gap-2">
+													<FontAwesomeIcon icon={faClock} />
+													{reportDate}
 												</span>
 											</div>
+
+											<span
+												className={`inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full border ${statusBadge.className}`}
+											>
+												<FontAwesomeIcon icon={statusBadge.icon} />
+												{statusBadge.label}
+											</span>
 										</div>
 									</button>
 								</div>
@@ -186,6 +265,9 @@ export default function UserReports() {
 			</div>
 
 			{selectedReport && (
+				(() => {
+					const statusBadge = getStatusBadge(selectedReport.status);
+					return (
 				<div
 					className="fixed inset-0 z-[99999] flex items-center justify-center"
 					role="dialog"
@@ -196,11 +278,24 @@ export default function UserReports() {
 						onClick={handleCloseModal}
 						aria-label="Close report details"
 					/>
-					<div className="relative w-11/12 max-w-3xl max-h-[85vh] rounded-xl shadow-xl border border-gray-600 bg-white flex flex-col">
+					<div className="relative w-11/12 max-w-3xl max-h-[85vh] rounded-xl shadow-xl border border-gray-600 bg-white flex flex-col overflow-hidden">
 						<div className="flex flex-row items-center justify-between p-4 border-b border-gray-200">
-							<SubTitle fontSize="text-[1.3rem]" textStart>
-								{selectedReport.title}
-							</SubTitle>
+							<div className="flex flex-col min-w-0 flex-1 gap-1">
+								<SubTitle fontSize="text-[1.3rem]" textStart className="!truncate">
+									{selectedReport.title}
+								</SubTitle>
+								<div className="flex flex-row flex-wrap items-center gap-2">
+									<span
+										className={`inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full border ${statusBadge.className}`}
+									>
+										<FontAwesomeIcon icon={statusBadge.icon} />
+										{statusBadge.label}
+									</span>
+									<span className="text-xs opacity-60">
+										{formatTimestamp(selectedReport.timestamp)}
+									</span>
+								</div>
+							</div>
 							<button
 								onClick={handleCloseModal}
 								className="border rounded-full p-2 flex items-center justify-center hover:cursor-pointer"
@@ -244,10 +339,6 @@ export default function UserReports() {
 									/>
 								))}
 							</div>
-
-							<span className="text-end block">
-								{formatTimestamp(selectedReport.timestamp)}
-							</span>
 
 							{selectedReport.status !== "PENDING_APPROVAL" && (
 								<div className="flex flex-col mt-4">
@@ -311,6 +402,8 @@ export default function UserReports() {
 						</div>
 					</div>
 				</div>
+			);
+			})()
 			)}
 		</div>
 	);
