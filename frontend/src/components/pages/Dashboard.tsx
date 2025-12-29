@@ -11,8 +11,11 @@ import SubTitle from "../titles/SubTitle";
 import { formatTimestamp } from "../../utilis/utils";
 import { MapWindow } from "../map/DashboardMap/MapWindow";
 import ReportPopupModal from "../modals/ReportPopupModal";
+import ImageZoomModal from "../modals/ImageZoomModal";
 
 export default function Dashboard() {
+
+	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
 	const [reports, setReports] = useState<ClientReportMapI[] | []>([]);
 
@@ -132,16 +135,29 @@ export default function Dashboard() {
 
 						<div className="flex flex-wrap gap-4">
 							{clickedReport.photos.map((photo, idx) => (
-								<img
-									className="h-36 w-36 object-cover rounded-lg"
-									src={photo}
-									key={photo ?? idx}
-									alt="report"
-								/>
+								<button
+												key={idx}
+												type="button"
+												onClick={() => setSelectedImage(photo)}
+												className="rounded-lg overflow-hidden border border-gray-300 bg-white hover:opacity-90 transition-opacity"
+												aria-label={`Open report photo ${idx + 1}`}
+											>
+												<img
+													src={photo}
+													alt={`Report photo ${idx + 1}`}
+													className="w-full h-24 object-cover"
+												/>
+											</button>
 							))}
 						</div>
 					</div>
 				)}
+				<ImageZoomModal
+								isOpen={selectedImage !== null}
+								imageUrl={selectedImage || ""}
+								onClose={() => setSelectedImage(null)}
+								altText="Report photo"
+							/>
 			</ReportPopupModal>
 		</ContentContainer>
 	);

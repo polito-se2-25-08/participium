@@ -26,7 +26,7 @@ export function MarkerInfo() {
     }, []);
     
   return (
-    <div ref={divRef} className="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg z-[1001] w-auto max-w-md">
+    <div ref={divRef} className="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg z-[1000] w-auto max-w-md">
       {!hidden && (
         <>
           <h2 className="text-xl font-bold mb-2">Marker Information</h2>

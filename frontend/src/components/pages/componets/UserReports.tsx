@@ -23,12 +23,14 @@ import {
 import TextInput from "../../input/variants/TextInput";
 import { postPublicMessage } from "../../../action/reportAction";
 import ReportPopupModal from "../../modals/ReportPopupModal";
+import ImageZoomModal from "../../modals/ImageZoomModal";
 
 type ReportState = {
 	newMessage: string;
 };
 
 export default function UserReports() {
+	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 	const [userReports, setUserReports] = useState<UserReport[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [reportFetched, setReportFetched] = useState(false);
@@ -263,7 +265,7 @@ export default function UserReports() {
 					</div>
 				)}
 			</div>
-
+			
 			{selectedReport &&
 				(() => {
 					const statusBadge = getStatusBadge(selectedReport.status);
@@ -319,12 +321,19 @@ export default function UserReports() {
 
 							<div className="flex flex-wrap gap-4">
 								{selectedReport.photos.map((photo, idx) => (
-									<img
-										key={photo ?? idx}
-										className="h-32 w-32 object-cover rounded-lg"
-										src={photo}
-										alt="report"
-									/>
+									<button
+												key={idx}
+												type="button"
+												onClick={() => setSelectedImage(photo)}
+												className="rounded-lg overflow-hidden border border-gray-300 bg-white hover:opacity-90 transition-opacity"
+												aria-label={`Open report photo ${idx + 1}`}
+											>
+												<img
+													src={photo}
+													alt={`Report photo ${idx + 1}`}
+													className="w-full h-24 object-cover"
+												/>
+											</button>
 								))}
 							</div>
 
@@ -387,6 +396,12 @@ export default function UserReports() {
 									</div>
 								</div>
 							)}
+							<ImageZoomModal
+								isOpen={selectedImage !== null}
+								imageUrl={selectedImage || ""}
+								onClose={() => setSelectedImage(null)}
+								altText="Report photo"
+							/>
 						</ReportPopupModal>
 					);
 				})()} 
