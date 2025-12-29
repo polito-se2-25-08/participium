@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import PrimaryButton from "../buttons/variants/primary/PrimaryButton";
 
 import ContentContainer from "../containers/ContentContainer";
 import { useUser } from "../providers/AuthContext";
@@ -11,11 +10,9 @@ import type { ClientReportMapI } from "../../interfaces/dto/report/NewReportResp
 import SubTitle from "../titles/SubTitle";
 import { formatTimestamp } from "../../utilis/utils";
 import { MapWindow } from "../map/DashboardMap/MapWindow";
-import UserReports from "./componets/UserReports";
 import ReportPopupModal from "../modals/ReportPopupModal";
 
 export default function Dashboard() {
-	const navigate = useNavigate();
 
 	const [reports, setReports] = useState<ClientReportMapI[] | []>([]);
 
@@ -65,8 +62,8 @@ export default function Dashboard() {
 	};
 
 	return (
-		<ContentContainer width="w-full sm:w-full xl:w-11/12" gap="xl:gap-2 gap-4">
-			<div className="gap-5 w-full h-[80vh] items-stretch">
+		<ContentContainer width="w-full sm:w-full" gap="xl:gap-2 gap-4">
+			<div className="gap-5 w-full h-[calc(100vh-4rem)] items-stretch">
 				<MapWindow
 					className={`
 						flex-[3] min-w-0 h-full`}
@@ -101,8 +98,14 @@ export default function Dashboard() {
 						</SubTitle>
 						<span className="border-b-2 my-2 block"></span>
 
-						{!clickedReport.anonymous ? (
-							<div className="flex flex-row items-center justify-center gap-5">
+
+						{clickedReport.anonymous && isCitizen ? (
+							<span className="text-base opacity-80">
+								This report is anonymous
+							</span>
+							
+						) : (
+						<div className="flex flex-row items-center justify-center gap-5">
 								{clickedReport.reporterProfilePicture && (
 									<img
 										className="h-36 w-36 rounded-2xl"
@@ -114,13 +117,9 @@ export default function Dashboard() {
 									/>
 								)}
 								<span className="text-center text-3xl font-semibold">
-									{clickedReport.reporterUsername}
+									{clickedReport.reporterName} {clickedReport.reporterSurname}
 								</span>
 							</div>
-						) : (
-							<span className="text-base opacity-80">
-								This report is anonymous
-							</span>
 						)}
 
 						<span className="border-b-2 my-2 block"></span>
