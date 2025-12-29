@@ -14,7 +14,7 @@ import wasteIcon from "../../../assets/markers/icons/waste.svg";
 
 
 export function MarkerInfo() {
-    const [hidden, setHidden] = useState(false);
+    const [hidden, setHidden] = useState(true);
     const toggleHidden = () => setHidden(!hidden);
     const divRef = useRef<HTMLDivElement>(null);
 

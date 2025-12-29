@@ -66,21 +66,16 @@ export default function Dashboard() {
 
 	return (
 		<ContentContainer width="w-full sm:w-full xl:w-11/12" gap="xl:gap-2 gap-4">
-			<div className="flex flex-row gap-5 w-full h-[80vh] items-stretch">
+			<div className="gap-5 w-full h-[80vh] items-stretch">
 				<MapWindow
 					className={`
-						rounded-xl shadow-xl border border-gray-600 
 						flex-[3] min-w-0 h-full`}
 					scrollWheelZoom={false}
 					reports={reports}
 					setClickedReportId={setClickedReportId}
-				/>
-
-				{showRightPanel && (
-					<div className="flex-[2] min-w-0 flex flex-col gap-5 h-full overflow-hidden">
-						{isCitizen && <UserReports />}
-					</div>
-				)}
+					showRightPanel={showRightPanel}
+					isCitizen={isCitizen}
+				/>	
 			</div>
 
 			<ReportPopupModal
@@ -149,12 +144,6 @@ export default function Dashboard() {
 					</div>
 				)}
 			</ReportPopupModal>
-
-			{isCitizen && (
-				<PrimaryButton className="rounded-xl mt-2" onClick={() => navigate("/report")}>
-					Submit a Report
-				</PrimaryButton>
-			)}
 		</ContentContainer>
 	);
 }

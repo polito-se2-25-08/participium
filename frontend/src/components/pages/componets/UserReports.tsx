@@ -196,7 +196,7 @@ export default function UserReports() {
 	};
 
 	return (
-		<div className="flex flex-col rounded-xl shadow-xl border border-gray-600 w-full flex-1 min-h-0 overflow-hidden">
+		<div className="flex flex-col rounded-xl shadow-xl border border-gray-600  h-full w-full flex-1 min-h-0 overflow-hidden">
 			<div className="flex flex-col gap-1 px-6 py-4 border-b border-gray-200 bg-gray-50">
 				<div className="flex flex-row items-center justify-between gap-3">
 					<SubTitle fontSize="text-[1.6rem]" textStart>
@@ -211,7 +211,7 @@ export default function UserReports() {
 				</span>
 			</div>
 
-			<div className="overflow-y-auto flex-1 min-h-0 flex flex-col px-6 py-5">
+			<div className="overflow-y-auto flex-1 min-h-0 flex flex-col px-6 py-5 bg-white">
 				{isLoading ? (
 					<div className="flex flex-col h-full w-full justify-center items-center">
 						<Spinner />
