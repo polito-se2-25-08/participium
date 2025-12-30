@@ -7,9 +7,6 @@ export default function Header() {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const hideNav =
-    location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/verify";
-
   const navLinkClass = (path: string) => {
     const active = isActive(path);
 
@@ -33,8 +30,7 @@ export default function Header() {
         </span>
       </Link>
 
-      {!hideNav && (
-        <nav className="flex flex-row items-center gap-1 sm:gap-2 text-white no-underline">
+      <nav className="flex flex-row items-center gap-1 sm:gap-2 text-white no-underline">
           <Link
             to="/"
             className={navLinkClass("/")}
@@ -85,11 +81,10 @@ export default function Header() {
               to="/login"
               className={navLinkClass("/login")}
             >
-              Sign In
+              Sign in
             </Link>
           )}
         </nav>
-      )}
     </header>
   );
 }

@@ -167,7 +167,7 @@ export function RegisterPage() {
 				>
 					Register
 				</PrimaryButton>
-				<Link className="text-center underline" to="/">
+				<Link className="text-center underline" to="/login">
 					<span className="opacity-50 text-sm text-center">
 						Already have an account? Back to login
 					</span>

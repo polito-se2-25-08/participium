@@ -55,7 +55,7 @@ fetchedData.data
 		fetchReports();
 	}, []);
 
-	const { user, isAuthenticated } = useAuth();
+	const { user } = useAuth();
 	const isCitizen = user?.role === "CITIZEN";
 	const showRightPanel = isCitizen;
 	const isMapReportOpen = clickedReportId !== -1 && clickedReport != null;

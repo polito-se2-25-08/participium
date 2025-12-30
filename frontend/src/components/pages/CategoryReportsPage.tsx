@@ -229,7 +229,7 @@ export default function CategoryReportsPage() {
 			)
 		);
 
-		const response = await postPublicMessage(reportId, message, user.id);
+		await postPublicMessage(reportId, message, user.id);
 	};
 
 	// =============================

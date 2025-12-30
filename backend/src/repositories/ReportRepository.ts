@@ -536,9 +536,6 @@ export const getPendingReports = async (): Promise<ReportDB[]> => {
 			),
 			category:Category(
 				*
-			),
-			report_comment:Report_Comment(
-				*
 			)
     	`
 		)
