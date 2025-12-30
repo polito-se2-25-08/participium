@@ -17,12 +17,12 @@ import {
 	faCircleXmark,
 	faClock,
 	faPersonDigging,
-	faX,
 	faPaperPlane,
 	faUserCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import TextInput from "../../input/variants/TextInput";
 import { postPublicMessage } from "../../../action/reportAction";
+import ReportPopupModal from "../../modals/ReportPopupModal";
 
 type ReportState = {
 	newMessage: string;
@@ -264,48 +264,36 @@ export default function UserReports() {
 				)}
 			</div>
 
-			{selectedReport && (
+			{selectedReport &&
 				(() => {
 					const statusBadge = getStatusBadge(selectedReport.status);
 					return (
-				<div
-					className="fixed inset-0 z-[99999] flex items-center justify-center"
-					role="dialog"
-					aria-modal="true"
-				>
-					<button
-						className="absolute inset-0 bg-black/50"
-						onClick={handleCloseModal}
-						aria-label="Close report details"
-					/>
-					<div className="relative w-11/12 max-w-4xl max-h-[90vh] rounded-xl shadow-xl border border-gray-600 bg-white flex flex-col overflow-hidden">
-						<div className="flex flex-row items-center justify-between p-6 border-b border-gray-200">
-							<div className="flex flex-col min-w-0 flex-1 gap-1">
-								<SubTitle fontSize="text-[1.5rem]" textStart className="!truncate">
-									{selectedReport.title}
-								</SubTitle>
-								<div className="flex flex-row flex-wrap items-center gap-2">
-									<span
-										className={`inline-flex items-center gap-2 text-sm font-medium px-4 py-1.5 rounded-full border ${statusBadge.className}`}
+						<ReportPopupModal
+							isOpen={true}
+							onClose={handleCloseModal}
+							header={
+								<>
+									<SubTitle
+										fontSize="text-[1.5rem]"
+										textStart
+										className="!truncate"
 									>
-										<FontAwesomeIcon icon={statusBadge.icon} />
-										{statusBadge.label}
-									</span>
-									<span className="text-sm opacity-60">
-										{formatTimestamp(selectedReport.timestamp)}
-									</span>
-								</div>
-							</div>
-							<button
-								onClick={handleCloseModal}
-								className="border rounded-full p-3 flex items-center justify-center hover:cursor-pointer"
-								aria-label="Close"
-							>
-								<FontAwesomeIcon icon={faX} />
-							</button>
-						</div>
-
-						<div className="p-6 overflow-y-auto min-h-0">
+										{selectedReport.title}
+									</SubTitle>
+									<div className="flex flex-row flex-wrap items-center gap-2">
+										<span
+											className={`inline-flex items-center gap-2 text-sm font-medium px-4 py-1.5 rounded-full border ${statusBadge.className}`}
+										>
+											<FontAwesomeIcon icon={statusBadge.icon} />
+											{statusBadge.label}
+										</span>
+										<span className="text-sm opacity-60">
+											{formatTimestamp(selectedReport.timestamp)}
+										</span>
+									</div>
+								</>
+							}
+						>
 							{selectedReport.anonymous && (
 								<>
 									<span className="border-b-2 my-2 block"></span>
@@ -399,12 +387,9 @@ export default function UserReports() {
 									</div>
 								</div>
 							)}
-						</div>
-					</div>
-				</div>
-			);
-			})()
-			)}
+						</ReportPopupModal>
+					);
+				})()} 
 		</div>
 	);
 }
