@@ -14,7 +14,7 @@ import wasteIcon from "../../../assets/markers/icons/waste.svg";
 
 
 export function MarkerInfo() {
-    const [hidden, setHidden] = useState(false);
+    const [hidden, setHidden] = useState(true);
     const toggleHidden = () => setHidden(!hidden);
     const divRef = useRef<HTMLDivElement>(null);
 
@@ -26,7 +26,7 @@ export function MarkerInfo() {
     }, []);
     
   return (
-    <div ref={divRef} className="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg z-[1001] w-auto max-w-md">
+    <div ref={divRef} className="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg z-[1000] w-auto max-w-md">
       {!hidden && (
         <>
           <h2 className="text-xl font-bold mb-2">Marker Information</h2>

@@ -70,10 +70,23 @@ export default function Header() {
                 </Link>
               )}
               <Link
-                to="/profile"
-                className={navLinkClass("/profile")}
-              >
-                Profile
+            to="/profile"
+            className={`${navLinkClass("/profile")} relative`}
+          >
+            {user?.profilePicture && (
+            <img
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[2.5em] h-[2.5em] rounded-full hover:scale-105 hover:shadow-lg brightness-100 hover:brightness-80 transition-all transition-filter duration-300 cursor-pointer"
+              src={
+                `data:image/png;base64,` +
+                user?.profilePicture
+              }
+              alt="user profile picture"
+            />
+            )}
+            {!user?.profilePicture && (
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">Profile</span>
+            )}
+              <span className="invisible">Profile</span>
               </Link>
             </>
           ) : (

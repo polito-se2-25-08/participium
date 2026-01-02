@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import PrimaryButton from "../buttons/variants/primary/PrimaryButton";
 
 import ContentContainer from "../containers/ContentContainer";
 import { useAuth } from "../providers/AuthContext";
@@ -11,11 +10,12 @@ import type { ClientReportMapI } from "../../interfaces/dto/report/NewReportResp
 import SubTitle from "../titles/SubTitle";
 import { formatTimestamp } from "../../utilis/utils";
 import { MapWindow } from "../map/DashboardMap/MapWindow";
-import UserReports from "./componets/UserReports";
 import ReportPopupModal from "../modals/ReportPopupModal";
+import ImageZoomModal from "../modals/ImageZoomModal";
 
 export default function Dashboard() {
-	const navigate = useNavigate();
+
+	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
 	const [reports, setReports] = useState<ClientReportMapI[] | []>([]);
 
@@ -65,22 +65,17 @@ fetchedData.data
 	};
 
 	return (
-<ContentContainer width="w-full sm:w-full xl:w-11/12" gap="xl:gap-2 gap-4">
-			<div className="flex flex-row gap-5 w-full h-[80vh] items-stretch">
+		<ContentContainer width="w-full sm:w-full" gap="xl:gap-2 gap-4">
+			<div className="gap-5 w-full h-[calc(100vh-4rem)] items-stretch">
 				<MapWindow
 					className={`
-						rounded-xl shadow-xl border border-gray-600 
 						flex-[3] min-w-0 h-full`}
 					scrollWheelZoom={false}
 					reports={reports}
 					setClickedReportId={setClickedReportId}
-				/>
-
-				{showRightPanel && (
-					<div className="flex-[2] min-w-0 flex flex-col gap-5 h-full overflow-hidden">
-						{isCitizen && <UserReports />}
-					</div>
-				)}
+					showRightPanel={showRightPanel}
+					isCitizen={isCitizen}
+				/>	
 			</div>
 
 			<ReportPopupModal
@@ -106,8 +101,14 @@ fetchedData.data
 						</SubTitle>
 						<span className="border-b-2 my-2 block"></span>
 
-						{!clickedReport.anonymous ? (
-<div className="flex flex-row items-center justify-center gap-5">
+
+						{clickedReport.anonymous && isCitizen ? (
+							<span className="text-base opacity-80">
+								This report is anonymous
+							</span>
+							
+						) : (
+						<div className="flex flex-row items-center justify-center gap-5">
 								{clickedReport.reporterProfilePicture && (
 									<img
 										className="h-36 w-36 rounded-2xl"
@@ -119,13 +120,9 @@ fetchedData.data
 									/>
 								)}
 								<span className="text-center text-3xl font-semibold">
-									{clickedReport.reporterUsername}
+									{clickedReport.reporterName} {clickedReport.reporterSurname}
 								</span>
 							</div>
-						) : (
-<span className="text-base opacity-80">
-								This report is anonymous
-							</span>
 						)}
 
 						<span className="border-b-2 my-2 block"></span>
@@ -138,23 +135,30 @@ fetchedData.data
 
 						<div className="flex flex-wrap gap-4">
 							{clickedReport.photos.map((photo, idx) => (
-<img
-									className="h-36 w-36 object-cover rounded-lg"
-									src={photo}
-									key={photo ?? idx}
-									alt="report"
-								/>
+								<button
+												key={idx}
+												type="button"
+												onClick={() => setSelectedImage(photo)}
+												className="rounded-lg overflow-hidden border border-gray-300 bg-white hover:opacity-90 transition-opacity"
+												aria-label={`Open report photo ${idx + 1}`}
+											>
+												<img
+													src={photo}
+													alt={`Report photo ${idx + 1}`}
+													className="w-full h-24 object-cover"
+												/>
+											</button>
 							))}
 						</div>
 					</div>
 				)}
+				<ImageZoomModal
+								isOpen={selectedImage !== null}
+								imageUrl={selectedImage || ""}
+								onClose={() => setSelectedImage(null)}
+								altText="Report photo"
+							/>
 			</ReportPopupModal>
-
-			{isCitizen && (
-				<PrimaryButton className="rounded-xl mt-2" onClick={() => navigate("/report")}>
-					Submit a Report
-				</PrimaryButton>
-			)}
 		</ContentContainer>
 	);
 }

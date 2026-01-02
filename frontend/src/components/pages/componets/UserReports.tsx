@@ -23,19 +23,26 @@ import {
 import TextInput from "../../input/variants/TextInput";
 import { postPublicMessage } from "../../../action/reportAction";
 import ReportPopupModal from "../../modals/ReportPopupModal";
+import ImageZoomModal from "../../modals/ImageZoomModal";
 
 type ReportState = {
 	newMessage: string;
 };
 
-export default function UserReports() {
-	const [userReports, setUserReports] = useState<UserReport[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [reportFetched, setReportFetched] = useState(false);
-	const { user } = useUser();
-	const [selectedReportId, setSelectedReportId] = useState<number | null>(
-		null
-	);
+export default function UserReports({ setRightPanelOpen, userReports: propsUserReports, setUserReports: propsSetUserReports }: { setRightPanelOpen: React.Dispatch<React.SetStateAction<boolean>> 
+    userReports?: UserReport[];
+    setUserReports?: React.Dispatch<React.SetStateAction<UserReport[]>>;
+}) {
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [localUserReports, setLocalUserReports] = useState<UserReport[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [reportFetched, setReportFetched] = useState(false);
+    const { user } = useUser();
+    const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
+
+    // Single check - use props if provided, otherwise use local state
+    const userReports = propsUserReports ?? localUserReports;
+    const setUserReports = propsSetUserReports ?? setLocalUserReports;
 
 	const [reportStates, setReportStates] = useState<
 		Record<number, ReportState>
@@ -103,6 +110,11 @@ export default function UserReports() {
 	};
 
 	useEffect(() => {
+		if(userReports.length > 0){
+			setIsLoading(false);
+			setReportFetched(true);
+			return;
+		}
 		const init = async () => {
 			setReportFetched(false);
 			setIsLoading(true);
@@ -196,7 +208,7 @@ export default function UserReports() {
 	};
 
 	return (
-		<div className="flex flex-col rounded-xl shadow-xl border border-gray-600 w-full flex-1 min-h-0 overflow-hidden">
+		<div className="flex flex-col rounded-xl shadow-xl border border-gray-600  h-full w-full flex-1 min-h-0 overflow-hidden">
 			<div className="flex flex-col gap-1 px-6 py-4 border-b border-gray-200 bg-gray-50">
 				<div className="flex flex-row items-center justify-between gap-3">
 					<SubTitle fontSize="text-[1.6rem]" textStart>
@@ -208,10 +220,16 @@ export default function UserReports() {
 				</div>
 				<span className="text-base opacity-70">
 					Click a report to view details
+					<button
+						onClick={() => setRightPanelOpen(false)}
+						className="ml-2 text-sm underline cursor-pointer"
+					>
+						Close
+					</button>
 				</span>
 			</div>
 
-			<div className="overflow-y-auto flex-1 min-h-0 flex flex-col px-6 py-5">
+			<div className="overflow-y-auto flex-1 min-h-0 flex flex-col px-6 py-5 bg-white">
 				{isLoading ? (
 					<div className="flex flex-col h-full w-full justify-center items-center">
 						<Spinner />
@@ -263,7 +281,7 @@ export default function UserReports() {
 					</div>
 				)}
 			</div>
-
+			
 			{selectedReport &&
 				(() => {
 					const statusBadge = getStatusBadge(selectedReport.status);
@@ -319,12 +337,19 @@ export default function UserReports() {
 
 							<div className="flex flex-wrap gap-4">
 								{selectedReport.photos.map((photo, idx) => (
-									<img
-										key={photo ?? idx}
-										className="h-32 w-32 object-cover rounded-lg"
-										src={photo}
-										alt="report"
-									/>
+									<button
+												key={idx}
+												type="button"
+												onClick={() => setSelectedImage(photo)}
+												className="rounded-lg overflow-hidden border border-gray-300 bg-white hover:opacity-90 transition-opacity"
+												aria-label={`Open report photo ${idx + 1}`}
+											>
+												<img
+													src={photo}
+													alt={`Report photo ${idx + 1}`}
+													className="w-full h-24 object-cover"
+												/>
+											</button>
 								))}
 							</div>
 
@@ -387,6 +412,12 @@ export default function UserReports() {
 									</div>
 								</div>
 							)}
+							<ImageZoomModal
+								isOpen={selectedImage !== null}
+								imageUrl={selectedImage || ""}
+								onClose={() => setSelectedImage(null)}
+								altText="Report photo"
+							/>
 						</ReportPopupModal>
 					);
 				})()} 
