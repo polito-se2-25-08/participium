@@ -29,17 +29,20 @@ type ReportState = {
 	newMessage: string;
 };
 
-export default function UserReports({ setRightPanelOpen }: { setRightPanelOpen: React.Dispatch<React.SetStateAction<boolean>> 
-	userReports?: UserReport[];
+export default function UserReports({ setRightPanelOpen, userReports: propsUserReports, setUserReports: propsSetUserReports }: { setRightPanelOpen: React.Dispatch<React.SetStateAction<boolean>> 
+    userReports?: UserReport[];
+    setUserReports?: React.Dispatch<React.SetStateAction<UserReport[]>>;
 }) {
-	const [selectedImage, setSelectedImage] = useState<string | null>(null);
-	const [userReports, setUserReports] = useState<UserReport[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [reportFetched, setReportFetched] = useState(false);
-	const { user } = useUser();
-	const [selectedReportId, setSelectedReportId] = useState<number | null>(
-		null
-	);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [localUserReports, setLocalUserReports] = useState<UserReport[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [reportFetched, setReportFetched] = useState(false);
+    const { user } = useUser();
+    const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
+
+    // Single check - use props if provided, otherwise use local state
+    const userReports = propsUserReports ?? localUserReports;
+    const setUserReports = propsSetUserReports ?? setLocalUserReports;
 
 	const [reportStates, setReportStates] = useState<
 		Record<number, ReportState>
@@ -107,6 +110,11 @@ export default function UserReports({ setRightPanelOpen }: { setRightPanelOpen: 
 	};
 
 	useEffect(() => {
+		if(userReports.length > 0){
+			setIsLoading(false);
+			setReportFetched(true);
+			return;
+		}
 		const init = async () => {
 			setReportFetched(false);
 			setIsLoading(true);

@@ -83,7 +83,10 @@ export function MapWindow({
 			{showRightPanel && rightPanelOpen && isCitizen && (
 			<div className="absolute top-0 right-0 w-full sm:w-[28rem] md:w-[32rem] lg:w-[36rem] h-full shadow-lg z-[1000] overflow-hidden">
 				<UserReports 
-				setRightPanelOpen ={setRightPanelOpen}/>
+				setRightPanelOpen ={setRightPanelOpen}
+				userReports={userReports}
+				setUserReports={setUserReports}
+				/>
 			</div>
 			)}
 			{showRightPanel && !rightPanelOpen && isCitizen && (
