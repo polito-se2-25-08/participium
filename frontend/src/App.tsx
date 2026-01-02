@@ -34,12 +34,13 @@ function AppContent() {
       <ApiDownToast />
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<LoginPage />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/verify" element={<VerificationPage />} />
 
           <Route element={<ProtectedRoutes />}>
-            <Route path="/dashboard" element={<Dashboard />} />
 
             <Route element={<Acl allowedRoles={["ADMIN"]} />}>
               <Route path="/setup" element={<AccountSetupPage />} />

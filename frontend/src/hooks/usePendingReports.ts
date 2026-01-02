@@ -52,7 +52,7 @@ export function usePendingReports() {
 				if (report.id === reportId) {
 					return {
 						...report,
-						messages: [...(report.messages || []), message],
+						publicMessages: [...(report.publicMessages || []), message],
 					};
 				}
 				return report;

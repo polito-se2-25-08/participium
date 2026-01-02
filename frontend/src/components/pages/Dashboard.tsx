@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import ContentContainer from "../containers/ContentContainer";
-import { useUser } from "../providers/AuthContext";
+import { useAuth } from "../providers/AuthContext";
 
 import { useEffect, useState } from "react";
 import { fetchActiveReports } from "../../action/mapAction";
@@ -28,7 +28,7 @@ export default function Dashboard() {
 	useEffect(() => {
 		if (clickedReportId !== -1) {
 			const report = reports.find(
-				(report) => report.id === clickedReportId
+(report) => report.id === clickedReportId
 			);
 			if (report) {
 				setClickedReport(report);
@@ -45,8 +45,8 @@ export default function Dashboard() {
 			const fetchedData = await fetchActiveReports();
 			if (fetchedData.success) {
 				const data = mapFetchedActiveReportsToActiveReports(
-					fetchedData.data
-				);
+fetchedData.data
+);
 
 				setReports(data);
 			}
@@ -55,7 +55,7 @@ export default function Dashboard() {
 		fetchReports();
 	}, []);
 
-	const { user } = useUser();
+	const { user } = useAuth();
 	const isCitizen = user?.role === "CITIZEN";
 	const showRightPanel = isCitizen;
 	const isMapReportOpen = clickedReportId !== -1 && clickedReport != null;
@@ -83,12 +83,12 @@ export default function Dashboard() {
 				onClose={closeMapReportModal}
 				header={
 					clickedReport ? (
-						<>
+<>
 							<SubTitle fontSize="text-[1.5rem]" textStart className="!truncate">
 								{clickedReport.title}
 							</SubTitle>
 							<span className="text-sm opacity-60">
-								{formatTimestamp(clickedReport.timestamp)}
+								{clickedReport.timestamp ? formatTimestamp(clickedReport.timestamp) : ""}
 							</span>
 						</>
 					) : null
