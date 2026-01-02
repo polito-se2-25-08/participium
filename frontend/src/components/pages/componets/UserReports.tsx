@@ -222,7 +222,7 @@ export default function UserReports({ setRightPanelOpen, userReports: propsUserR
 					Click a report to view details
 					<button
 						onClick={() => setRightPanelOpen(false)}
-						className="ml-2 text-sm underline"
+						className="ml-2 text-sm underline cursor-pointer"
 					>
 						Close
 					</button>

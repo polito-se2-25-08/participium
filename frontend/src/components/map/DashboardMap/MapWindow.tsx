@@ -91,7 +91,7 @@ export function MapWindow({
 			)}
 			{showRightPanel && !rightPanelOpen && isCitizen && (
 				<div className="absolute top-1/2 right-4 transform -translate-y-1/2 z-[1000]">
-					<button onClick={() => setRightPanelOpen(!rightPanelOpen)} className="w-18 h-18 rounded-full flex items-center justify-center bg-white shadow-lg hover:bg-gray-100">
+					<button onClick={() => setRightPanelOpen(!rightPanelOpen)} className="w-18 h-18 rounded-full flex items-center justify-center bg-white shadow-lg hover:bg-gray-100 cursor-pointer transition-colors duration-300">
 						Your reports
 					</button>
 				</div>
