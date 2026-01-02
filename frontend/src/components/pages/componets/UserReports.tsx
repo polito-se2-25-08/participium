@@ -29,7 +29,9 @@ type ReportState = {
 	newMessage: string;
 };
 
-export default function UserReports() {
+export default function UserReports({ setRightPanelOpen }: { setRightPanelOpen: React.Dispatch<React.SetStateAction<boolean>> 
+	userReports?: UserReport[];
+}) {
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 	const [userReports, setUserReports] = useState<UserReport[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -210,6 +212,12 @@ export default function UserReports() {
 				</div>
 				<span className="text-base opacity-70">
 					Click a report to view details
+					<button
+						onClick={() => setRightPanelOpen(false)}
+						className="ml-2 text-sm underline"
+					>
+						Close
+					</button>
 				</span>
 			</div>
 
