@@ -41,7 +41,6 @@ export function MapWindow({
 	reports,
 	setAdress,
 	setLocation,
-	showRightPanel,
 	isCitizen,
 
 	setClickedReportId,
@@ -80,7 +79,7 @@ export function MapWindow({
 				<TempMarker tempMarker={tempMarker} setTempMarker={setTempMarker} />
 				<MarkerInfo />
 			</MapContainer>
-			{showRightPanel && rightPanelOpen && isCitizen && (
+			{rightPanelOpen && isCitizen && (
 			<div className="absolute top-0 right-0 w-full sm:w-[28rem] md:w-[32rem] lg:w-[36rem] h-full shadow-lg z-[1000] overflow-hidden">
 				<UserReports 
 				setRightPanelOpen ={setRightPanelOpen}
@@ -89,7 +88,7 @@ export function MapWindow({
 				/>
 			</div>
 			)}
-			{showRightPanel && !rightPanelOpen && isCitizen && (
+			{!rightPanelOpen && isCitizen && (
 				<div className="absolute top-1/2 right-4 transform -translate-y-1/2 z-[1000]">
 					<button onClick={() => setRightPanelOpen(!rightPanelOpen)} className="w-18 h-18 rounded-full flex items-center justify-center bg-white shadow-lg hover:bg-gray-100 cursor-pointer transition-colors duration-300">
 						Your reports

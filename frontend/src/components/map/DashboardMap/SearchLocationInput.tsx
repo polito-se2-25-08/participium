@@ -5,7 +5,7 @@ import L from "leaflet";
 import { fetchCoordinates } from "../../../action/mapAction";
 import type { MarkerI } from "../../../interfaces/components/MarkerI";
 
-const ZOOM = import.meta.env.VITE_MAP_ZOOM;
+const ZOOM = import.meta.env.VITE_MAP_ZOOM_SEARCH;
 
 interface SearchLocationInputProps {
 	setMarker: React.Dispatch<React.SetStateAction<MarkerI | null>>;
@@ -28,7 +28,11 @@ export default function SearchLocationInput({
 		if (address) {
 			const coords = await fetchCoordinates(address);
 			if (coords) {
-				map.setView(coords, ZOOM);
+				map.setView(coords, ZOOM, { 
+					animate: true, 
+					duration: 1.0,
+					easeLinearity: 0.3
+				});
 				const newMarker: MarkerI = {
 					title: "New Marker",
 					timestamp: new Date().toISOString(),
