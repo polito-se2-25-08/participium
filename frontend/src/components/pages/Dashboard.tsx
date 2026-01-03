@@ -73,7 +73,6 @@ fetchedData.data
 					scrollWheelZoom={false}
 					reports={reports}
 					setClickedReportId={setClickedReportId}
-					showRightPanel={showRightPanel}
 					isCitizen={isCitizen}
 				/>	
 			</div>
