@@ -1,0 +1,28 @@
+services:
+  backend:
+    image: lorisc2345/participium-backend:latest
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+    networks:
+      - participium-net
+
+  frontend:
+    image: lorisc2345/participium-frontend:latest
+    env_file:
+      - ./frontend/.env
+    environment:
+      - VITE_API_ENDPOINT=http://localhost:3000/api/v1
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - participium-net
+
+networks:
+  participium-net:
+    driver: bridge

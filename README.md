@@ -123,7 +123,14 @@ echo "VITE_API_ENDOPOINT=http://localhost:3000/api/v1" > frontend/.env
 
 ### 2. Pull and start containers
 
-You can start the containers with:
+You can start the containers using the deployment compose file:
+
+```bash
+# This pulls the images and starts the containers
+docker compose -f docker-compose.deploy.yml up -d
+```
+
+Alternatively, you can run them manually:
 
 ```bash
 docker pull lorisc2345/participium-backend
@@ -190,14 +197,17 @@ docker compose down --volumes --rmi local
 ### 5. Example user credentials
 
 #### Admin
+
 Username: Haland <br>
 Password: Secret123!
 
 #### Officer
+
 Username: Loris <br>
 Password: Secret123!
 
 #### Technician
+
 Username: Clara <br>
 Password: Secret123!
 
@@ -205,13 +215,12 @@ Username: Lara <br>
 Password: Ow9#D9o0OvD.
 
 Username: Alberto <br>
-Password: hAQ1>gAlPK_}
+Password: hAQ1>gAlPK\_}
 
 #### Citizen
+
 Username: Alice <br>
 Password: Secret123!
-
-
 
 ### 6. Notes
 
