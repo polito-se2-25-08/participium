@@ -156,7 +156,6 @@ const remapReports = async (
 
 		return {
 			...report,
-			user_id: shouldHide ? "Anonymous" : foundUser?.username,
 			user: safeUser,
 			name: safeUser.name,
 			surname: safeUser.surname,
@@ -209,7 +208,6 @@ export const getActiveReports = async (
 	return mappedData;
 };
 
-const mapActiveReport = () => {};
 
 export const getFilteredReports = async (
 	userId: string,
@@ -532,7 +530,15 @@ export const getPendingReports = async (): Promise<ReportDB[]> => {
 				*
 			),
 	  	    report_message:Report_Message(
-				*
+				*,
+				sender:User!Report_Message_sender_id_fkey (
+					id,
+					name,
+					surname,
+					username,
+					profile_picture,
+					role
+				)
 			),
 			category:Category(
 				*

@@ -5,7 +5,7 @@ interface RejectionModalProps {
   isOpen: boolean;
   reportTitle: string;
   onClose: () => void;
-  onConfirm: (motivation: string) => void;
+  onConfirm: (motivation: string) => Promise<void> | void;
   isProcessing?: boolean;
 }
 
@@ -21,21 +21,31 @@ export default function RejectionModal({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!motivation.trim()) {
+
+    const value = motivation.trim();
+
+    if (!value) {
       setError("Rejection explanation is required");
       return;
     }
 
-    if (motivation.trim().length < 10) {
+    if (value.length < 10) {
       setError("Explanation must be at least 10 characters");
       return;
     }
 
     setError("");
-    onConfirm(motivation.trim());
+    try {
+      await Promise.resolve(onConfirm(value));
+      // Reset local state and close the modal after successful submit
+      setMotivation("");
+      onClose();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to submit rejection";
+      setError(message);
+    }
   };
 
   const handleClose = () => {

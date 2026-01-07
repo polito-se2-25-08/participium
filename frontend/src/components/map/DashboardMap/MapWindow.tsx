@@ -45,14 +45,13 @@ export function MapWindow({
 	setAdress,
 	setLocation,
 	isCitizen,
-    isUnlogged,
 
 	setClickedReportId,
 }: ReportMapViewProps) {
 	const [tempMarker, setTempMarker] = useState<MarkerI | null>(null);
 	const [rightPanelOpen, setRightPanelOpen] = useState<boolean>(false);
 	const [userReports, setUserReports] = useState<UserReport[]>([]);
-    const [activeReportsOpen, setActiveReportsOpen] = useState<boolean>(true);
+    const [activeReportsOpen, setActiveReportsOpen] = useState<boolean>(false);
 
 	return (
 		<div className="relative w-full h-full">
@@ -101,7 +100,7 @@ export function MapWindow({
 				</div>
 			)}
 
-            {isUnlogged && activeReportsOpen && (
+            {!rightPanelOpen && activeReportsOpen && (
                 <div className="absolute top-0 right-0 w-full sm:w-[24rem] h-full shadow-lg z-[1000] overflow-hidden bg-white">
                      <div className="relative h-full w-full">
                         <ActiveReportsList reports={reports} onReportClick={setClickedReportId} />
@@ -118,7 +117,7 @@ export function MapWindow({
                 </div>
             )}
 
-            {isUnlogged && !activeReportsOpen && (
+            {!rightPanelOpen && !activeReportsOpen && (
                 <div className="absolute top-2 right-20 z-[999]">
                     <button 
                         onClick={() => setActiveReportsOpen(true)}

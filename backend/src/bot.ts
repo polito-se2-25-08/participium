@@ -8,6 +8,7 @@ import registerLoginFeature from "./featuresBot/login";
 import registerNewReportFeature from "./featuresBot/newreport";
 import checkReports from "./featuresBot/checkReports";
 import helper from "./featuresBot/helper";
+import notifications from "./featuresBot/notifications";
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
 
@@ -28,7 +29,9 @@ ctx.reply(
     `• /contacts - View municipality workers contact details \n` +
     `• /faq - View frequently asked questions \n\n` +
     `For any issues, contact support.` +
-    `💡 *Before you start:* Remember to log in with /login to access your reports!\n\n` 
+    `💡 *Before you start:* Remember to log in with /login to access your reports!\n\n` +
+    `💡 *After you logged in you will receive real time notifications of every update to your reports.*\n\n` 
+
 );
 });
 
@@ -36,6 +39,7 @@ registerLoginFeature(bot);
 registerNewReportFeature(bot);
 checkReports(bot);
 helper(bot);
+//notifications(bot, "🤖 Bot has started successfully.");
 
 // Graceful shutdown handlers
 process.once('SIGINT', () => bot.stop('SIGINT'));

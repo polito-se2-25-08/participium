@@ -41,7 +41,7 @@ export const userService = {
 		return createdUser;
 	},
 
-	async loginUser(username: string, password: string) {
+	async loginUser(username: string, password: string, chatId?: number) {
 		const user = await userRepository.findByUsername(username);
 		if (!user) throw new AppError("User doesn't exist", 401);
 
@@ -50,6 +50,10 @@ export const userService = {
 
 		// Generate JWT
 		const token = signToken({ id: user.id, role: user.role });
+		if (chatId) {
+			// Update user's telegram chat id
+			await userRepository.updateUser(user.id, { chat_id: chatId });
+		}
 
 		return { user, token };
 	},

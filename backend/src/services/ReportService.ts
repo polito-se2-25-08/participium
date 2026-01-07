@@ -6,6 +6,7 @@ import { ReportDTO } from "../dto/ReportDTO";
 import { Report, ReportInsert } from "../models/Report";
 import * as ReportRepository from "../repositories/ReportRepository";
 import * as NotificationService from "./NotificationService";
+import { sendNotification } from "../utils/notificationHelper";
 
 export const createReport = async (
   reportData: ReportInsert & { photos: string[] }
@@ -50,32 +51,25 @@ export const getFilteredReports = async (
   );
 };
 
-export const approveReport = async (id: number): Promise<Report> => {
-  return await ReportRepository.approveReport(id);
-};
-
-export const rejectReport = async (
-  id: number,
-  motivation: string,
-  officer_id: number
-): Promise<Report> => {
-  return await ReportRepository.rejectReport(id, motivation);
-};
-
 export const updateReportStatus = async (
   id: number,
   status: string,
-  userId: number
+  userId: number,
+  reportTitle?: string
 ) => {
   const report = await ReportRepository.updateReportStatus(id, status);
 
-  // Create notification for the report owner
-  await NotificationService.createNotification(
+  // Notify the report owner using the unified helper
+  await sendNotification({
     userId,
-    id,
-    "STATUS_UPDATE",
-    `Your report #${id} status has been updated to: ${status}`
-  );
+    reportId: id,
+    type: "STATUS_UPDATE",
+    message: `Your report "${reportTitle || report.title || `#${id}`}" status has been updated to: ${status}`,
+    additionalData: {
+      status,
+      reportTitle: reportTitle || report.title,
+    },
+  });
 
   return report;
 };
