@@ -17,7 +17,7 @@ export const NotificationToast: React.FC<NotificationToastProps> = ({
   onClose,
 }) => {
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2">
+    <div className="fixed top-4 right-4 z-50 space-y-2 z-1002">
       {notifications.map((notification, index) => (
         <div
           key={`${notification.reportId}-${notification.timestamp}`}

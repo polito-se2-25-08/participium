@@ -43,15 +43,12 @@ export const createPublicMessage = async (
 		throw new Error("Failed to save message");
 	}
 
-	/*
-	const notification = await NotificationService.createNotification(
+	await NotificationService.createNotification(
 		 senderId,
 		 reportId,
 		 "NEW_MESSAGE",
-		`New message on report #${report_id}`,
+		`New message on report #${reportId}`,
 	);
-
-	*/
 
 	return savedMessageCamelCase;
 };

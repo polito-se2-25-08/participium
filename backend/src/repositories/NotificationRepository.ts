@@ -1,6 +1,17 @@
 import { Notification, NotificationInsert } from "../models/Notification";
+import {userRepository} from "./userRepository";
 import { supabase } from "../utils/Supabase";
+import { sendEmail } from "../controllers/mailController";
 import AppError from "../utils/AppError";
+
+const EMAIL_TEMPLATE = `
+Hello {{username}},
+You have a new notification:
+{{notification_content}}
+
+Best regards,
+Participium Team
+`;
 
 export const createNotification = async (
   notificationData: NotificationInsert
@@ -10,6 +21,20 @@ export const createNotification = async (
     .insert([notificationData])
     .select()
     .single();
+
+  const user = await userRepository.findById(notificationData.user_id);
+  console.log("Reporter:", user);
+  if (user && user.email_notification) {
+    const emailContent = EMAIL_TEMPLATE
+      .replace("{{username}}", user.username)
+      .replace("{{notification_content}}", notificationData.message);
+    
+    console.log("Sending email");
+
+    await sendEmail(user.email, "New Notification", emailContent);
+
+    console.log("Email sent");
+  }
 
   if (error) {
     throw new AppError(
