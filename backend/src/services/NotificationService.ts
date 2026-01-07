@@ -2,27 +2,27 @@ import { Notification, NotificationInsert } from "../models/Notification";
 import * as NotificationRepository from "../repositories/NotificationRepository";
 
 export const createNotification = async (
-	senderId: number,
-	reportId: number,
-	type: string,
-	message: string
+  senderId: number,
+  reportId: number,
+  type: string,
+  message: string
 ): Promise<Notification> => {
-	return await NotificationRepository.createNotification({
-		user_id: senderId,
-		report_id: reportId,
-		type,
-		message,
-	});
+  return await NotificationRepository.createNotification({
+    user_id: senderId,
+    report_id: reportId,
+    type,
+    message,
+  } as NotificationInsert);
 };
 
 export const getUnreadNotifications = async (
-	userId: number
+  userId: number
 ): Promise<Notification[]> => {
-	return await NotificationRepository.getUnreadNotifications(userId);
+  return await NotificationRepository.getUnreadNotifications(userId);
 };
 
 export const markAsRead = async (
-	notificationId: number
+  notificationId: number
 ): Promise<Notification> => {
-	return await NotificationRepository.markAsRead(notificationId);
+  return await NotificationRepository.markAsRead(notificationId);
 };

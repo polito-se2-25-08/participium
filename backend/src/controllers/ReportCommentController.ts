@@ -3,6 +3,7 @@ import { ApiResponse, CommentDTO } from "../dto/ReportDTO";
 import { userRepository } from "../repositories/userRepository";
 
 export const addComment = async (req: Request, res: Response) => {
+  /* 
 	try {
 		const { id } = req.params; // report_id
 		const { content } = req.body;
@@ -70,10 +71,11 @@ export const addComment = async (req: Request, res: Response) => {
 			data: err.message || "Unknown error occurred",
 		};
 		return res.status(500).json(response);
-	}
+	} */
 };
 
 export const getComments = async (req: Request, res: Response) => {
+  /* 
 	try {
 		const { id } = req.params; // report_id
 		const numericId = Number(id);
@@ -116,5 +118,5 @@ export const getComments = async (req: Request, res: Response) => {
 			data: err.message || "Unknown error occurred",
 		};
 		return res.status(500).json(response);
-	}
+	} */
 };

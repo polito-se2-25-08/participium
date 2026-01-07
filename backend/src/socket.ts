@@ -60,12 +60,12 @@ export const initSocket = (httpServer: HttpServer) => {
           if (socketId) {
             io.to(socketId).emit("new_report_message", mappedMessage);
           } else {
-            await createNotification({
-              user_id: reportUserId,
-              report_id: reportId,
-              type: "NEW_MESSAGE",
-              message: `New message on report #${report.title}`,
-            });
+            await createNotification(
+              reportUserId,
+              reportId,
+              "NEW_MESSAGE",
+              `New message on report #${report.title}`
+            );
           }
         }
       } catch (err) {

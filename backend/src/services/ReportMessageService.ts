@@ -1,92 +1,92 @@
 import {
-	ReportMessage,
-	ReportMessageDTO,
-	ReportMessageInsert,
+  ReportMessage,
+  ReportMessageDTO,
+  ReportMessageInsert,
 } from "../models/ReportMessage";
 import * as ReportMessageRepository from "../repositories/ReportMessageRepository";
 import * as NotificationService from "./NotificationService";
 import * as ReportRepository from "../repositories/ReportRepository";
 
 export const createPublicMessage = async (
-	reportId: number,
-	senderId: number,
-	message: string
+  reportId: number,
+  senderId: number,
+  message: string
 ): Promise<ReportMessageDTO> => {
-	const trimmedMessage = message.trim();
+  const trimmedMessage = message.trim();
 
-	if (trimmedMessage === "") {
-		throw new Error("Message cannot be empty");
-	}
+  if (trimmedMessage === "") {
+    throw new Error("Message cannot be empty");
+  }
 
-	const report = await ReportRepository.getReportById(reportId);
+  const report = await ReportRepository.getReportById(reportId);
 
-	if (!report) {
-		throw new Error("Report not found");
-	}
+  if (!report) {
+    throw new Error("Report not found");
+  }
 
-	const savedMessage = await ReportMessageRepository.createPublicMessage(
-		reportId,
-		senderId,
-		trimmedMessage
-	);
+  const savedMessage = await ReportMessageRepository.createPublicMessage(
+    reportId,
+    senderId,
+    trimmedMessage
+  );
 
-	const savedMessageCamelCase = {
-		id: savedMessage.id,
-		reportId: savedMessage.report_id,
-		senderId: savedMessage.sender_id,
-		message: savedMessage.message,
-		createdAt: savedMessage.created_at,
-		isPublic: savedMessage.is_public,
-	};
+  const savedMessageCamelCase = {
+    id: savedMessage.id,
+    reportId: savedMessage.report_id,
+    senderId: savedMessage.sender_id,
+    message: savedMessage.message,
+    createdAt: savedMessage.created_at,
+    isPublic: savedMessage.is_public,
+  };
 
-	if (!savedMessage) {
-		throw new Error("Failed to save message");
-	}
+  if (!savedMessage) {
+    throw new Error("Failed to save message");
+  }
 
-	await NotificationService.createNotification(
-		 senderId,
-		 reportId,
-		 "NEW_MESSAGE",
-		`New message on report #${reportId}`,
-	);
+  await NotificationService.createNotification(
+    senderId,
+    reportId,
+    "NEW_MESSAGE",
+    `New message on report #${reportId}`
+  );
 
-	return savedMessageCamelCase;
+  return savedMessageCamelCase;
 };
 
 export const getMessagesByReportId = async (
-	reportId: number
+  reportId: number
 ): Promise<ReportMessage[]> => {
-	return await ReportMessageRepository.getMessagesByReportId(reportId);
+  return await ReportMessageRepository.getPublicMessagesByReportId(reportId);
 };
 
 export const createInternalMessage = async (
-	reportId: number,
-	senderId: number,
-	message: string
+  reportId: number,
+  senderId: number,
+  message: string
 ): Promise<ReportMessage> => {
-	const trimmedMessage = message.trim();
+  const trimmedMessage = message.trim();
 
-	if (trimmedMessage === "") {
-		throw new Error("Message cannot be empty");
-	}
+  if (trimmedMessage === "") {
+    throw new Error("Message cannot be empty");
+  }
 
-	const report = await ReportRepository.getReportById(reportId);
+  const report = await ReportRepository.getReportById(reportId);
 
-	if (!report) {
-		throw new Error("Report not found");
-	}
+  if (!report) {
+    throw new Error("Report not found");
+  }
 
-	const savedMessage = await ReportMessageRepository.createInternalMessage(
-		reportId,
-		senderId,
-		trimmedMessage
-	);
+  const savedMessage = await ReportMessageRepository.createInternalMessage(
+    reportId,
+    senderId,
+    trimmedMessage
+  );
 
-	if (!savedMessage) {
-		throw new Error("Failed to save message");
-	}
+  if (!savedMessage) {
+    throw new Error("Failed to save message");
+  }
 
-	/*
+  /*
 	const notification = await NotificationService.createNotification(
 		 senderId,
 		 reportId,
@@ -96,5 +96,11 @@ export const createInternalMessage = async (
 
 	*/
 
-	return savedMessage;
+  return savedMessage;
+};
+
+export const getInternalMessagesByReportId = async (
+  reportId: number
+): Promise<ReportMessage[]> => {
+  return await ReportMessageRepository.getInternalMessagesByReportId(reportId);
 };
