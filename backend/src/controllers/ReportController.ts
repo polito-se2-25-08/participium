@@ -176,88 +176,6 @@ export const getFilteredReports = async (req: Request, res: Response) => {
 	}
 };
 
-export const approveReport = async (req: Request, res: Response) => {
-	try {
-		const { id } = req.params;
-		const numericId = Number(id);
-
-		if (Number.isNaN(numericId)) {
-			const response: ApiResponse<string> = {
-				success: false,
-				data: "Invalid report ID",
-			};
-			return res.status(400).json(response);
-		}
-
-		const report = await ReportService.approveReport(numericId);
-		const response: ApiResponse<Report> = {
-			success: true,
-			data: report,
-		};
-		return res.status(200).json(response);
-	} catch (err: any) {
-		console.error("Error approving report:", err);
-		const response: ApiResponse<string> = {
-			success: false,
-			data: err.message || "Unknown error occurred",
-		};
-		return res.status(500).json(response);
-	}
-};
-
-export const rejectReport = async (req: Request, res: Response) => {
-	try {
-		const { id } = req.params;
-		const { motivation } = req.body;
-		const numericId = Number(id);
-
-		if (Number.isNaN(numericId)) {
-			const response: ApiResponse<string> = {
-				success: false,
-				data: "Invalid report ID",
-			};
-			return res.status(400).json(response);
-		}
-
-		if (!motivation || motivation.trim() === "") {
-			const response: ApiResponse<string> = {
-				success: false,
-				data: "Rejection motivation is required",
-			};
-			return res.status(400).json(response);
-		}
-
-		const authenticatedUser = (req as any).user;
-		const officer_id = authenticatedUser?.id;
-
-		if (!officer_id) {
-			const response: ApiResponse<string> = {
-				success: false,
-				data: "Authentication required",
-			};
-			return res.status(401).json(response);
-		}
-
-		const report = await ReportService.rejectReport(
-			numericId,
-			motivation,
-			officer_id
-		);
-		const response: ApiResponse<Report> = {
-			success: true,
-			data: report,
-		};
-		return res.status(200).json(response);
-	} catch (err: any) {
-		console.error("Error rejecting report:", err);
-		const response: ApiResponse<string> = {
-			success: false,
-			data: err.message || "Unknown error occurred",
-		};
-		return res.status(500).json(response);
-	}
-};
-
 export const updateReportStatus = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
@@ -316,7 +234,7 @@ export const updateReportStatus = async (req: Request, res: Response) => {
 			});
 		}
 
-		// Fetch user_id AND title to include in notification
+		// Fetch user_id and title to include in notification
 		const { data: rawReport, error: fetchError } = await supabase
 			.from("Report")
 			.select("user_id, title")
@@ -333,35 +251,13 @@ export const updateReportStatus = async (req: Request, res: Response) => {
 		const userId = rawReport.user_id;
 		const reportTitle = rawReport.title;
 
-		// Update the report status and create notification in DB
+		// Update the report status - notification is handled by ReportService
 		const updatedReport = await ReportService.updateReportStatus(
 			numericId,
 			status,
-			userId
+			userId,
+			reportTitle
 		);
-
-		// Try to send via WebSocket if user is online
-		const socketId = connectedUsers.get(userId);
-
-		if (socketId) {
-			getIO()
-				.to(socketId)
-				.emit("notification", {
-					message: `Your report "${reportTitle}" status has been updated to: ${status}`,
-					reportId: numericId,
-					reportTitle, // <--- new field
-					status,
-					timestamp: new Date().toISOString(),
-				});
-
-			console.log(
-				`Notification sent to user ${userId} for report ${numericId}`
-			);
-		} else {
-			console.log(
-				`User ${userId} is not connected, notification saved to DB`
-			);
-		}
 
 		return res.status(200).json({
 			success: true,

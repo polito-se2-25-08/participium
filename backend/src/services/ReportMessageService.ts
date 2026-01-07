@@ -6,6 +6,7 @@ import {
 import * as ReportMessageRepository from "../repositories/ReportMessageRepository";
 import * as NotificationService from "./NotificationService";
 import * as ReportRepository from "../repositories/ReportRepository";
+import { sendNotification } from "../utils/notificationHelper";
 
 export const createPublicMessage = async (
 	reportId: number,
@@ -42,13 +43,17 @@ export const createPublicMessage = async (
 	if (!savedMessage) {
 		throw new Error("Failed to save message");
 	}
-
-	await NotificationService.createNotification(
-		 senderId,
-		 reportId,
-		 "NEW_MESSAGE",
-		`New message on report #${reportId}`,
-	);
+	// Notify the report owner about the new message using unified helper
+	await sendNotification({
+		userId: report.user_id,
+		reportId,
+		type: "NEW_MESSAGE",
+		message: `New message on report "${report.title}"`,
+		additionalData: {
+			reportTitle: report.title,
+			messagePreview: trimmedMessage.substring(0, 50),
+		},
+	});
 
 	return savedMessageCamelCase;
 };
@@ -56,7 +61,7 @@ export const createPublicMessage = async (
 export const getMessagesByReportId = async (
 	reportId: number
 ): Promise<ReportMessage[]> => {
-	return await ReportMessageRepository.getMessagesByReportId(reportId);
+	return await ReportMessageRepository.getPublicMessagesByReportId(reportId);
 };
 
 export const createInternalMessage = async (

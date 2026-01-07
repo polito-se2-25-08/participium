@@ -9,6 +9,7 @@ import ReportList from "../lists/ReportList";
 import { useEffect, useState } from "react";
 import type { ReportDTO } from "../../interfaces/dto/report/ReportDTO";
 import { reportService } from "../../api/reportService";
+import { NotificationToast } from "../NotificationToast";
 
 export default function PendingReportsPage() {
 	const [loading, setLoading] = useState(true);
@@ -28,6 +29,17 @@ export default function PendingReportsPage() {
 		reportId: null,
 		reportTitle: "",
 	});
+
+	// Page-level notifications for immediate feedback
+	type PageNotification = { message: string; reportId: number; timestamp: string };
+	const [pageNotifications, setPageNotifications] = useState<PageNotification[]>([]);
+	const addNotification = (message: string, reportId: number) =>
+		setPageNotifications((prev) => [
+			{ message, reportId, timestamp: new Date().toISOString() },
+			...prev,
+		]);
+	const clearPageNotification = (index: number) =>
+		setPageNotifications((prev) => prev.filter((_, i) => i !== index));
 
 	const closeRejectionModal = () => {
 		setRejectionModal({ isOpen: false, reportId: null, reportTitle: "" });
@@ -69,36 +81,49 @@ export default function PendingReportsPage() {
 				setReports((reports) =>
 					reports.filter((r) => r.id !== reportId)
 				);
-				setProcessingReportId(null);
+				addNotification("Report approved successfully", reportId);
 			} else {
 				console.error("Failed to approve report:", result.data);
 				const errorMessage =
 					typeof result.data === "string"
 						? result.data
-						: "Failed to approve report";
-				alert(errorMessage);
+						: (result as any).data?.message || "Failed to approve report";
+				addNotification(errorMessage, reportId);
 			}
 		} catch (error) {
 			console.error("Error approving report:", error);
-			alert("Network error: Unable to approve report");
+			addNotification("Network error: Unable to approve report", reportId);
 		} finally {
 			setProcessingReportId(null);
 		}
 	};
 
 	const handleReject = async (motivation: string) => {
-		if (rejectionModal.reportId) {
-			try {
-				const result = await reportService.rejectReport(
-					rejectionModal.reportId,
-					motivation
-				);
-				if (result.success) {
-				}
-			} catch (error) {
-				console.error("Error rejecting report:", error);
-				alert("Network error: Unable to reject report");
+		const id = rejectionModal.reportId;
+		if (!id) return;
+		setProcessingReportId(id);
+		try {
+			const result = await reportService.rejectReport(id, motivation);
+			if (!result.success) {
+				const message =
+					typeof result.data === "string"
+						? result.data
+						: result.data?.message || "Failed to reject report";
+				addNotification(message, id);
+				throw new Error(message);
 			}
+			setReports((reports) => reports.filter((r) => r.id !== id));
+			addNotification("Report rejected successfully", id);
+		} catch (error) {
+			console.error("Error rejecting report:", error);
+			const message =
+				error instanceof Error
+					? error.message
+					: "Network error: Unable to reject report";
+			addNotification(message, id);
+			throw error;
+		} finally {
+			setProcessingReportId(null);
 		}
 	};
 
@@ -137,6 +162,12 @@ export default function PendingReportsPage() {
 				onClose={closeRejectionModal}
 				onConfirm={handleReject}
 				isProcessing={processingReportId === rejectionModal.reportId}
+			/>
+
+			{/* Page-level Notification Toast */}
+			<NotificationToast
+				notifications={pageNotifications}
+				onClose={clearPageNotification}
 			/>
 		</ContentContainer>
 	);

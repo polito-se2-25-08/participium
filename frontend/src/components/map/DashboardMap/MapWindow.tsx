@@ -52,7 +52,7 @@ export function MapWindow({
 	const [tempMarker, setTempMarker] = useState<MarkerI | null>(null);
 	const [rightPanelOpen, setRightPanelOpen] = useState<boolean>(false);
 	const [userReports, setUserReports] = useState<UserReport[]>([]);
-    const [activeReportsOpen, setActiveReportsOpen] = useState<boolean>(true);
+    const [activeReportsOpen, setActiveReportsOpen] = useState<boolean>(false);
 
 	return (
 		<div className="relative w-full h-full">

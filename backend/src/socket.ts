@@ -49,23 +49,24 @@ export const initSocket = (httpServer: HttpServer) => {
         );
 
         const isTechnician = user.role === "TECHNICIAN";
+        const mappedMessage = mapMessageDBToMessage(savedMessage);
 
         if (isTechnician) {
+          // Technician sent a message - notify the report owner (citizen)
           const report = await getReportById(reportId);
           const reportUserId = report.user_id;
           const socketId = connectedUsers.get(reportUserId);
 
-          const mappedMessage = mapMessageDBToMessage(savedMessage);
-
+          console.log("socket notify to citizen:", { toUserId: reportUserId, reportId, type: "NEW_MESSAGE" }, `types => userId:${typeof reportUserId}, reportId:${typeof reportId}`);
           if (socketId) {
             io.to(socketId).emit("new_report_message", mappedMessage);
           } else {
-            await createNotification({
-              user_id: reportUserId,
-              report_id: reportId,
-              type: "NEW_MESSAGE",
-              message: `New message on report #${report.title}`,
-            });
+            await createNotification(
+              reportUserId,
+              reportId,
+              "NEW_MESSAGE",
+              `New message on report #${report.title}`
+            );
           }
         }
       } catch (err) {
