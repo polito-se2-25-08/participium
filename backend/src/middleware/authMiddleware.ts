@@ -62,3 +62,24 @@ export const restrictTo = (...allowedRoles: DbRole[]) => {
 		next();
 	};
 };
+
+export const protectOptional = (
+	req: Request,
+	_res: Response,
+	next: NextFunction
+) => {
+	const authHeader = req.headers.authorization;
+
+	if (authHeader && authHeader.startsWith("Bearer ")) {
+		const token = authHeader.split(" ")[1];
+		if (token) {
+			try {
+				const decoded = verifyToken(token);
+				(req as any).user = decoded;
+			} catch (err) {
+				// Ignore invalid tokens for optional auth
+			}
+		}
+	}
+	next();
+};

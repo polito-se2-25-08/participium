@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 import ContentContainer from "../containers/ContentContainer";
 import { useAuth } from "../providers/AuthContext";
 
@@ -12,6 +10,7 @@ import { formatTimestamp } from "../../utilis/utils";
 import { MapWindow } from "../map/DashboardMap/MapWindow";
 import ReportPopupModal from "../modals/ReportPopupModal";
 import ImageZoomModal from "../modals/ImageZoomModal";
+import ActiveReportsList from "./componets/ActiveReportsList";
 
 export default function Dashboard() {
 
@@ -57,7 +56,7 @@ fetchedData.data
 
 	const { user } = useAuth();
 	const isCitizen = user?.role === "CITIZEN";
-	const showRightPanel = isCitizen;
+	const isStaff = user?.role === "OFFICER" || user?.role === "TECHNICIAN" || user?.role === "ADMIN" || user?.role === "EXTERNAL_MAINTAINER";
 	const isMapReportOpen = clickedReportId !== -1 && clickedReport != null;
 	const closeMapReportModal = () => {
 		setClickedReportId(-1);
@@ -66,15 +65,16 @@ fetchedData.data
 
 	return (
 		<ContentContainer width="w-full sm:w-full" gap="xl:gap-2 gap-4">
-			<div className="gap-5 w-full h-[calc(100vh-4rem)] items-stretch">
+			<div className="flex w-full h-[calc(100vh-4rem)] relative">
 				<MapWindow
 					className={`
-						flex-[3] min-w-0 h-full`}
+						flex-1 min-w-0 h-full`}
 					scrollWheelZoom={false}
 					reports={reports}
 					setClickedReportId={setClickedReportId}
 					isCitizen={isCitizen}
-				/>	
+                    isUnlogged={!user}
+				/>
 			</div>
 
 			<ReportPopupModal
@@ -101,12 +101,6 @@ fetchedData.data
 						<span className="border-b-2 my-2 block"></span>
 
 
-						{clickedReport.anonymous && isCitizen ? (
-							<span className="text-base opacity-80">
-								This report is anonymous
-							</span>
-							
-						) : (
 						<div className="flex flex-row items-center justify-center gap-5">
 								{clickedReport.reporterProfilePicture && (
 									<img
@@ -120,9 +114,9 @@ fetchedData.data
 								)}
 								<span className="text-center text-3xl font-semibold">
 									{clickedReport.reporterName} {clickedReport.reporterSurname}
+									{clickedReport.anonymous && isStaff && clickedReport.reporterName !== "Anonymous" ? " (Anonymous)" : ""}
 								</span>
 							</div>
-						)}
 
 						<span className="border-b-2 my-2 block"></span>
 						<div className="text-base opacity-80">{clickedReport.description}</div>

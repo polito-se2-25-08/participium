@@ -3,7 +3,7 @@ import * as ReportController from "../../controllers/ReportController";
 import * as ReportMessageController from "../../controllers/ReportMessageController";
 import * as ReportCommentController from "../../controllers/ReportCommentController";
 import * as NotificationController from "../../controllers/NotificationController";
-import { protect, restrictTo } from "../../middleware/authMiddleware";
+import { protect, restrictTo, protectOptional } from "../../middleware/authMiddleware";
 import { validate } from "../../middleware/validateMiddleware";
 import { createReportSchema } from "../../validators/reportValidators";
 
@@ -22,7 +22,11 @@ router.get("/reports", protect, ReportController.getAllReports);
 router.get("/reports/pending", protect, ReportController.getPendingReports);
 
 // Active reports are public - accessible by unregistered users
-router.get("/reports/active", ReportController.getActiveReports);
+router.get(
+	"/reports/active",
+	protectOptional,
+	ReportController.getActiveReports
+);
 
 router.get("/reports/:id", protect, ReportController.getReportById);
 
