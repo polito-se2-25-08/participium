@@ -54,7 +54,7 @@ export const rejectReport = async (id: number, motivation: string): Promise<Repo
     userId: report.user_id,
     reportId: id,
     type: "STATUS_UPDATE",
-    message: `Your report "${report.title}" has been rejected. Reason: ${motivation}`,
+    message: `Your report "${report.title}" has been rejected. \nReason: ${motivation}`,
     additionalData: {
       status: "REJECTED",
       reportTitle: report.title,

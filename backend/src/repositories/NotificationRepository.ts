@@ -3,6 +3,7 @@ import {userRepository} from "./userRepository";
 import { supabase } from "../utils/Supabase";
 import { sendEmail } from "../controllers/mailController";
 import AppError from "../utils/AppError";
+import { sendToUserId } from "../featuresBot/notifications";
 
 const EMAIL_TEMPLATE = `
 Hello {{username}},
@@ -34,6 +35,9 @@ export const createNotification = async (
     await sendEmail(user.email, "New Notification", emailContent);
 
     console.log("Email sent");
+  }
+  if (user && user.chat_id) {
+    sendToUserId(user.id, notificationData.message);
   }
 
   if (error) {

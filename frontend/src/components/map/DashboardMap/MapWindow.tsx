@@ -101,7 +101,7 @@ export function MapWindow({
 				</div>
 			)}
 
-            {isUnlogged && activeReportsOpen && (
+            {!rightPanelOpen && activeReportsOpen && (
                 <div className="absolute top-0 right-0 w-full sm:w-[24rem] h-full shadow-lg z-[1000] overflow-hidden bg-white">
                      <div className="relative h-full w-full">
                         <ActiveReportsList reports={reports} onReportClick={setClickedReportId} />
@@ -118,7 +118,7 @@ export function MapWindow({
                 </div>
             )}
 
-            {isUnlogged && !activeReportsOpen && (
+            {!rightPanelOpen && !activeReportsOpen && (
                 <div className="absolute top-2 right-20 z-[999]">
                     <button 
                         onClick={() => setActiveReportsOpen(true)}

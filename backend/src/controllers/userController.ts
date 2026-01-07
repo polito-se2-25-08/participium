@@ -26,7 +26,7 @@ export const registerUser = catchAsync(async (req: Request, res: Response) => {
 
 export const loginUser = catchAsync(async (req: Request, res: Response) => {
 	const { username, password } = req.body;
-	const { user, token } = await userService.loginUser(username, password);
+	const { user, token } = await userService.loginUser(username, password, req.body.chatId);
 
 	res.status(200).json({
 		success: true,

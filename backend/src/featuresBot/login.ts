@@ -25,6 +25,7 @@ export default function registerLoginFeature(bot: Telegraf) {
         const res = await axios.post("http://localhost:3000/api/v1/login", {
           username: (ctx as any).session.username!,
           password: ctx.message.text,
+          chatId: ctx.chat.id,
         });
 
         (ctx as any).session.token = res.data.data.token;
