@@ -10,7 +10,7 @@ export const createNotification = async (
 	return await NotificationRepository.createNotification({
 		user_id: senderId,
 		report_id: reportId,
-		type,
+		type: type as NotificationInsert["type"],
 		message,
 	});
 };

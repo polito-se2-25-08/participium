@@ -45,7 +45,6 @@ export function MapWindow({
 	setAdress,
 	setLocation,
 	isCitizen,
-    isUnlogged,
 
 	setClickedReportId,
 }: ReportMapViewProps) {

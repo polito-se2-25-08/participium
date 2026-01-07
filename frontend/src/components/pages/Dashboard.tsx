@@ -10,7 +10,6 @@ import { formatTimestamp } from "../../utilis/utils";
 import { MapWindow } from "../map/DashboardMap/MapWindow";
 import ReportPopupModal from "../modals/ReportPopupModal";
 import ImageZoomModal from "../modals/ImageZoomModal";
-import ActiveReportsList from "./componets/ActiveReportsList";
 
 export default function Dashboard() {
 

@@ -1,4 +1,5 @@
 import * as ReportService from '../../../src/services/ReportService';
+import * as OfficerServices from '../../../src/services/OfficerService';
 import * as ReportRepository from '../../../src/repositories/ReportRepository';
 import * as NotificationService from '../../../src/services/NotificationService';
 
@@ -202,7 +203,7 @@ describe('ReportService', () => {
 
       (ReportRepository.approveReport as jest.Mock).mockResolvedValue(mockReport);
 
-      const result = await ReportService.approveReport(1);
+      const result = await OfficerServices.approveReport(1);
 
       expect(ReportRepository.approveReport).toHaveBeenCalledWith(1);
       expect(result).toEqual(mockReport);
@@ -215,7 +216,7 @@ describe('ReportService', () => {
 
       (ReportRepository.rejectReport as jest.Mock).mockResolvedValue(mockReport);
 
-      const result = await ReportService.rejectReport(1, 'Invalid report', 1);
+      const result = await OfficerServices.rejectReport(1, 'Invalid report');
 
       expect(ReportRepository.rejectReport).toHaveBeenCalledWith(1, 'Invalid report');
       expect(result).toEqual(mockReport);

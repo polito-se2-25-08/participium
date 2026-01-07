@@ -16,6 +16,6 @@ export const mapUserReportToUserReportDTO = (
 		status: userReport.status,
 		category: userReport.category.category,
 		photos: userReport.photos.map((photo) => photo.report_photo),
-		messages: mapMessagesDBToMessages(userReport.messages || []),
+		publicMessages: mapMessagesDBToMessages(userReport.messages || []),
 	};
 };

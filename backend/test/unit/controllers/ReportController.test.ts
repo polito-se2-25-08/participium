@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
+import * as OfficerController from '../../../src/controllers/OfficerController'
 import * as ReportController from '../../../src/controllers/ReportController';
+import * as OfficerServices from '../../../src/services/OfficerService';
 import * as ReportService from '../../../src/services/ReportService';
 import * as TechnicianService from '../../../src/services/TechnicianService';
 import { getCategoryId } from '../../../src/utils/categoryMapper';
@@ -295,11 +297,11 @@ describe('ReportController', () => {
       const mockReport = { id: 1, status: 'APPROVED' };
       mockRequest.params = { id: '1' };
 
-      (ReportService.approveReport as jest.Mock).mockResolvedValue(mockReport);
+      (OfficerServices.approveReport as jest.Mock).mockResolvedValue(mockReport);
 
-      await ReportController.approveReport(mockRequest as Request, mockResponse as Response);
+      await OfficerController.approveReport(mockRequest as Request, mockResponse as Response);
 
-      expect(ReportService.approveReport).toHaveBeenCalledWith(1);
+      expect(OfficerServices.approveReport).toHaveBeenCalledWith(1);
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
@@ -310,7 +312,7 @@ describe('ReportController', () => {
     it('should return 400 for invalid ID', async () => {
       mockRequest.params = { id: 'invalid' };
 
-      await ReportController.approveReport(mockRequest as Request, mockResponse as Response);
+      await OfficerController.approveReport(mockRequest as Request, mockResponse as Response);
 
       expect(responseStatus).toHaveBeenCalledWith(400);
       expect(responseJson).toHaveBeenCalledWith({
@@ -321,9 +323,9 @@ describe('ReportController', () => {
 
     it('should handle service errors', async () => {
       mockRequest.params = { id: '1' };
-      (ReportService.approveReport as jest.Mock).mockRejectedValue(new Error('Service error'));
+      (OfficerServices.approveReport as jest.Mock).mockRejectedValue(new Error('Service error'));
 
-      await ReportController.approveReport(mockRequest as Request, mockResponse as Response);
+      await OfficerController.approveReport(mockRequest as Request, mockResponse as Response);
 
       expect(responseStatus).toHaveBeenCalledWith(500);
       expect(responseJson).toHaveBeenCalledWith({
@@ -339,11 +341,11 @@ describe('ReportController', () => {
       mockRequest.params = { id: '1' };
       mockRequest.body = { motivation: 'Invalid report' };
 
-      (ReportService.rejectReport as jest.Mock).mockResolvedValue(mockReport);
+      (OfficerServices.rejectReport as jest.Mock).mockResolvedValue(mockReport);
 
-      await ReportController.rejectReport(mockRequest as Request, mockResponse as Response);
+      await OfficerController.rejectReport(mockRequest as Request, mockResponse as Response);
 
-      expect(ReportService.rejectReport).toHaveBeenCalledWith(1, 'Invalid report', 1);
+      expect(OfficerServices.rejectReport).toHaveBeenCalledWith(1, 'Invalid report', 1);
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
@@ -355,7 +357,7 @@ describe('ReportController', () => {
       mockRequest.params = { id: 'invalid' };
       mockRequest.body = { motivation: 'Test' };
 
-      await ReportController.rejectReport(mockRequest as Request, mockResponse as Response);
+      await OfficerController.rejectReport(mockRequest as Request, mockResponse as Response);
 
       expect(responseStatus).toHaveBeenCalledWith(400);
       expect(responseJson).toHaveBeenCalledWith({
@@ -368,7 +370,7 @@ describe('ReportController', () => {
       mockRequest.params = { id: '1' };
       mockRequest.body = { motivation: '' };
 
-      await ReportController.rejectReport(mockRequest as Request, mockResponse as Response);
+      await OfficerController.rejectReport(mockRequest as Request, mockResponse as Response);
 
       expect(responseStatus).toHaveBeenCalledWith(400);
       expect(responseJson).toHaveBeenCalledWith({
@@ -382,7 +384,7 @@ describe('ReportController', () => {
       mockRequest.body = { motivation: 'Test' };
       (mockRequest as any).user = undefined;
 
-      await ReportController.rejectReport(mockRequest as Request, mockResponse as Response);
+      await OfficerController.rejectReport(mockRequest as Request, mockResponse as Response);
 
       expect(responseStatus).toHaveBeenCalledWith(401);
       expect(responseJson).toHaveBeenCalledWith({
@@ -394,9 +396,9 @@ describe('ReportController', () => {
     it('should handle service errors', async () => {
       mockRequest.params = { id: '1' };
       mockRequest.body = { motivation: 'Test rejection' };
-      (ReportService.rejectReport as jest.Mock).mockRejectedValue(new Error('Rejection failed'));
+      (OfficerServices.rejectReport as jest.Mock).mockRejectedValue(new Error('Rejection failed'));
 
-      await ReportController.rejectReport(mockRequest as Request, mockResponse as Response);
+      await OfficerController.rejectReport(mockRequest as Request, mockResponse as Response);
 
       expect(responseStatus).toHaveBeenCalledWith(500);
       expect(responseJson).toHaveBeenCalledWith({
