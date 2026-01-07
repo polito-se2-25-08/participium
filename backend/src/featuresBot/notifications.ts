@@ -26,7 +26,6 @@ export async function sendToChatId(chatId: number, message: string) {
     if (!chatId || Number.isNaN(Number(chatId))) {
         throw new Error("Invalid chatId provided to sendToChatId");
     }
-    console.log(`Sending Telegram message to chatId ${chatId}: ${message}`);
     await bot.telegram.sendMessage(chatId, escapeMD(message), { parse_mode: "Markdown" });
 }
 
@@ -58,5 +57,4 @@ export async function sendToUserId(userId: number, message: string) {
     }
 
     await sendToChatId(chatId, message);
-    console.log(`Telegram message sent to user ${userId} (chatId ${chatId})`);
 }
