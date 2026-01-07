@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../components/providers/AuthContext";
-import type { Report } from "../types";
+import type { ReportDTO } from "../interfaces/dto/report/ReportDTO";
 import { reportService } from "../api/reportService";
 interface UseCategoryReportsReturn {
-  reports: Report[];
+  reports: ReportDTO[];
   loading: boolean;
   error: string | null;
   refetch: () => void;
@@ -11,7 +11,7 @@ interface UseCategoryReportsReturn {
 }
 
 export function useCategoryReports(): UseCategoryReportsReturn {
-  const [reports, setReports] = useState<Report[]>([]);
+  const [reports, setReports] = useState<ReportDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { token } = useAuth();
@@ -25,7 +25,7 @@ export function useCategoryReports(): UseCategoryReportsReturn {
 
       // Fetch reports filtered by the logged-in technician's category
       const result = await reportService.getTechnicianReports();
-      let data: Report[] = [];
+      let data: ReportDTO[] = [];
       if (Array.isArray(result)) {
         data = result;
       } else if (result && "success" in result && result.success) {
@@ -54,7 +54,7 @@ export function useCategoryReports(): UseCategoryReportsReturn {
         if (report.id === reportId) {
           return {
             ...report,
-            messages: [...(report.messages || []), message],
+            publicMessages: [...(report.publicMessages || []), message],
           };
         }
         return report;

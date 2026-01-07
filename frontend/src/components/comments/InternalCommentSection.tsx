@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useUser } from "../providers/AuthContext";
 import { commentService } from "../../api/commentService";
 import CommentList from "./CommentList";

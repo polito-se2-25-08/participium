@@ -8,7 +8,6 @@ import OfficerProfilePage from "./ProfilePage/OfficerProfilePage";
 
 import TechnitianProfilePage from "./ProfilePage/TechnitianProfilePage";
 
-import UserReports from "./componets/UserReports";
 import ExternalMaintainerProfilePage from "./ProfilePage/ExternalMantainerProfilePage";
 
 export function ProfilePage() {

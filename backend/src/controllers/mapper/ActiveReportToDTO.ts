@@ -6,7 +6,8 @@ export const mapActiveReportToDTO = (
 	userRole: string = "CITIZEN"
 ): ActiveReportDTO => {
 	const isAnonymous = report.anonymous;
-	const canSeeAnonymous = ["OFFICER", "TECHNICIAN", "ADMIN"].includes(userRole);
+	const roleUpper = userRole?.toUpperCase() || "CITIZEN";
+	const canSeeAnonymous = ["OFFICER", "TECHNICIAN", "ADMIN", "EXTERNAL_MAINTAINER"].includes(roleUpper);
 	const shouldHide = isAnonymous && !canSeeAnonymous;
 
 	return {

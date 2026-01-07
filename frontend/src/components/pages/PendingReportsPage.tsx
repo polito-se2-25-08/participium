@@ -19,7 +19,11 @@ export default function PendingReportsPage() {
 		null
 	);
 
-	const [rejectionModal, setRejectionModal] = useState({
+	const [rejectionModal, setRejectionModal] = useState<{
+		isOpen: boolean;
+		reportId: number | null;
+		reportTitle: string;
+	}>({
 		isOpen: false,
 		reportId: null,
 		reportTitle: "",
