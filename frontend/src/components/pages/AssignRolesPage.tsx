@@ -37,11 +37,9 @@ export function AssignRolesPage() {
   >([]);
 
   // Define possible roles to show (excluding "CITIZEN")
-  const roles: Array<"ADMIN" | "OFFICER" | "TECHNICIAN"> = [
-    "ADMIN",
-    "OFFICER",
-    "TECHNICIAN",
-  ];
+  const roles: Array<
+    "ADMIN" | "OFFICER" | "TECHNICIAN" | "EXTERNAL_MAINTAINER"
+  > = ["ADMIN", "OFFICER", "TECHNICIAN", "EXTERNAL_MAINTAINER"];
 
   useEffect(() => {
     if (token) {
