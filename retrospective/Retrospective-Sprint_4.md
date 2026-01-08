@@ -46,12 +46,12 @@ sections:
   Number of tasks : 41
   | | Avg | StDev |
   | -------------- | ------ | ------ |
-  | **Estimation** | h | h |
-  | **Actual** | h | h |
+  | **Estimation** | 2.45h | 1.70h |
+  | **Actual** | 2.27h | 1.65h |
 - Total task estimation error ratio: sum of total hours estimation / sum of total hours spent -1
-  - sum of total hours estimation : 95
-  - sum of total hours spent : 82
-  - _Total task estimation error ratio : 99/93 -1 = 0.158
+  - sum of total hours estimation : 100.25 h
+  - sum of total hours spent : 93.08 h
+  - _Total task estimation error ratio : 0.077
 
   
 ## QUALITY MEASURES 
