@@ -1,4 +1,5 @@
 import { Telegraf } from "telegraf";
+import { message } from "telegraf/filters";
 import axios from "axios";
 
 const REPORT_CATEGORIES = [
@@ -45,7 +46,7 @@ export default function registerNewReportFeature(bot: Telegraf) {
   bot.on("callback_query", async (ctx) => {
     try {
       const data = (ctx as any).callbackQuery?.data;
-      if (!data || !data.startsWith("cat_")) return;
+      if (!data?.startsWith("cat_")) return;
 
       const category = data.replace("cat_", "");
       (ctx as any).session.report.category = category;
@@ -61,7 +62,7 @@ export default function registerNewReportFeature(bot: Telegraf) {
   });
 
   // MAIN TEXT INPUT HANDLER
-  bot.on("text", async (ctx, next) => {
+  bot.on(message("text"), async (ctx, next) => {
     try {
       const text = ctx.message.text;
 
@@ -116,7 +117,7 @@ export default function registerNewReportFeature(bot: Telegraf) {
   });
 
   // PHOTO HANDLER
-  bot.on("photo", async (ctx) => {
+  bot.on(message("photo"), async (ctx) => {
     try {
       if ((ctx as any).session.reportState !== "ASK_PHOTOS") return;
 
@@ -141,7 +142,7 @@ export default function registerNewReportFeature(bot: Telegraf) {
   });
 
   // LOCATION HANDLER
-  bot.on("location", async (ctx) => {
+  bot.on(message("location"), async (ctx) => {
     if ((ctx as any).session.reportState !== "ASK_LOCATION") return;
 
     try {

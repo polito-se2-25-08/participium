@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Telegraf } from "telegraf";
+import { message } from "telegraf/filters";
 
 export default function registerLoginFeature(bot: Telegraf) {
   bot.command("login", (ctx) => {
@@ -8,7 +9,7 @@ export default function registerLoginFeature(bot: Telegraf) {
     ctx.reply("Enter your username:");
   });
 
-  bot.on("text", async (ctx, next) => {
+  bot.on(message("text"), async (ctx, next) => {
     const state = (ctx as any).session.loginState;
 
     // Ignore commands inside login

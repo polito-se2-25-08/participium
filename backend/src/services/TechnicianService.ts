@@ -1,7 +1,5 @@
-import { todo } from "node:test";
 import { Report } from "../models/Report";
 import {
-  getReportsByCategoryAndStatus,
   getReportsByTechnician,
   getReportById,
 } from "../repositories/ReportRepository";
@@ -34,6 +32,7 @@ export const getMaintainerCategory = async (
       const externalCategory = await getExternalMaintainerCategory(user_id);
       return [externalCategory];
     } catch (extError) {
+      // Return empty array if no categories found anywhere
       return [];
     }
   }
@@ -101,9 +100,8 @@ export const canTechnicianUpdateReport = async (
       );
       return false;
     }
-
-    //return report.category_id === maintainerCategoryId;
   } catch (error) {
+    console.error("Error authorizing technician:", error);
     return false;
   }
 };

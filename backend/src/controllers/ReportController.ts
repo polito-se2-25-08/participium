@@ -4,7 +4,6 @@ import * as TechnicianService from "../services/TechnicianService";
 import { ApiResponse, CreateReportDTO, ReportDTO } from "../dto/ReportDTO";
 import { Report } from "../models/Report";
 import { getCategoryId } from "../utils/categoryMapper";
-import { getIO, connectedUsers } from "../socket";
 import { supabase } from "../utils/Supabase";
 
 import { ActiveReportDTO } from "../dto/ActiveReport";
@@ -58,9 +57,6 @@ export const createReport = async (req: Request, res: Response) => {
 
 export const getAllReports = async (req: Request, res: Response) => {
 	try {
-		const authenticatedUser = (req as any).user;
-		const userRole = authenticatedUser?.role || "CITIZEN";
-
 		const reports = await ReportService.getAllReports();
 		const response: ApiResponse<ReportDTO[]> = {
 			success: true,

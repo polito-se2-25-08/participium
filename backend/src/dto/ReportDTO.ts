@@ -1,5 +1,3 @@
-import { CategoryDB } from "../controllers/interface/ReportDB";
-
 export interface ApiResponse<T> {
 	success: boolean;
 	data: T;

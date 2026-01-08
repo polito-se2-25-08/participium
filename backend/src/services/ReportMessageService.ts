@@ -1,10 +1,8 @@
 import {
   ReportMessage,
   ReportMessageDTO,
-  ReportMessageInsert,
 } from "../models/ReportMessage";
 import * as ReportMessageRepository from "../repositories/ReportMessageRepository";
-import * as NotificationService from "./NotificationService";
 import * as ReportRepository from "../repositories/ReportRepository";
 import { sendNotification } from "../utils/notificationHelper";
 

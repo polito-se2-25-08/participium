@@ -81,7 +81,6 @@ export const InitializeVerificationCode = async (
     const user = await userService.getUserById(userId);
     await sendEmail([user.email], "Your Verification Code", 
         `Hi ${user.name},\nyour verification code is: ${code}. It will expire in 30 minutes.\n\nBest regards,\nParticipium Team`);
-    return;
 };
 
 export const getVerificationCode = async (

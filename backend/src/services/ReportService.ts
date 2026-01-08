@@ -5,7 +5,6 @@ import { ActiveReportDTO } from "../dto/ActiveReport";
 import { ReportDTO } from "../dto/ReportDTO";
 import { Report, ReportInsert } from "../models/Report";
 import * as ReportRepository from "../repositories/ReportRepository";
-import * as NotificationService from "./NotificationService";
 import { sendNotification } from "../utils/notificationHelper";
 
 export const createReport = async (
@@ -60,11 +59,12 @@ export const updateReportStatus = async (
   const report = await ReportRepository.updateReportStatus(id, status);
 
   // Notify the report owner using the unified helper
+  const report_title = reportTitle || report.title || `#${id}`;
   await sendNotification({
     userId,
     reportId: id,
     type: "STATUS_UPDATE",
-    message: `Your report "${reportTitle || report.title || `#${id}`}" status has been updated to: ${status}`,
+    message: `Your report "${report_title}" status has been updated to: ${status}`,
     additionalData: {
       status,
       reportTitle: reportTitle || report.title,

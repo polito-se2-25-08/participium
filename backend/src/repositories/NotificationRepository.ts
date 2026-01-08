@@ -25,7 +25,7 @@ export const createNotification = async (
 
   const user = await userRepository.findById(notificationData.user_id);
   console.log("Reporter:", user);
-  if (user && user.email_notification) {
+  if (user?.email_notification) {
     const emailContent = EMAIL_TEMPLATE
       .replace("{{username}}", user.username)
       .replace("{{notification_content}}", notificationData.message);
@@ -36,7 +36,7 @@ export const createNotification = async (
 
     console.log("Email sent");
   }
-  if (user && user.chat_id) {
+  if (user?.chat_id) {
     sendToUserId(user.id, notificationData.message);
   }
 

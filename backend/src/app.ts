@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import { createServer } from "http";
+import { createServer } from "node:http";
 import { initSocket } from "./socket";
 import officerRoutes from "./routes/v1/officer";
 import technicianRoutes from "./routes/v1/technicianRoutes";
@@ -24,7 +24,8 @@ const port = 3000;
 const httpServer = createServer(app);
 
 // Launch bot
-bot.launch().then(() => console.log("Telegram bot started"));
+await bot.launch();
+console.log("Telegram bot started");
 
 // Initialize Socket.IO
 initSocket(httpServer);

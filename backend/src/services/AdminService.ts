@@ -124,7 +124,7 @@ export const adminService = {
     }
 
     const validIds = categoryIds.filter(
-      (id) => typeof id === "number" && !isNaN(id) && id > 0 && id <= 9
+      (id) => typeof id === "number" && !Number.isNaN(id) && id > 0 && id <= 9
     );
 
     // 1. Delete existing categories for this user (replace logic)

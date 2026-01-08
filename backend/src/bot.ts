@@ -8,7 +8,6 @@ import registerLoginFeature from "./featuresBot/login";
 import registerNewReportFeature from "./featuresBot/newreport";
 import checkReports from "./featuresBot/checkReports";
 import helper from "./featuresBot/helper";
-import notifications from "./featuresBot/notifications";
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
 
@@ -39,7 +38,6 @@ registerLoginFeature(bot);
 registerNewReportFeature(bot);
 checkReports(bot);
 helper(bot);
-//notifications(bot, "🤖 Bot has started successfully.");
 
 // Graceful shutdown handlers
 process.once('SIGINT', () => bot.stop('SIGINT'));

@@ -27,7 +27,7 @@ export const setupUser = catchAsync(async (req: Request, res: Response) => {
 
 export const setupTechnician = catchAsync(
   async (req: Request, res: Response) => {
-    const { email, username, role, name, surname, category_ids } = req.body;
+    const { email, username, name, surname, category_ids } = req.body;
 
     // 1. Create the user with TECHNICIAN role
     const user = await adminService.createUser({
@@ -44,7 +44,7 @@ export const setupTechnician = catchAsync(
       Array.isArray(category_ids) &&
       category_ids.length > 0
     ) {
-      const numericIds = category_ids.map((id: string | number) => Number(id));
+      const numericIds = category_ids.map(Number);
       await adminService.assignTechnicianCategories(user.id, numericIds);
     }
 
@@ -63,7 +63,7 @@ export const setupTechnician = catchAsync(
 
 export const setupExternalMaintainer = catchAsync(
   async (req: Request, res: Response) => {
-    const { email, username, role, name, surname, external_company_id } =
+    const { email, username, name, surname, external_company_id } =
       req.body;
 
     // 1. Create the user with EXTERNAL_MAINTAINER role
@@ -101,9 +101,7 @@ export const updateTechnicianCategories = catchAsync(
     const userId = Number(req.params.id);
     const { category_ids } = req.body;
 
-    const numericIds = (category_ids || []).map((id: string | number) =>
-      Number(id)
-    );
+    const numericIds = (category_ids || []).map(Number);
 
     const result = await adminService.updateTechnicianCategories(
       userId,

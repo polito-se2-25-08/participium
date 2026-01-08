@@ -1,4 +1,4 @@
-import { ReportMessage, ReportMessageInsert } from "../models/ReportMessage";
+import { ReportMessage } from "../models/ReportMessage";
 import { supabase } from "../utils/Supabase";
 import AppError from "../utils/AppError";
 

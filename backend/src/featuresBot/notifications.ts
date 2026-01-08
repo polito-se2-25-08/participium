@@ -6,7 +6,7 @@ import { userRepository } from "../repositories/userRepository";
  * Escape special markdown characters for Telegram
  */
 function escapeMD(text: string): string {
-    return text.replace(/[_*\[\]()~`>#+=|{}.!-]/g, '\\$&');
+    return text.replace(/[_*[\]()~`>#+=|{}.!-]/g, '\\$&');
 }
 
 /**
