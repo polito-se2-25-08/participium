@@ -14,7 +14,7 @@ sections:
 
 - Number of stories committed vs. done : 9 stories committed vs 9 stories done
 - Total points committed vs. done : 38 story points committed vs 38 story points done
-- Nr of hours planned vs. spent (as a team) : 95 hours planned vs 82 hours spent
+- Nr of hours planned vs. spent (as a team) : 100.25 hours planned vs 93.08 hours spent
 
 **Remember**  a story is done ONLY if it fits the Definition of Done:
  
@@ -80,7 +80,7 @@ sections:
 ## ASSESSMENT
 
 - What caused your errors in estimation (if any)?
-  - This sprint we did not encountered problems like last sprints because this time we mostly focused on refactoring.
+  - This sprint we focused mostly on refactor, which we overstimated. This caused a lack of hours since some task set up overlapped.
 
 - What lessons did you learn (both positive and negative) in this sprint?
   - We learned the importance of coordination among team members and the importance of code reviews. 
@@ -89,13 +89,13 @@ sections:
   - We achieved finishing all the stories we have committed unlike the last sprint and also we coordinated much better than last time and had no excessive amount of merge conflict issues.
   
 - Which ones you were not able to achieve? Why?
-  - We estimated less hours than our budget and also worked less hours than our budget. Because we mostly focused on refactoring, we did not wanted to add more stories just to have more hours like we did at last time.
+  - We couldn't achieve creating more sprint meetings since we didn't deem it really necessary. Considering our work was mostly a refactoring and the fact that the holiday season couldn't give enough space we didn't do any more 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
 
   > Propose one or two 
 
-  - 
+  - Manage scrum meetings during the sprint
   - 
 
 - One thing you are proud of as a Team!!
-  - We did not done any issue we done at last sprint and collaborated perfectly
+  - We did not done any issue we done at last sprint and collaborated well enough
