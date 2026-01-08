@@ -24,8 +24,14 @@ const port = 3000;
 const httpServer = createServer(app);
 
 // Launch bot
-await bot.launch();
-console.log("Telegram bot started");
+(async () => {
+  try {
+    await bot.launch();
+    console.log("Telegram bot started");
+  } catch (error) {
+    console.error("Failed to launch bot:", error);
+  }
+})();
 
 // Initialize Socket.IO
 initSocket(httpServer);
