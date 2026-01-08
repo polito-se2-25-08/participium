@@ -110,11 +110,13 @@ describe('Report Comment Routes Integration Tests', () => {
         res.status(200).json({ success: true, data: [] });
       });
 
-      await request(app)
+      const response = await request(app)
         .get('/api/v1/reports/1/comments')
         .set('Authorization', 'Bearer officer-token')
         .expect(200);
-
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
       expect(ReportCommentController.getComments).toHaveBeenCalled();
     });
 

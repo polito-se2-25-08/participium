@@ -139,4 +139,157 @@ describe('TechnicianRepository', () => {
       expect(mockUpsert).toHaveBeenLastCalledWith([{ user_id: 1, category_id: 5 }]);
     });
   });
+
+  describe('getTechnicianCategories', () => {
+    it('should return array of category IDs', async () => {
+      const mockData = [{ category_id: 1 }, { category_id: 2 }];
+      mockSelect.mockReturnValue({ eq: mockEq });
+      mockEq.mockResolvedValue({ data: mockData, error: null });
+
+      const result = await TechnicianRepository.getTechnicianCategories(1);
+
+      expect(mockFrom).toHaveBeenCalledWith('Technician_Category');
+      expect(mockSelect).toHaveBeenCalledWith('category_id');
+      expect(mockEq).toHaveBeenCalledWith('user_id', 1);
+      expect(result).toEqual([1, 2]);
+    });
+
+    it('should return empty array if no categories found', async () => {
+      mockEq.mockResolvedValue({ data: [], error: null });
+
+      const result = await TechnicianRepository.getTechnicianCategories(1);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should throw AppError on database error', async () => {
+      const dbError = new Error('Fetch failed');
+      mockEq.mockResolvedValue({ data: null, error: dbError });
+
+      await expect(
+        TechnicianRepository.getTechnicianCategories(1)
+      ).rejects.toThrow(AppError);
+
+      await expect(
+        TechnicianRepository.getTechnicianCategories(1)
+      ).rejects.toThrow('Failed to fetch technician categories');
+    });
+  });
+
+  describe('deleteTechnicianCategories', () => {
+    let mockDelete: jest.Mock;
+
+    beforeEach(() => {
+      mockDelete = jest.fn(() => ({ eq: mockEq }));
+      mockFrom.mockReturnValue({ delete: mockDelete });
+    });
+
+    it('should delete technician categories', async () => {
+      mockEq.mockResolvedValue({ error: null });
+
+      await TechnicianRepository.deleteTechnicianCategories(1);
+
+      expect(mockFrom).toHaveBeenCalledWith('Technician_Category');
+      expect(mockDelete).toHaveBeenCalled();
+      expect(mockEq).toHaveBeenCalledWith('user_id', 1);
+    });
+
+    it('should throw AppError on database error', async () => {
+      const dbError = new Error('Delete failed');
+      mockEq.mockResolvedValue({ error: dbError });
+
+      await expect(
+        TechnicianRepository.deleteTechnicianCategories(1)
+      ).rejects.toThrow(AppError);
+      
+      await expect(
+        TechnicianRepository.deleteTechnicianCategories(1)
+      ).rejects.toThrow('Failed to delete technician categories');
+    });
+  });
+
+  describe('getExternalMaintainerCategory', () => {
+    it('should return external maintainer category', async () => {
+      const mockData = {
+        company_id: 1,
+        External_Company: { category_id: 5 }
+      };
+      
+      mockSingle.mockResolvedValue({ data: mockData, error: null });
+
+      const result = await TechnicianRepository.getExternalMaintainerCategory(1);
+
+      expect(mockFrom).toHaveBeenCalledWith('User_Company');
+      expect(result).toBe(5);
+    });
+
+    it('should handle External_Company as an array', async () => {
+      const mockData = {
+        company_id: 1,
+        External_Company: [{ category_id: 5 }]
+      };
+      
+      mockSingle.mockResolvedValue({ data: mockData, error: null });
+
+      const result = await TechnicianRepository.getExternalMaintainerCategory(1);
+
+      expect(result).toBe(5);
+    });
+
+    it('should throw AppError on database error', async () => {
+      mockSingle.mockResolvedValue({ data: null, error: new Error('DB Error') });
+
+      await expect(
+        TechnicianRepository.getExternalMaintainerCategory(1)
+      ).rejects.toThrow('Failed to fetch external maintainer category');
+    });
+
+    it('should throw if external maintainer not found', async () => {
+      mockSingle.mockResolvedValue({ data: null, error: null });
+
+      await expect(
+        TechnicianRepository.getExternalMaintainerCategory(1)
+      ).rejects.toThrow('External maintainer with user_id 1 not found');
+    });
+
+    it('should throw if no category assigned', async () => {
+      const mockData = {
+        company_id: 1,
+        External_Company: {} // Missing category_id
+      };
+      
+      mockSingle.mockResolvedValue({ data: mockData, error: null });
+
+      await expect(
+        TechnicianRepository.getExternalMaintainerCategory(1)
+      ).rejects.toThrow('External maintainer with user_id 1 has no category assigned');
+    });
+  });
+
+  describe('updateReportExternalAssignment', () => {
+    let mockUpdate: jest.Mock;
+
+    beforeEach(() => {
+      mockUpdate = jest.fn(() => ({ eq: mockEq }));
+      mockFrom.mockReturnValue({ update: mockUpdate });
+    });
+
+    it('should update external assignment', async () => {
+      mockEq.mockResolvedValue({ error: null });
+
+      await TechnicianRepository.updateReportExternalAssignment(1, 10);
+
+      expect(mockFrom).toHaveBeenCalledWith('Report');
+      expect(mockUpdate).toHaveBeenCalledWith({ assignedExternalOfficeId: 10 });
+      expect(mockEq).toHaveBeenCalledWith('id', 1);
+    });
+
+    it('should throw AppError on database error', async () => {
+      mockEq.mockResolvedValue({ error: new Error('Update failed') });
+
+      await expect(
+        TechnicianRepository.updateReportExternalAssignment(1, 10)
+      ).rejects.toThrow('Failed to update external assignment');
+    });
+  });
 });

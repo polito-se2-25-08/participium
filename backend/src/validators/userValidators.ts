@@ -34,11 +34,7 @@ export const setupTechnicianSchema = z.object({
   surname: z.string().min(1, "Surname is required"),
   category_ids: z.array(z.union([z.string(), z.number()])).optional(),
 });
-/* 
-export const updateTechnicianCategoriesSchema = z.object({
-  category_ids: z.array(z.union([z.string(), z.number()])),
-});
- */
+
 export const loginSchema = z.object({
   username: z.string().min(3, "Username is required"),
   password: z.string().min(1, "Password is required"),

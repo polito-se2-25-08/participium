@@ -8,6 +8,28 @@ import {
 } from "../repositories/TechnicianRepository";
 import crypto from "node:crypto";
 
+const verifyTechnicianAndCategories = async (userId: number, categoryIds: number[]) => {
+  let user;
+  try {
+    user = await userRepository.findById(userId);
+  } catch (err: any) {
+    throw new AppError(`Failed to load user: ${err?.message ?? err}`, 500);
+  }
+  if (!user) throw new AppError("User not found", 404);
+  if (user.role !== "TECHNICIAN")
+    throw new AppError("User must have TECHNICIAN role", 400);
+
+  if (!categoryIds || !Array.isArray(categoryIds)) {
+    throw new AppError("Category IDs must be provided as an array", 400);
+  }
+
+  const validIds = categoryIds.filter(
+    (id) => typeof id === "number" && !Number.isNaN(id) && id > 0 && id <= 9
+  );
+
+  return validIds;
+};
+
 export const adminService = {
   async createUser(data: {
     email: string;
@@ -76,25 +98,7 @@ export const adminService = {
   },
 
   async assignTechnicianCategories(userId: number, categoryIds: number[]) {
-    // Verify user exists and is TECHNICIAN using repository
-    let user;
-    try {
-      user = await userRepository.findById(userId);
-    } catch (err: any) {
-      throw new AppError(`Failed to load user: ${err?.message ?? err}`, 500);
-    }
-    if (!user) throw new AppError("User not found", 404);
-    if (user.role !== "TECHNICIAN")
-      throw new AppError("User must have TECHNICIAN role", 400);
-
-    // Verify categories exist (basic validation)
-    if (!categoryIds || !Array.isArray(categoryIds)) {
-      throw new AppError("Category IDs must be provided as an array", 400);
-    }
-
-    const validIds = categoryIds.filter(
-      (id) => typeof id === "number" && !Number.isNaN(id) && id > 0 && id <= 9
-    );
+    const validIds = await verifyTechnicianAndCategories(userId, categoryIds);
 
     if (validIds.length === 0 && categoryIds.length > 0) {
       throw new AppError("No valid Category IDs provided", 400);
@@ -107,25 +111,7 @@ export const adminService = {
   },
 
   async updateTechnicianCategories(userId: number, categoryIds: number[]) {
-    // Verify user exists and is TECHNICIAN
-    let user;
-    try {
-      user = await userRepository.findById(userId);
-    } catch (err: any) {
-      throw new AppError(`Failed to load user: ${err?.message ?? err}`, 500);
-    }
-    if (!user) throw new AppError("User not found", 404);
-    if (user.role !== "TECHNICIAN")
-      throw new AppError("User must have TECHNICIAN role", 400);
-
-    // Verify categories array
-    if (!categoryIds || !Array.isArray(categoryIds)) {
-      throw new AppError("Category IDs must be provided as an array", 400);
-    }
-
-    const validIds = categoryIds.filter(
-      (id) => typeof id === "number" && !Number.isNaN(id) && id > 0 && id <= 9
-    );
+    const validIds = await verifyTechnicianAndCategories(userId, categoryIds);
 
     // 1. Delete existing categories for this user (replace logic)
     await deleteTechnicianCategories(userId);

@@ -32,6 +32,7 @@ export const getMaintainerCategory = async (
       return [externalCategory];
     } catch (extError) {
       // Return empty array if no categories found anywhere
+      // Log error for debugging if needed, but return empty as per logic
       return [];
     }
   }

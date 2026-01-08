@@ -78,6 +78,7 @@ export const protectOptional = (
 				(req as any).user = decoded;
 			} catch (err) {
 				// Ignore invalid tokens for optional auth
+				// Explicitly ignoring error as per requirement for optional auth
 			}
 		}
 	}
