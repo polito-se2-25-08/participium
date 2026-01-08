@@ -14,7 +14,6 @@ import { mapReportsDBToReports } from "../controllers/mapper/MapReportDBToReport
 
 // Function to get the category for a technician or external maintainer
 export const getMaintainerCategory = async (
-  // TODO make it so it works with getTechnicianCategories !! needs to handle multiple category_ids
   user_id: number
 ): Promise<number[]> => {
   // First try to get the categories from Technician_Category table

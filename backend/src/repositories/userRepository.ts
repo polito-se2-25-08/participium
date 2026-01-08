@@ -46,7 +46,7 @@ export const userRepository = {
     const { data, error } = await supabase.from("User").select("*");
     console.log(data);
     if (error) throw error;
-    return data!;
+    return data;
   },
 
   async updateUser(userId: number, updates: Partial<any>): Promise<any> {

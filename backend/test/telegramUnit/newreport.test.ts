@@ -6,6 +6,9 @@ jest.mock("axios", () => ({
   get: jest.fn(),
   post: jest.fn(),
 }));
+jest.mock("telegraf/filters", () => ({
+  message: jest.fn((filterName) => `message:${filterName}`),
+}));
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -38,10 +41,10 @@ describe("new report feature", () => {
     const fakeBot = {
       command: jest.fn((cmd, h) => cmd === "newreport" && (newReportHandler = h)),
       on: jest.fn((evt, h) => {
-        if (evt === "text") textHandler = h;
+        if (evt === "message:text") textHandler = h;
         if (evt === "callback_query") callbackHandler = h;
-        if (evt === "photo") photoHandler = h;
-        if (evt === "location") locationHandler = h;
+        if (evt === "message:photo") photoHandler = h;
+        if (evt === "message:location") locationHandler = h;
       }),
       catch: jest.fn(),
     } as any;
@@ -149,7 +152,7 @@ describe("new report feature", () => {
 
     const fakeBot = {
       command: jest.fn(),
-      on: jest.fn((evt, h) => evt === "location" && (locationHandler = h)),
+      on: jest.fn((evt, h) => evt === "message:location" && (locationHandler = h)),
       catch: jest.fn(),
     } as any;
 

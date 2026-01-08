@@ -2,6 +2,9 @@ import registerNewReportFeature from '../../../src/featuresBot/newreport';
 import axios from 'axios';
 
 jest.mock('axios');
+jest.mock('telegraf/filters', () => ({
+  message: jest.fn((filterName) => `message:${filterName}`),
+}));
 
 describe('Bot New Report Feature', () => {
   let botMock: any;
@@ -19,9 +22,9 @@ describe('Bot New Report Feature', () => {
       }),
       on: jest.fn((event, cb) => {
         if (event === 'callback_query') callbackQueryCallback = cb;
-        if (event === 'text') textCallback = cb;
-        if (event === 'photo') photoCallback = cb;
-        if (event === 'location') locationCallback = cb;
+        if (event === 'message:text') textCallback = cb;
+        if (event === 'message:photo') photoCallback = cb;
+        if (event === 'message:location') locationCallback = cb;
       }),
       catch: jest.fn(),
     };
@@ -42,9 +45,9 @@ describe('Bot New Report Feature', () => {
     registerNewReportFeature(botMock);
     expect(botMock.command).toHaveBeenCalledWith('newreport', expect.any(Function));
     expect(botMock.on).toHaveBeenCalledWith('callback_query', expect.any(Function));
-    expect(botMock.on).toHaveBeenCalledWith('text', expect.any(Function));
-    expect(botMock.on).toHaveBeenCalledWith('photo', expect.any(Function));
-    expect(botMock.on).toHaveBeenCalledWith('location', expect.any(Function));
+    expect(botMock.on).toHaveBeenCalledWith('message:text', expect.any(Function));
+    expect(botMock.on).toHaveBeenCalledWith('message:photo', expect.any(Function));
+    expect(botMock.on).toHaveBeenCalledWith('message:location', expect.any(Function));
   });
 
   it('should start new report flow', async () => {

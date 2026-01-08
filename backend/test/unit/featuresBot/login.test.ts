@@ -2,6 +2,9 @@ import registerLoginFeature from '../../../src/featuresBot/login';
 import axios from 'axios';
 
 jest.mock('axios');
+jest.mock('telegraf/filters', () => ({
+  message: jest.fn((filterName) => `message:${filterName}`),
+}));
 
 describe('Bot Login Feature', () => {
   let botMock: any;
@@ -10,14 +13,14 @@ describe('Bot Login Feature', () => {
   let textCallback: Function;
 
   beforeEach(() => {
-    botMock = {
-      command: jest.fn((cmd, cb) => {
-        if (cmd === 'login') commandCallback = cb;
-      }),
-      on: jest.fn((event, cb) => {
-        if (event === 'text') textCallback = cb;
-      }),
-    };
+      botMock = {
+        command: jest.fn((cmd, cb) => {
+          if (cmd === 'login') commandCallback = cb;
+        }),
+        on: jest.fn((event, cb) => {
+          if (event === 'message:text') textCallback = cb;
+        }),
+      };
     ctxMock = {
       session: {},
       reply: jest.fn(),
@@ -30,7 +33,7 @@ describe('Bot Login Feature', () => {
   it('should register login command and text listener', () => {
     registerLoginFeature(botMock);
     expect(botMock.command).toHaveBeenCalledWith('login', expect.any(Function));
-    expect(botMock.on).toHaveBeenCalledWith('text', expect.any(Function));
+    expect(botMock.on).toHaveBeenCalledWith('message:text', expect.any(Function));
   });
 
   it('should start login flow on /login', () => {

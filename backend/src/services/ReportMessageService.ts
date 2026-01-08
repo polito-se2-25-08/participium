@@ -89,16 +89,6 @@ export const createInternalMessage = async (
     throw new Error("Failed to save message");
   }
 
-  /*
-	const notification = await NotificationService.createNotification(
-		 senderId,
-		 reportId,
-		 "NEW_MESSAGE",
-		`New message on report #${report_id}`,
-	);
-
-	*/
-
   return savedMessage;
 };
 

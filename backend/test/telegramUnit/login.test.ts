@@ -5,6 +5,9 @@ import axios from "axios";
 jest.mock("axios", () => ({
   post: jest.fn(),
 }));
+jest.mock("telegraf/filters", () => ({
+  message: jest.fn((filterName) => `message:${filterName}`),
+}));
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -28,7 +31,7 @@ describe("login feature", () => {
 
     const fakeBot = {
       command: jest.fn((cmd, h) => cmd === "login" && (loginHandler = h)),
-      on: jest.fn((evt, h) => evt === "text" && (textHandler = h)),
+      on: jest.fn((evt, h) => evt === "message:text" && (textHandler = h)),
     } as any;
 
     registerLoginFeature(fakeBot);
@@ -60,7 +63,7 @@ describe("login feature", () => {
 
     const fakeBot = {
       command: jest.fn((cmd, h) => cmd === "login" && (loginHandler = h)),
-      on: jest.fn((evt, h) => evt === "text" && (textHandler = h)),
+      on: jest.fn((evt, h) => evt === "message:text" && (textHandler = h)),
     } as any;
 
     registerLoginFeature(fakeBot);
