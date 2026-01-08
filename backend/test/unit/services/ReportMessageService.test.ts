@@ -1,9 +1,11 @@
 import * as ReportMessageService from '../../../src/services/ReportMessageService';
 import * as ReportMessageRepository from '../../../src/repositories/ReportMessageRepository';
 import * as ReportRepository from '../../../src/repositories/ReportRepository';
+import { sendNotification } from '../../../src/utils/notificationHelper';
 
 jest.mock('../../../src/repositories/ReportMessageRepository');
 jest.mock('../../../src/repositories/ReportRepository');
+jest.mock('../../../src/utils/notificationHelper');
 
 describe('ReportMessageService', () => {
   beforeEach(() => {
@@ -26,7 +28,7 @@ describe('ReportMessageService', () => {
     });
 
     it('should create a public message and return DTO in camelCase', async () => {
-      (ReportRepository.getReportById as jest.Mock).mockResolvedValue({ id: 1 });
+      (ReportRepository.getReportById as jest.Mock).mockResolvedValue({ id: 1, user_id: 1, title: 'Test Report' });
 
       const saved = {
         id: 10,

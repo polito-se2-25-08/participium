@@ -94,7 +94,7 @@ describe('userController', () => {
 
       await userController.loginUser(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(userService.loginUser).toHaveBeenCalledWith(credentials.username, credentials.password);
+      expect(userService.loginUser).toHaveBeenCalledWith(credentials.username, credentials.password, undefined);
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,

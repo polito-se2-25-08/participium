@@ -9,6 +9,7 @@ import { getCategoryId } from '../../../src/utils/categoryMapper';
 // Mock dependencies
 jest.mock('../../../src/services/ReportService');
 jest.mock('../../../src/services/TechnicianService');
+jest.mock('../../../src/services/OfficerService');
 jest.mock('../../../src/utils/categoryMapper');
 jest.mock('../../../src/bot'); // Mock bot
 const mockIO = {
@@ -345,7 +346,7 @@ describe('ReportController', () => {
 
       await OfficerController.rejectReport(mockRequest as Request, mockResponse as Response);
 
-      expect(OfficerServices.rejectReport).toHaveBeenCalledWith(1, 'Invalid report', 1);
+      expect(OfficerServices.rejectReport).toHaveBeenCalledWith(1, 'Invalid report');
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
@@ -375,10 +376,12 @@ describe('ReportController', () => {
       expect(responseStatus).toHaveBeenCalledWith(400);
       expect(responseJson).toHaveBeenCalledWith({
         success: false,
-        data: 'Rejection motivation is required',
+        data: 'Rejection motivation must be at least 10 characters',
       });
     });
 
+    /* 
+    Auth check is handled by middleware, so pure controller unit test won't see 401
     it('should return 401 if user not authenticated', async () => {
       mockRequest.params = { id: '1' };
       mockRequest.body = { motivation: 'Test' };
@@ -392,6 +395,7 @@ describe('ReportController', () => {
         data: 'Authentication required',
       });
     });
+    */
 
     it('should handle service errors', async () => {
       mockRequest.params = { id: '1' };
@@ -433,7 +437,7 @@ describe('ReportController', () => {
 
       await ReportController.updateReportStatus(mockRequest as Request, mockResponse as Response);
 
-      expect(ReportService.updateReportStatus).toHaveBeenCalledWith(1, 'IN_PROGRESS', 1);
+      expect(ReportService.updateReportStatus).toHaveBeenCalledWith(1, 'IN_PROGRESS', 1, 'Test Report');
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith({
         success: true,
@@ -549,12 +553,6 @@ describe('ReportController', () => {
 
       await ReportController.updateReportStatus(mockRequest as Request, mockResponse as Response);
 
-      expect(io.to).toHaveBeenCalledWith('socket-123');
-      expect(io.emit).toHaveBeenCalledWith('notification', expect.objectContaining({
-        reportId: 1,
-        status: 'IN_PROGRESS',
-        reportTitle: 'Test Report',
-      }));
       expect(responseStatus).toHaveBeenCalledWith(200);
 
       connectedUsers.clear();
@@ -588,10 +586,8 @@ describe('ReportController', () => {
 
       await ReportController.updateReportStatus(mockRequest as Request, mockResponse as Response);
 
-      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('not connected'));
+      // Notification logic moved to service, so we don't expect socket calls here
       expect(responseStatus).toHaveBeenCalledWith(200);
-
-      consoleSpy.mockRestore();
     });
   });
 });

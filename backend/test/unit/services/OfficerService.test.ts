@@ -1,7 +1,9 @@
 import * as OfficerService from '../../../src/services/OfficerService';
 import * as ReportRepository from '../../../src/repositories/ReportRepository';
+import * as NotificationHelper from '../../../src/utils/notificationHelper';
 
 jest.mock('../../../src/repositories/ReportRepository');
+jest.mock('../../../src/utils/notificationHelper');
 
 describe('OfficerService', () => {
   beforeEach(() => {
@@ -35,13 +37,14 @@ describe('OfficerService', () => {
 
   describe('updateReportStatus', () => {
     it('should update report status', async () => {
-      const mockReport = { id: 1, status: 'IN_PROGRESS' };
+      const mockReport = { id: 1, status: 'IN_PROGRESS', user_id: 123, title: 'Test Report' };
 
       (ReportRepository.updateReportStatus as jest.Mock).mockResolvedValue(mockReport);
 
       const result = await OfficerService.updateReportStatus(1, 'IN_PROGRESS');
 
       expect(ReportRepository.updateReportStatus).toHaveBeenCalledWith(1, 'IN_PROGRESS');
+      expect(NotificationHelper.sendNotification).toHaveBeenCalled();
       expect(result).toEqual(mockReport);
     });
 

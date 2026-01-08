@@ -22,6 +22,7 @@ describe('Bot Login Feature', () => {
       session: {},
       reply: jest.fn(),
       message: { text: '' },
+      chat: { id: 123 },
     };
     jest.clearAllMocks();
   });
@@ -75,6 +76,7 @@ describe('Bot Login Feature', () => {
     expect(axios.post).toHaveBeenCalledWith('http://localhost:3000/api/v1/login', {
       username: 'testuser',
       password: 'password',
+      chatId: 123
     });
     expect(ctxMock.session.token).toBe('mock-token');
     expect(ctxMock.session.id).toBe(1);

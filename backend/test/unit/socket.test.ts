@@ -124,12 +124,9 @@ describe('Socket.IO Unit', () => {
     const sendMessageHandler = mockSocket.on.mock.calls.find((call: any) => call[0] === 'send_report_message')[1];
     await sendMessageHandler(messageDTO);
 
-    expect(createNotification).toHaveBeenCalledWith({
-      user_id: 2,
-      report_id: 10,
-      type: 'NEW_MESSAGE',
-      message: 'New message on report #Report 10',
-    });
+    expect(createNotification).toHaveBeenCalledWith(
+        2, 10, 'NEW_MESSAGE', expect.stringContaining('New message on report #Report 10')
+    );
   });
 
   it('should emit error if user not found', async () => {

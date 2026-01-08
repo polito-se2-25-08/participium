@@ -1,12 +1,15 @@
 import * as NotificationRepository from '../../../src/repositories/NotificationRepository';
 import { supabase } from '../../../src/utils/Supabase';
 import AppError from '../../../src/utils/AppError';
+import { userRepository } from '../../../src/repositories/userRepository';
 
 jest.mock('../../../src/utils/Supabase', () => ({
   supabase: {
     from: jest.fn(),
   },
 }));
+
+jest.mock('../../../src/repositories/userRepository');
 
 describe('NotificationRepository', () => {
   let mockFrom: jest.Mock;
@@ -22,7 +25,7 @@ describe('NotificationRepository', () => {
 
     mockSingle = jest.fn();
     mockOrder = jest.fn();
-    mockEq = jest.fn(() => ({ eq: mockEq, order: mockOrder, select: mockSelect, single: mockSingle }));
+    mockEq = jest.fn(() => ({ eq: mockEq, order: mockOrder, select: mockSelect, single: mockSingle, maybeSingle: mockSingle }));
     mockSelect = jest.fn(() => ({ eq: mockEq, single: mockSingle }));
     mockInsert = jest.fn(() => ({ select: mockSelect }));
     mockUpdate = jest.fn(() => ({ eq: mockEq }));
@@ -33,6 +36,9 @@ describe('NotificationRepository', () => {
     }));
 
     (supabase.from as jest.Mock) = mockFrom;
+
+    // Mock userRepository to prevent actual calls and errors during tests
+    (userRepository.findById as jest.Mock).mockResolvedValue(null);
   });
 
   describe('createNotification', () => {

@@ -174,13 +174,13 @@ describe('TechnicianService', () => {
   });
 
   describe('canTechnicianUpdateReport', () => {
-    it('should return false even when categories match (current implementation compares number to array)', async () => {
+    it('should return true when technician category matches report category', async () => {
       (TechnicianRepository.getTechnicianCategories as jest.Mock).mockResolvedValue([1]);
       (ReportRepository.getReportById as jest.Mock).mockResolvedValue({ id: 1, category_id: 1 });
 
       const result = await TechnicianService.canTechnicianUpdateReport(5, 1);
 
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
 
     it('should return false if technician category does not match report category', async () => {

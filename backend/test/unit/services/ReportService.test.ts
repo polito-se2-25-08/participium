@@ -2,9 +2,11 @@ import * as ReportService from '../../../src/services/ReportService';
 import * as OfficerServices from '../../../src/services/OfficerService';
 import * as ReportRepository from '../../../src/repositories/ReportRepository';
 import * as NotificationService from '../../../src/services/NotificationService';
+import * as NotificationHelper from '../../../src/utils/notificationHelper';
 
 jest.mock('../../../src/repositories/ReportRepository');
 jest.mock('../../../src/services/NotificationService');
+jest.mock('../../../src/utils/notificationHelper');
 
 describe('ReportService', () => {
   beforeEach(() => {
@@ -228,16 +230,17 @@ describe('ReportService', () => {
       const mockReport = { id: 1, status: 'IN_PROGRESS' };
 
       (ReportRepository.updateReportStatus as jest.Mock).mockResolvedValue(mockReport);
-      (NotificationService.createNotification as jest.Mock).mockResolvedValue({});
+      (NotificationHelper.sendNotification as jest.Mock).mockResolvedValue({});
 
       const result = await ReportService.updateReportStatus(1, 'IN_PROGRESS', 2);
 
       expect(ReportRepository.updateReportStatus).toHaveBeenCalledWith(1, 'IN_PROGRESS');
-      expect(NotificationService.createNotification).toHaveBeenCalledWith({
-        user_id: 2,
-        report_id: 1,
+      expect(NotificationHelper.sendNotification).toHaveBeenCalledWith({
+        userId: 2,
+        reportId: 1,
         type: 'STATUS_UPDATE',
-        message: 'Your report #1 status has been updated to: IN_PROGRESS',
+        message: expect.stringContaining('IN_PROGRESS'),
+        additionalData: expect.any(Object),
       });
       expect(result).toEqual(mockReport);
     });

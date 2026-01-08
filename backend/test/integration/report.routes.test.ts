@@ -17,10 +17,21 @@ jest.mock('../../src/middleware/authMiddleware', () => ({
     }
   }),
   restrictTo: jest.fn(() => (req: any, res: any, next: any) => next()),
+  protectOptional: jest.fn((req, res, next) => next()),
 }));
 
 // Mock dependencies
-jest.mock('../../src/controllers/ReportController');
+jest.mock('../../src/controllers/ReportController', () => ({
+  __esModule: true,
+  createReport: jest.fn((req, res) => res.status(201).json({ success: true, data: {} })),
+  getAllReports: jest.fn((req, res) => res.status(200).json({ success: true, data: [] })),
+  getReportById: jest.fn((req, res) => res.status(200).json({ success: true, data: {} })),
+  updateReportStatus: jest.fn((req, res) => res.status(200).json({ success: true, data: {} })),
+  getReportsByCitizenId: jest.fn((req, res) => res.status(200).json({ success: true, data: [] })),
+  getPendingReports: jest.fn((req, res) => res.status(200).json({ success: true, data: [] })),
+  getActiveReports: jest.fn((req, res) => res.status(200).json({ success: true, data: [] })),
+  getFilteredReports: jest.fn((req, res) => res.status(200).json({ success: true, data: [] })),
+}));
 jest.mock('../../src/controllers/ReportMessageController');
 jest.mock('../../src/controllers/NotificationController');
 jest.mock('../../src/socket', () => ({

@@ -101,7 +101,9 @@ describe('Bot Check Reports Feature', () => {
 
       await reportStatusCallback(ctxMock);
 
-      expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/api/v1/reports/1');
+      expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/api/v1/reports/1', expect.objectContaining({
+          headers: expect.objectContaining({ Authorization: 'Bearer mock-token' })
+      }));
       expect(ctxMock.reply).toHaveBeenCalledWith('📄 Report #1: Report 1\n📊 Status: OPEN');
       expect(ctxMock.reply).toHaveBeenCalledWith('📢 Recent updates for this report:');
       expect(ctxMock.reply).toHaveBeenCalledWith(expect.stringContaining('Update 1'));
@@ -111,7 +113,7 @@ describe('Bot Check Reports Feature', () => {
       checkReports(botMock);
       ctxMock.message.text = '/reportstatus abc';
       await reportStatusCallback(ctxMock);
-      expect(ctxMock.reply).toHaveBeenCalledWith(expect.stringContaining('Please provide a valid report ID'));
+      expect(ctxMock.reply).toHaveBeenCalledWith(expect.stringContaining('Usage: /reportstatus <report_id>'));
     });
   });
 });
