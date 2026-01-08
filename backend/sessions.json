@@ -1,24 +1,3 @@
 {
-  "sessions": [
-    {
-      "id": "5358728156:5358728156",
-      "data": {
-        "reportState": null,
-        "report": null,
-        "loginState": null,
-        "username": "Alice",
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6IkNJVElaRU4iLCJpYXQiOjE3Njc3MjA0OTIsImV4cCI6MTc2NzcyNDA5Mn0.4iXPva7wq3vLnc5gsHwGP457brhViakZussFzvQc-6U",
-        "id": 5
-      }
-    },
-    {
-      "id": "428257582:428257582",
-      "data": {
-        "loginState": null,
-        "username": "Alice",
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicm9sZSI6IkNJVElaRU4iLCJpYXQiOjE3Njc4MDQ0NzEsImV4cCI6MTc2NzgwODA3MX0.xP-vehRP46G6FTrp3QR_b32gNJAtBXZfPNf8F9Ao8rE",
-        "id": 5
-      }
-    }
-  ]
+  "sessions": []
 }

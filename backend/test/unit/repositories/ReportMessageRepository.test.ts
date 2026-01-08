@@ -91,5 +91,66 @@ describe('ReportMessageRepository', () => {
       expect(mockOrder).toHaveBeenCalledWith('created_at', { ascending: true });
       expect(result).toEqual(mockMessages);
     });
+
+    it('should throw AppError on database error', async () => {
+      mockOrder.mockResolvedValue({ data: null, error: new Error('DB Error') });
+
+      await expect(
+        ReportMessageRepository.getPublicMessagesByReportId(1)
+      ).rejects.toThrow('Failed to fetch messages');
+    });
+  });
+
+  describe('createInternalMessage', () => {
+    it('should create an internal message', async () => {
+      const mockMessage = {
+        id: 1,
+        report_id: 1,
+        sender_id: 1,
+        message: 'Internal msg',
+        is_public: false,
+      };
+
+      mockSingle.mockResolvedValue({ data: mockMessage, error: null });
+
+      const result = await ReportMessageRepository.createInternalMessage(1, 1, 'Internal msg');
+
+      expect(mockInsert).toHaveBeenCalledWith({
+        report_id: 1,
+        sender_id: 1,
+        message: 'Internal msg',
+        is_public: false,
+      });
+      expect(result).toEqual(mockMessage);
+    });
+
+    it('should throw AppError on database error', async () => {
+      mockSingle.mockResolvedValue({ data: null, error: new Error('Insert failed') });
+
+      await expect(
+        ReportMessageRepository.createInternalMessage(1, 1, 'Msg')
+      ).rejects.toThrow('Failed to create message');
+    });
+  });
+
+  describe('getInternalMessagesByReportId', () => {
+    it('should return internal messages', async () => {
+      const mockMessages = [{ id: 1, is_public: false }];
+      mockOrder.mockResolvedValue({ data: mockMessages, error: null });
+
+      const result = await ReportMessageRepository.getInternalMessagesByReportId(1);
+
+      expect(mockEq).toHaveBeenCalledWith('report_id', 1);
+      expect(mockEq).toHaveBeenCalledWith('is_public', false);
+      expect(result).toEqual(mockMessages);
+    });
+
+    it('should throw AppError on database error', async () => {
+      mockOrder.mockResolvedValue({ data: null, error: new Error('Fetch failed') });
+
+      await expect(
+        ReportMessageRepository.getInternalMessagesByReportId(1)
+      ).rejects.toThrow('Failed to fetch messages');
+    });
   });
 });
