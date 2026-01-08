@@ -57,23 +57,23 @@ sections:
 ## QUALITY MEASURES 
 
 - Unit Testing:
-  - Total hours estimated 1d3h15m
-  - Total hours spent 7h40m
-  - Nr of automated unit test cases 388
-  - Coverage (if available) 84.6%
-- Integration testing: 
-  - Total hours estimated 3h
-  - Total hours spent 1h45m
-- E2E testing:
-  - Total hours estimated 1d1h30m
-  - Total hours spent 6h35m
-- Code review: 
   - Total hours estimated 2h
-  - Total hours spent 3h
+  - Total hours spent 1h50m
+  - Nr of automated unit test cases 424
+  - Coverage (if available) 86.4%
+- Integration testing: 
+  - Total hours estimated 1h45m
+  - Total hours spent 1h55m
+- E2E testing:
+  - Total hours estimated 4h15m
+  - Total hours spent 4h25m
+- Code review: 
+  - Total hours estimated 13h30m
+  - Total hours spent 12h35m
 - Technical Debt management:
-  - Strategy adopted: Prioritized Remediation Strategy
-  - Total hours estimated estimated at sprint planning 1h
-  - Total hours spent 4h
+  - Strategy adopted: Zero New Debt Strategy
+  - Total hours estimated estimated at sprint planning 2h30m
+  - Total hours spent 3h
   
 
 
