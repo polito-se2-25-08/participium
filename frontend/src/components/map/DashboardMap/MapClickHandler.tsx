@@ -45,7 +45,7 @@ export default function MapClickHandler({
 				userId: "user123",
 				status: "Pending approval",
 				position: [lat, lng],
-				adress: adress,
+				address: adress,
 			};
 
 			setTempMarker(newMarker);

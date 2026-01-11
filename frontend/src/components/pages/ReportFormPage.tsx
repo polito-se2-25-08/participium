@@ -5,7 +5,7 @@ import {
 	useState,
 	type FormEvent,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Form from "../form/Form";
 import PageTitle from "../titles/PageTitle";
@@ -33,6 +33,14 @@ export default function ReportFormPage() {
 	const navigate = useNavigate();
 	const [selectedAdress, setSelectedAddress] = useState<string>("");
 	const [location, setLocation] = useState<[number, number] | null>(null);
+	const locationState = useLocation().state;
+
+	useEffect(() => {
+		if (locationState) {
+			setLocation(locationState.location);
+			setSelectedAddress(locationState.address);
+		}
+	}, []); // Empty dependency array - runs only once on mount
 
 	const [addressError, setAddressError] = useState<boolean>(false);
 	const [categoryError, setCategoryError] = useState<boolean>(false);
@@ -183,6 +191,8 @@ export default function ReportFormPage() {
 						scrollWheelZoom={false}
 						setAdress={setSelectedAddress}
 						setLocation={setLocation}
+						initialLocation={location}
+						initialAddress={selectedAdress}
 						className="min-h-[350px] w-full"
 					/>
 				</ReportCardContainer>

@@ -6,5 +6,5 @@ export interface MarkerI {
   userId: string;
   status: string;
   position: [number, number];
-  adress: string;
+  address: string;
 }

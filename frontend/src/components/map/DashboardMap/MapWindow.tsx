@@ -80,7 +80,7 @@ export function MapWindow({
 					isDashboard={!isReport}
 					setClickedReportId={setClickedReportId}
 				/>
-				<TempMarker tempMarker={tempMarker} setTempMarker={setTempMarker} />
+				<TempMarker tempMarker={tempMarker} setTempMarker={setTempMarker} isCitizen={isCitizen} />
 				<MarkerInfo />
 			</MapContainer>
 			{rightPanelOpen && isCitizen && (

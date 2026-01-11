@@ -1,12 +1,13 @@
 import { MapContainer, TileLayer } from "react-leaflet";
 import type { LatLngBoundsExpression } from "leaflet";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "leaflet/dist/leaflet.css";
 import MapClickHandler from "./MapClickHandler";
 import type { MarkerI } from "../../../interfaces/components/MarkerI";
 import TempMarker from "../DashboardMap/TempMarker";
+import MapCenterUpdater from "./MapCenterUpdater";
 
 const ZOOM = 13;
 const TURIN_BOUNDS: LatLngBoundsExpression = [
@@ -20,6 +21,8 @@ interface ReportMapViewProps {
 	isReport?: boolean;
 	setAdress?: React.Dispatch<React.SetStateAction<string>>;
 	setLocation?: React.Dispatch<React.SetStateAction<[number, number] | null>>;
+	initialLocation?: [number, number] | null;
+	initialAddress?: string;
 }
 
 export function ReportMap({
@@ -27,12 +30,32 @@ export function ReportMap({
 	scrollWheelZoom = true,
 	setAdress,
 	setLocation,
+	initialLocation,
+	initialAddress,
 }: ReportMapViewProps) {
 	const [tempMarker, setTempMarker] = useState<MarkerI | null>(null);
 
+	useEffect(() => {
+		if (initialLocation && initialAddress) {
+			const marker: MarkerI = {
+				title: "Preloaded Location",
+				timestamp: new Date().toISOString(),
+				anonymity: true,
+				category: "Category A",
+				userId: "user123",
+				status: "Pending approval",
+				position: initialLocation,
+				address: initialAddress,
+			};
+			setTempMarker(marker);
+		}
+	}, [initialLocation, initialAddress]);
+
+	const mapCenter: [number, number] = tempMarker?.position || [45.0703, 7.6869];
+
 	return (
 		<MapContainer
-			center={[45.0703, 7.6869]}
+			center={mapCenter}
 			zoom={ZOOM}
 			minZoom={12}
 			className={className}
@@ -50,7 +73,7 @@ export function ReportMap({
 				setAdress={setAdress}
 				setLocation={setLocation}
 			/>
-
+			<MapCenterUpdater center={tempMarker?.position} />
 			<TempMarker tempMarker={tempMarker} setTempMarker={setTempMarker} />
 		</MapContainer>
 	);

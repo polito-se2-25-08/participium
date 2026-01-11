@@ -41,7 +41,7 @@ export default function SearchLocationInput({
 					userId: "user123",
 					status: "Pending approval",
 					position: coords,
-					adress: "",
+					address: "",
 				};
 
 				setMarker(newMarker);

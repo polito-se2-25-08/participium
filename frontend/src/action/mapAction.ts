@@ -183,11 +183,21 @@ export const fetchAddressByCoordinates = async (
 ): Promise<string> => {
 	try {
 		const response = await fetch(
-			`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+			`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`
 		);
 		const data = await response.json();
-		if (data && data.display_name) {
-			return data.display_name;
+		if (data && data.address) {
+			// Build address from specific components only (street level)
+			const parts = [];
+			if (data.address.road && data.address.house_number) {
+				parts.push(`${data.address.road} ${data.address.house_number}`);
+			} else if (data.address.road) {
+				parts.push(data.address.road);
+			} else if (data.address.house_number) {
+				parts.push(data.address.house_number);
+			}
+			
+			return parts.length > 0 ? parts.join(", ") : "Address not found";
 		} else {
 			return "Address not found";
 		}
